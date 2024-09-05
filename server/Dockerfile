@@ -3,7 +3,7 @@ FROM redhat/ubi9:latest
 RUN dnf update -y && dnf -y upgrade
 
 
-RUN dnf install -y  yum-utils unzip wget \
+RUN dnf install -y  yum-utils unzip wget git \
                     bash-completion policycoreutils-python-utils bzip2 \
                     httpd 
 
@@ -20,9 +20,7 @@ RUN dnf install -y  php php-cli php-gd php-mbstring php-intl php-pecl-apcu \
 RUN dnf install -y php-redis 
 #php-imagick
 
-
-COPY nextcloud_server /var/www/html/nextcloud
-
+RUN git clone https://github.com/LT-Linas35/nextcloud_server.git /var/www/html/nextcloud
 # Ta date reikia primountinti
 RUN mkdir -p /var/www/html/nextcloud/data
 RUN chown -R apache:apache /var/www/html/nextcloud
