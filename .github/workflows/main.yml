@@ -3,6 +3,11 @@ name: CI/CD pipeline with Trivy and Docker image publish
 
 on:
   workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Release version to use'
+        required: true
+        default: 'latest'
 
 permissions:
   contents: read
