@@ -80,8 +80,10 @@ jobs:
       with:
         context: "{{defaultContext}}:server"  
  #        file: ./Dockerfile      
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: |
+          docker.io/linas37/nextcloud:${{ github.sha }}
+          docker.io/linas37/nextcloud:latest
+          docker.io/linas37/nextcloud:${{ github.event.inputs.release_version }}
         labels: ${{ steps.meta.outputs.labels }}
 
     - name: Generate artifact attestation
