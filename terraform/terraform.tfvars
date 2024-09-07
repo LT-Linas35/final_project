@@ -15,7 +15,6 @@ ansible = {
   instance_name           = "ansible"
   key_name                = "Linas"
   map_public_ip_on_launch = true
-  ec2_key                 = "${{ secrets.ec2_key }}"
 }
 
 master1 = {
