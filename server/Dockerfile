@@ -1,4 +1,4 @@
-FROM redhat/ubi9:9.4-1214
+FROM redhat/ubi9:9.4
 
 RUN dnf update -y && dnf -y upgrade && dnf install -y  yum-utils unzip wget git \
     bash-completion policycoreutils-python-utils bzip2 httpd && \
