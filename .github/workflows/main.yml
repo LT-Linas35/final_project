@@ -47,10 +47,10 @@ jobs:
         context: "{{defaultContext}}:server"  
  #        file: ./Dockerfile      
         tags: |
-          docker.io/linas37/nextcloud:${{ github.sha }}
-          docker.io/linas37/nextcloud:latest
-          docker.io/linas37/nextcloud:${{ github.event.inputs.release_version }}
-#        labels: ${{ steps.meta.outputs.labels }}
+          ${{ github.sha }}
+          latest
+          ${{ github.event.inputs.release_version }}
+        labels: ${{ steps.meta.outputs.labels }}
 
     - name: Generate artifact attestation
       uses: actions/attest-build-provenance@v1
