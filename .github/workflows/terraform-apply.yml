@@ -7,7 +7,7 @@ env:
   TF_CLOUD_ORGANIZATION: "Linas38"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "learn-terraform-github-actions"
-  ec2_key: ${{ secrets.ec2_key }}
+  ec2_key: "${{ secrets.ec2_key }}"
   CONFIG_DIRECTORY: "./terraform"
 
 jobs:
