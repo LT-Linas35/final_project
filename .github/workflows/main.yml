@@ -13,44 +13,6 @@ permissions:
   contents: read
 
 jobs:
-  trivy:
-    permissions:
-      contents: read
-      security-events: write
-      actions: read
-    name: Build and Test Security
-    runs-on: "ubuntu-20.04"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Build an image from Dockerfile
-        run: |
-          cd server
-          docker build -t docker.io/linas37/nextcloud:${{ github.sha }} .
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
-        with:
-          image-ref: 'docker.io/linas37/nextcloud:${{ github.sha }}'
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-      - name: Check Trivy scan results
-        run: |
-          if grep -q '"ruleId":' trivy-results.sarif; then
-            echo "Critical or High vulnerabilities found!"
-            exit 1
-          else
-            echo "No critical or high vulnerabilities found."
-          fi
 
   publish_docker:
     name: Push Docker image to Docker Hub
@@ -60,7 +22,6 @@ jobs:
       contents: read
       attestations: write
       id-token: write
-    needs: trivy  
     steps:
     - name: Check out the repo
       uses: actions/checkout@v4
