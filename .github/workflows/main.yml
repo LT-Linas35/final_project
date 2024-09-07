@@ -47,9 +47,9 @@ jobs:
         context: "{{defaultContext}}:server"  
  #        file: ./Dockerfile      
         tags: |
-          ${{ github.sha }}
-          latest
-          ${{ github.event.inputs.release_version }}
+          linas37/nextcloud:${{ github.sha }}
+          linas37/nextcloud:latest
+          linas37/nextcloud:${{ github.event.inputs.release_version }}
         labels: ${{ steps.meta.outputs.labels }}
 
     - name: Generate artifact attestation
