@@ -49,9 +49,3 @@ variable "node2_instance_private_ips" {
   type        = string
 }
 
-variable "ec2_key" {
-  description = "EC2 Key"
-  type        = string
-}
-
-
