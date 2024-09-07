@@ -9,7 +9,7 @@ RUN dnf update -y && dnf -y upgrade && dnf install -y  yum-utils unzip wget git 
     php-mysqlnd php-opcache php-json php-zip && dnf install -y php-redis && \
     git clone https://github.com/LT-Linas35/nextcloud_server.git /var/www/html/nextcloud && \
     mkdir -p /var/www/html/nextcloud/data && chown -R apache:apache /var/www/html/nextcloud && \
-    chmod -R 755 /var/www/html/nextcloud && mkdir -p /var/run/php-fpm/ && rm -dR /etc/httpd/conf.d/* # Ta date reikia primountinti
+    chmod -R 755 /var/www/html/nextcloud && mkdir -p /var/run/php-fpm/ # Ta date reikia primountinti
 
     
 
