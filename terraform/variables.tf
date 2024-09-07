@@ -25,6 +25,7 @@ variable "ansible" {
     instance_type           = string
     key_name                = string
     map_public_ip_on_launch = bool
+    ec2_key = string
   })
 }
 
