@@ -98,6 +98,12 @@ module "node2" {
   aws_securitygroup_web_sg_id = module.nodes_sg.aws_securitygroup_web_sg_id
 }
 
+variable "ec2_key" {
+  description = "EC2 Key"
+  type        = string
+}
+
+
 module "ansible" {
   source                      = "./modules/ec2/ansible"
   ami                         = var.ansible.ami
@@ -111,3 +117,5 @@ module "ansible" {
   node2_instance_private_ips  = module.node2.instance_private_ip
   ec2_key                     = var.ec2_key
 }
+
+
