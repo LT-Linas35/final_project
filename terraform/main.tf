@@ -109,4 +109,5 @@ module "ansible" {
   nginx_instance_private_ip   = module.nginx.instance_private_ip
   node1_instance_private_ips  = module.node1.instance_private_ip
   node2_instance_private_ips  = module.node2.instance_private_ip
+  ec2_key = ${ec2_key}
 }
