@@ -18,7 +18,7 @@ jobs:
       contents: read
       security-events: write
       actions: read
-    name: Build
+    name: Build and Test Security
     runs-on: "ubuntu-20.04"
     steps:
       - name: Checkout code
@@ -89,7 +89,7 @@ jobs:
           docker.io/linas37/nextcloud:${{ github.sha }}
           docker.io/linas37/nextcloud:latest
           docker.io/linas37/nextcloud:${{ github.event.inputs.release_version }}
-        labels: ${{ steps.meta.outputs.labels }}
+#        labels: ${{ steps.meta.outputs.labels }}
 
     - name: Generate artifact attestation
       uses: actions/attest-build-provenance@v1
