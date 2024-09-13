@@ -18,4 +18,5 @@ COPY nextcloud.conf /etc/httpd/conf.d/
 #COPY ca.key /etc/ssl/certs/
 #COPY ca.crt /etc/ssl/certs/
 
-CMD ["bash", "-c", "php-fpm && httpd -DFOREGROUND && node_exporter" ]
+#CMD ["bash", "-c", "php-fpm && httpd -DFOREGROUND && node_exporter" ]
+CMD ["bash", "-c", "php-fpm && httpd && node_exporter" ]
