@@ -1,5 +1,5 @@
-resource "aws_security_group" "ansible_sg" {
-  name        = "ansible-sg"
+resource "aws_security_group" "controller_sg" {
+  name        = "controller-sg"
   description = "Allow inbound SSH"
   vpc_id      = var.master_k8s_vpc_id
 
@@ -26,6 +26,6 @@ resource "aws_security_group" "ansible_sg" {
   }
 
   tags = {
-    Name = "ansible-sg"
+    Name = "controller-sg"
   }
 }

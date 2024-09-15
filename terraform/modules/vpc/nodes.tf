@@ -30,13 +30,13 @@ resource "aws_subnet" "master_vpc_sub" {
 }
 
 
-resource "aws_subnet" "ansible_vpc_sub" {
+resource "aws_subnet" "controller_vpc_sub" {
   vpc_id                  = aws_vpc.k8s_vpc.id
-  cidr_block              = var.ansible_subnet_cidr_block
+  cidr_block              = var.controller_subnet_cidr_block
   availability_zone       = var.availability_zone
-  map_public_ip_on_launch = var.ansible_ip_on_launch
+  map_public_ip_on_launch = var.controller_ip_on_launch
   tags = {
-    Name = var.ansible_subnet_name
+    Name = var.controller_subnet_name
   }
 }
 
@@ -44,7 +44,7 @@ resource "aws_subnet" "nginx_vpc_sub" {
   vpc_id                  = aws_vpc.k8s_vpc.id
   cidr_block              = var.nginx_subnet_cidr_block
   availability_zone       = var.availability_zone
-  map_public_ip_on_launch = var.ansible_ip_on_launch
+  map_public_ip_on_launch = var.controller_ip_on_launch
   tags = {
     Name = var.nginx_subnet_name
   }
@@ -112,7 +112,7 @@ resource "aws_route_table_association" "master_subnet_association_with_nat" {
   route_table_id = aws_route_table.private_route_table_with_nat.id
 }
 
-resource "aws_route_table_association" "ansible_subnet_association_with_nat" {
-  subnet_id      = aws_subnet.ansible_vpc_sub.id
+resource "aws_route_table_association" "controller_subnet_association_with_nat" {
+  subnet_id      = aws_subnet.controller_vpc_sub.id
   route_table_id = aws_route_table.private_route_table_with_nat.id
 }

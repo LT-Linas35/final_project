@@ -29,27 +29,17 @@ variable "key_name" {
   type        = string
 }
 
-variable "master_instance_private_ip" {
-  description = "Masters private IP"
-  type        = string
+variable "k8s-master_instance_private_ip" {
+  description = "Masters private IPs"
+  type        = list(string)
 }
 
 variable "nginx_instance_private_ip" {
-  description = "NGinx private IP"
-  type        = string
+  description = "NGinx private IPs"
+  type        = list(string)
 }
 
-variable "node1_instance_private_ips" {
-  description = "Node1 private IP"
-  type        = string
-}
-
-variable "node2_instance_private_ips" {
-  description = "Node2 private IP"
-  type        = string
-}
-
-variable "ec2_key" {
-  description = "EC2 Key"
-  type        = string
+variable "k8s-nodes_instance_private_ips" {
+  description = "Nodes private IPs"
+  type        = list(string)
 }
