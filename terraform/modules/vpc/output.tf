@@ -10,8 +10,8 @@ output "masters_subnet_id" {
   value = aws_subnet.master_vpc_sub.id
 }
 
-output "ansible_subnet_id" {
-  value = aws_subnet.ansible_vpc_sub.id
+output "controller_subnet_id" {
+  value = aws_subnet.controller_vpc_sub.id
 }
 
 output "nginx_subnet_id" {

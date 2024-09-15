@@ -18,8 +18,8 @@ variable "nodes_subnet_name" {
   type        = string
 }
 
-variable "ansible_subnet_name" {
-  description = "Name for the Ansible"
+variable "controller_subnet_name" {
+  description = "Name for the controller"
   type        = string
 }
 
@@ -34,8 +34,8 @@ variable "nginx_subnet_name" {
   type        = string
 }
 
-variable "ansible_subnet_cidr_block" {
-  description = "CIDR block for the Ansible"
+variable "controller_subnet_cidr_block" {
+  description = "CIDR block for the controller"
   type        = string
 }
 
@@ -67,7 +67,7 @@ variable "nginx_ip_on_launch" {
   type        = bool
 }
 
-variable "ansible_ip_on_launch" {
+variable "controller_ip_on_launch" {
   description = "Should be true if subnet is public"
   type        = bool
 }

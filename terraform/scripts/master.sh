@@ -1,6 +1,15 @@
 #!/bin/bash
+
+sudo systemctl stop sshd
 sudo dnf -y install nano kernel-devel-$(uname -r)
+
 sudo rpm -i https://github.com/derailed/k9s/releases/download/v0.32.5/k9s_linux_amd64.rpm
+sudo rpm -Uvh https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
+
+sudo dnf -y install nano puppet-agent
+sudo /opt/puppetlabs/bin/puppet ssl bootstrap
+sudo systemctl enable --now puppet
+
 
 sudo modprobe br_netfilter
 sudo modprobe ip_vs
@@ -27,7 +36,7 @@ EOF
 sudo sysctl --system
 
 sudo swapoff -a
-sudo sed -e '/swap/s/^/#/g' -i /etc/fstab
+sudo sed -i '/swap/d' /etc/fstab
 
 sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 sudo dnf makecache
@@ -66,5 +75,6 @@ sudo chown ec2-user:1000 /home/ec2-user/.kube/config
 
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 chmod 700 get_helm.sh
-sh ./get_helm.sh
-systemctl reboot
+sudo sh ./get_helm.sh
+
+sudo systemctl reboot

@@ -29,3 +29,13 @@ variable "key_name" {
   type        = string
 }
 
+variable "nginx_count" {
+  description = "NGinx Proxy count"
+  type        = number
+}
+
+
+variable "controller_instance_private_hostname" {
+  description = "Controller IP address"
+  type        = string
+}

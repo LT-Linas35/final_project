@@ -1,7 +1,8 @@
 #!/bin/bash
+sudo systemctl stop sshd
 
 sudo rpm -Uvh https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
-dnf -y install nano kernel-devel-$(uname -r) puppet-agent
+sudo dnf -y install nano kernel-devel-$(uname -r) puppet-agent
 
 sudo modprobe br_netfilter
 sudo modprobe ip_vs
@@ -11,7 +12,7 @@ sudo modprobe ip_vs_sh
 sudo modprobe overlay
 
 
-cat > /etc/modules-load.d/kubernetes.conf << EOF
+sudo cat > /etc/modules-load.d/kubernetes.conf << EOF
 br_netfilter
 ip_vs
 ip_vs_rr
@@ -20,28 +21,28 @@ ip_vs_sh
 overlay
 EOF
 
-cat > /etc/sysctl.d/kubernetes.conf << EOF
+sudo cat > /etc/sysctl.d/kubernetes.conf << EOF
 net.ipv4.ip_forward = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF
 
-sysctl --system
+sudo sysctl --system
 
-swapoff -a
-sed -e '/swap/s/^/#/g' -i /etc/fstab
+sudo swapoff -a
+sudo sed sed -i '/swap/d' /etc/fstab
 
-dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-dnf makecache
-dnf -y install containerd.io
+sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo dnf makecache
+sudo dnf -y install containerd.io
 
-sh -c "containerd config default > /etc/containerd/config.toml" ; cat /etc/containerd/config.toml
-sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
-systemctl enable --now containerd.service
+sudo sh -c "containerd config default > /etc/containerd/config.toml" ; cat /etc/containerd/config.toml
+sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+sudo systemctl enable --now containerd.service
 
 
 
-cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+sudo cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
@@ -51,6 +52,8 @@ gpgkey=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/repodata/repomd.xml.key
 exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
 
-dnf makecache; sudo dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
-systemctl enable --now kubelet.service
-systemctl reboot
+sudo dnf makecache; sudo dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+sudo systemctl enable --now kubelet.service
+sudo /opt/puppetlabs/bin/puppet ssl bootstrap
+sudo systemctl enable --now puppet
+sudo systemctl reboot

@@ -28,3 +28,8 @@ variable "key_name" {
   description = "AWS Key Name"
   type        = string
 }
+
+variable "k8s-node_count" {
+  description = "Kubernetes node count"
+  type        = number
+}
