@@ -8,7 +8,7 @@ resource "aws_instance" "nginx" {
   user_data              = data.template_file.user_data.rendered
 
   tags = {
-    Name = "NGinx-PROXY-${count.index + 1}"
+    Name = "${var.instance_name}-${count.index + 1}"
   }
 }
 
@@ -16,6 +16,6 @@ data "template_file" "user_data" {
   template = file("./scripts/nginx.sh")
 
   vars = {
-    controller_hostname      = var.controller_instance_private_hostname
+    controller_hostname = var.controller_instance_private_hostname
   }
 }

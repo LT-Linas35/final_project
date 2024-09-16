@@ -33,3 +33,8 @@ variable "k8s-node_count" {
   description = "Kubernetes node count"
   type        = number
 }
+
+variable "controller_instance_private_hostname" {
+  description = "Controller IP address"
+  type        = string
+}

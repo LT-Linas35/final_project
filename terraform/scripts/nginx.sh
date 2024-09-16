@@ -1,16 +1,19 @@
 #!/bin/bash
-sudo systemctl stop sshd
 
-sudo rpm -Uvh https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
-sudo dnf -y install nano puppet-agent
+set -xv
+
+rpm -Uvh https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
+dnf -y install nano puppet-agent nginx
 
 export pupethost=`hostname`
 
-sudo cat <<EOF > /etc/puppetlabs/puppet/puppet.conf
+cat <<EOF | tee /etc/puppetlabs/puppet/puppet.conf
 [main]
 certname = $pupethost
 server = ${controller_hostname}
 EOF
 
+/opt/puppetlabs/bin/puppet ssl bootstrap
 
-sudo systemctl enable --now puppet
+systemctl enable --now puppet
+systemctl reboot
