@@ -7,7 +7,7 @@ nginx = {
   instance_name           = "nginx"
   key_name                = "Linas"
   map_public_ip_on_launch = true
-  nginx_count             = "2"
+  nginx_count             = "1"
 }
 
 controller = {
@@ -24,7 +24,7 @@ k8s-master = {
   instance_name           = "k8s-masters"
   key_name                = "Linas"
   map_public_ip_on_launch = false
-  k8s-master_count        = "0"
+  k8s-master_count        = "2"
 }
 
 # AWS EC2 NODES Variables

@@ -28,7 +28,7 @@ variable "key_name" {
   description = "AWS Key Name"
   type        = string
 }
-
+/*
 variable "k8s-master_instance_private_ip" {
   description = "Masters private IPs"
   type        = list(string)
@@ -43,3 +43,4 @@ variable "k8s-nodes_instance_private_ips" {
   description = "Nodes private IPs"
   type        = list(string)
 }
+ */

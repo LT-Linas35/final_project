@@ -16,7 +16,6 @@ variable "ami" {
 variable "instance_type" {
   description = "Instance type for the WEB EC2 instance"
   type        = string
-  default     = "t2.micro"
 }
 
 variable "instance_name" {
@@ -32,4 +31,14 @@ variable "key_name" {
 variable "k8s-master_count" {
   description = "Kubernetes master count"
   type        = number
+}
+
+variable "master_subnet_cidr_block" {
+    description = "Kubernetes master cidr"
+    type        = string
+}
+
+variable "controller_instance_private_hostname" {
+  description = "Controller IP address"
+  type        = string
 }

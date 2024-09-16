@@ -58,38 +58,41 @@ module "vpc" {
 }
 
 module "nginx" {
-  source                      = "./modules/ec2/nginx"
-  ami                         = var.nginx.ami
-  aws_securitygroup_web_sg_id = module.nginx_sg.aws_securitygroup_web_sg_id
-  instance_name               = var.nginx.instance_name
-  key_name                    = var.nginx.key_name
-  subnet_id                   = module.vpc.nginx_subnet_id
-  nginx_count                 = var.nginx.nginx_count
+  source                               = "./modules/ec2/nginx"
+  ami                                  = var.nginx.ami
+  aws_securitygroup_web_sg_id          = module.nginx_sg.aws_securitygroup_web_sg_id
+  instance_name                        = var.nginx.instance_name
+  key_name                             = var.nginx.key_name
+  subnet_id                            = module.vpc.nginx_subnet_id
+  nginx_count                          = var.nginx.nginx_count
   controller_instance_private_hostname = module.controller.controller_instance_private_hostname
 }
 
 
 module "k8s-master" {
-  source                      = "./modules/ec2/k8s-master"
-  subnet_id                   = module.vpc.masters_subnet_id
-  ami                         = var.k8s-master.ami
-  instance_name               = var.k8s-master.instance_name
-  instance_type               = var.k8s-master.instance_type
-  key_name                    = var.k8s-master.key_name
-  aws_securitygroup_web_sg_id = module.masters_sg.aws_securitygroup_web_sg_id
-  k8s-master_count            = var.k8s-master.k8s-master_count
+  source                               = "./modules/ec2/k8s-master"
+  subnet_id                            = module.vpc.masters_subnet_id
+  ami                                  = var.k8s-master.ami
+  instance_name                        = var.k8s-master.instance_name
+  instance_type                        = var.k8s-master.instance_type
+  key_name                             = var.k8s-master.key_name
+  aws_securitygroup_web_sg_id          = module.masters_sg.aws_securitygroup_web_sg_id
+  k8s-master_count                     = var.k8s-master.k8s-master_count
+  master_subnet_cidr_block             = var.k8s_vpc.master_subnet_cidr_block
+  controller_instance_private_hostname = module.controller.controller_instance_private_hostname
 }
 
 
 module "k8s-nodes" {
-  source                      = "./modules/ec2/k8s-nodes"
-  subnet_id                   = module.vpc.nodes_subnet_id
-  ami                         = var.k8s-nodes.ami
-  instance_name               = var.k8s-nodes.instance_name
-  instance_type               = var.k8s-nodes.instance_type
-  key_name                    = var.k8s-nodes.key_name
-  aws_securitygroup_web_sg_id = module.nodes_sg.aws_securitygroup_web_sg_id
-  k8s-node_count              = var.k8s-nodes.k8s-node_count
+  source                               = "./modules/ec2/k8s-nodes"
+  subnet_id                            = module.vpc.nodes_subnet_id
+  ami                                  = var.k8s-nodes.ami
+  instance_name                        = var.k8s-nodes.instance_name
+  instance_type                        = var.k8s-nodes.instance_type
+  key_name                             = var.k8s-nodes.key_name
+  aws_securitygroup_web_sg_id          = module.nodes_sg.aws_securitygroup_web_sg_id
+  k8s-node_count                       = var.k8s-nodes.k8s-node_count
+  controller_instance_private_hostname = module.controller.controller_instance_private_hostname
 }
 
 module "controller" {
@@ -99,8 +102,8 @@ module "controller" {
   instance_name                  = var.controller.instance_name
   key_name                       = var.controller.key_name
   subnet_id                      = module.vpc.controller_subnet_id
-  k8s-master_instance_private_ip = module.k8s-master.instance_private_ip
-  nginx_instance_private_ip      = module.nginx.instance_private_ip
-  k8s-nodes_instance_private_ips = module.k8s-nodes.instance_private_ip
+//  k8s-master_instance_private_ip = module.k8s-master.instance_private_ip
+//  nginx_instance_private_ip      = module.nginx.instance_private_ip
+//  k8s-nodes_instance_private_ips = module.k8s-nodes.instance_private_ip
   instance_type                  = var.controller.instance_type
 }
