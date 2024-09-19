@@ -2,6 +2,92 @@
 
 set -xv
 
+mkdir -p /etc/prometheus
+REPO="prometheus/prometheus"
+LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+VERSION=$${LATEST_RELEASE#v}
+DOWNLOAD_URL="https://github.com/$REPO/releases/download/$LATEST_RELEASE/prometheus-$VERSION.linux-amd64.tar.gz"
+curl -L $DOWNLOAD_URL -o prometheus-linux-amd64.tar.gz
+tar -xvf prometheus-linux-amd64.tar.gz
+cp prometheus-$VERSION.linux-amd64/prometheus /usr/local/bin/
+cp prometheus-$VERSION.linux-amd64/promtool /usr/local/bin/
+cp -R prometheus-$VERSION.linux-amd64/console_libraries /etc/prometheus/
+cp -R prometheus-$VERSION.linux-amd64/consoles /etc/prometheus/
+chmod +x /usr/local/bin/prometheus
+chmod +x /usr/local/bin/promtool
+yes | rm -dR prometheus-$VERSION.linux-amd64/
+
+cat <<EOF | tee /etc/prometheus/prometheus.yml
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'ec2_instances'
+    ec2_sd_configs:
+      - region: us-east-1
+    relabel_configs:
+      - source_labels: [__meta_ec2_private_ip]
+        target_label: __address__
+        replacement: '$${1}:9100'
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+EOF
+
+cat <<EOF | tee /etc/systemd/system/prometheus.service
+[Unit]
+Description=Prometheus
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=root
+Group=root
+Type=simple
+ExecStart=/usr/local/bin/prometheus \
+--config.file /etc/prometheus/prometheus.yml \
+--storage.tsdb.path /var/lib/prometheus/ \
+--web.console.templates=/etc/prometheus/consoles \
+--web.console.libraries=/etc/prometheus/console_libraries
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+REPO="prometheus/node_exporter"
+LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+VERSION=$${LATEST_RELEASE#v}
+DOWNLOAD_URL="https://github.com/$REPO/releases/download/$LATEST_RELEASE/node_exporter-$VERSION.linux-amd64.tar.gz"
+curl -L $DOWNLOAD_URL -o node_exporter-linux-amd64.tar.gz
+tar -xvf node_exporter-linux-amd64.tar.gz
+cp node_exporter-$VERSION.linux-amd64/node_exporter /usr/local/bin/
+chmod +x /usr/local/bin/node_exporter
+yes | rm -dR node_exporter-$VERSION.linux-amd64
+
+cat <<EOF | tee /etc/systemd/system/node_exporter.service
+[Unit]
+Description=Node Exporter
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+ExecStart=/usr/local/bin/node_exporter
+
+[Install]
+WantedBy=default.target
+EOF
+
+
+useradd -rs /bin/false node_exporter
+systemctl daemon-reload
+systemctl enable --now prometheus
+systemctl enable --now node_exporter
+
+
 cat <<EOF | tee /home/ec2-user/master_join_master.yaml
 ---
 - name: Join second master node to first master
@@ -25,15 +111,11 @@ cat <<EOF | tee /home/ec2-user/master_join_master.yaml
       register: join_command
       until: join_command.rc == 0
       retries: 50
-      delay: 10 
+      delay: 10
 
     - name: Add --control-plane and --certificate-key to the join command
       set_fact:
         join_command_with_control_plane: "{{ join_command.stdout }} --control-plane --certificate-key {{ cert_key.stdout | regex_replace('.*Your certificate key: (.*)', '\\1') }}"
-
-    - name: Show join command with control-plane and certificate-key
-      debug:
-        msg: "{{ join_command_with_control_plane }}"
 
     - name: Run join command on the second master node
       become: yes
@@ -45,6 +127,35 @@ cat <<EOF | tee /home/ec2-user/master_join_master.yaml
       delay: 10
 EOF
 chown ec2-user:ec2-user /home/ec2-user/master_join_master.yaml
+
+cat <<EOF | tee /home/ec2-user/node_join_master.yaml
+---
+- name: Join Kubernetes node to master
+  hosts: localhost
+  become: yes
+  vars:
+    master_node_ip: "10.0.2.4"
+    node_ip: "{{ node_ip }}"
+
+  tasks:
+    - name: Get join command from master node
+      shell: kubeadm token create --print-join-command
+      delegate_to: "{{ master_node_ip }}"
+      register: join_command
+      until: join_command.rc == 0
+      retries: 5
+      delay: 10  # seconds between retries
+
+    - name: Run kubeadm join command on the node
+      become: yes
+      shell: "{{ join_command.stdout }}"
+      delegate_to: "{{ node_ip }}"
+      register: result
+      until: result.rc == 0
+      retries: 5
+      delay: 10
+EOF
+chown ec2-user:ec2-user /home/ec2-user/node_join_master.yaml
 
 rpm -Uvh https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
 dnf -y install ansible-core.x86_64 git nano puppetserver
@@ -60,8 +171,6 @@ exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
 
 dnf makecache; dnf install -y kubelet kubectl --disableexcludes=kubernetes
-
-
 
 
 sed -i 's/JAVA_ARGS="-Xms2g -Xmx2g/JAVA_ARGS="-Xms512m -Xmx512m/' /etc/sysconfig/puppetserver

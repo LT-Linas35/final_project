@@ -4,6 +4,68 @@ set -xv
 
 systemctl stop sshd
 
+REPO="prometheus/node_exporter"
+LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+VERSION=$${LATEST_RELEASE#v}
+DOWNLOAD_URL="https://github.com/$REPO/releases/download/$LATEST_RELEASE/node_exporter-$VERSION.linux-amd64.tar.gz"
+curl -L $DOWNLOAD_URL -o node_exporter-linux-amd64.tar.gz
+tar -xvf node_exporter-linux-amd64.tar.gz
+cp node_exporter-$VERSION.linux-amd64/node_exporter /usr/local/bin/
+chmod +x /usr/local/bin/node_exporter
+yes | rm -dR node_exporter-$VERSION.linux-amd64
+
+cat <<EOF | tee /etc/systemd/system/node_exporter.service
+[Unit]
+Description=Node Exporter
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+ExecStart=/usr/local/bin/node_exporter
+
+[Install]
+WantedBy=default.target
+EOF
+
+useradd -rs /bin/false node_exporter
+systemctl daemon-reload
+systemctl enable --now node_exporter
+
+
+cat <<EOF | tee /etc/systemd/system/k8s-master-cleanup.service
+[Unit]
+Description=Remove Kubernetes master node from cluster before shutdown
+DefaultDependencies=no
+Before=shutdown.target reboot.target halt.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/k8s-master-cleanup.sh
+RemainAfterExit=true
+TimeoutSec=30
+
+[Install]
+WantedBy=halt.target shutdown.target
+EOF
+
+chmod +x /usr/local/bin/k8s-master-cleanup.sh
+
+systemctl daemon-reload
+systemctl enable k8s-master-cleanup.service
+
+
+cat <<EOF | tee /usr/local/bin/k8s-master-cleanup.sh
+#!/bin/bash
+export KUBECONFIG=/etc/kubernetes/admin.conf
+NODE_NAME=$(hostname)
+kubectl drain $NODE_NAME --ignore-daemonsets --delete-emptydir-data --force
+kubectl delete node $NODE_NAME
+ETCDCTL_API=3 etcdctl member remove $(etcdctl member list | grep $NODE_NAME | cut -d, -f1)
+EOF
+
 dnf -y install kernel-devel-$(uname -r)
 rpm -i https://github.com/derailed/k9s/releases/download/v0.32.5/k9s_linux_amd64.rpm
 
@@ -82,7 +144,6 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.7/confi
 else
 ssh-keyscan -H ${controller_hostname} >> ~/.ssh/known_hosts
 ssh -i /home/ec2-user/Linas.pem ec2-user@${controller_hostname} "ansible-playbook /home/ec2-user/master_join_master.yaml -e second_master_ip=`hostname -I`"
-set -xv
 fi
 rm /home/ec2-user/Linas.pem
 
