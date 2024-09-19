@@ -96,14 +96,14 @@ module "k8s-nodes" {
 }
 
 module "controller" {
-  source                         = "./modules/ec2/controller"
-  ami                            = var.controller.ami
-  aws_securitygroup_web_sg_id    = module.controller_sg.aws_securitygroup_web_sg_id
-  instance_name                  = var.controller.instance_name
-  key_name                       = var.controller.key_name
-  subnet_id                      = module.vpc.controller_subnet_id
-//  k8s-master_instance_private_ip = module.k8s-master.instance_private_ip
-//  nginx_instance_private_ip      = module.nginx.instance_private_ip
-//  k8s-nodes_instance_private_ips = module.k8s-nodes.instance_private_ip
-  instance_type                  = var.controller.instance_type
+  source                      = "./modules/ec2/controller"
+  ami                         = var.controller.ami
+  aws_securitygroup_web_sg_id = module.controller_sg.aws_securitygroup_web_sg_id
+  instance_name               = var.controller.instance_name
+  key_name                    = var.controller.key_name
+  subnet_id                   = module.vpc.controller_subnet_id
+  //  k8s-master_instance_private_ip = module.k8s-master.instance_private_ip
+  //  nginx_instance_private_ip      = module.nginx.instance_private_ip
+  //  k8s-nodes_instance_private_ips = module.k8s-nodes.instance_private_ip
+  instance_type = var.controller.instance_type
 }

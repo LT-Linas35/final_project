@@ -24,17 +24,17 @@ k8s-master = {
   instance_name           = "k8s-masters"
   key_name                = "Linas"
   map_public_ip_on_launch = false
-  k8s-master_count        = "2"
+  k8s-master_count        = "1"
 }
 
 # AWS EC2 NODES Variables
 k8s-nodes = {
   ami                     = "ami-0583d8c7a9c35822c"
-  instance_type           = "t3.small"
+  instance_type           = "t2.micro"
   instance_name           = "k8s-nodes"
   key_name                = "Linas"
   map_public_ip_on_launch = false
-  k8s-node_count          = "0"
+  k8s-node_count          = "1"
 }
 
 # AWS VPC WEB
