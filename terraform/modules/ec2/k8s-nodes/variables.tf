@@ -38,3 +38,8 @@ variable "controller_instance_private_hostname" {
   description = "Controller IP address"
   type        = string
 }
+
+variable "ec2_instance_profile_name" {
+  description = "EC2 Instance profile name"
+  type        = string
+}

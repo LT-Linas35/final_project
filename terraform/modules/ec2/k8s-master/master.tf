@@ -1,5 +1,5 @@
 resource "aws_instance" "k8s-master" {
-  count                  = var.k8s-master_count
+  count = var.k8s-master_count
 
   private_ip             = cidrhost(local.subnet_cidr, local.starting_ip + count.index)
   instance_type          = var.instance_type
@@ -10,13 +10,15 @@ resource "aws_instance" "k8s-master" {
   user_data              = data.template_file.user_data.rendered
 
   root_block_device {
-    volume_size = 4
+    volume_size = 10
     volume_type = "gp3"
   }
-  
-  
+
+
   tags = {
     Name = "${var.instance_name}-${count.index + 1}"
+    "kubernetes.io/cluster/k8s" = "shared"
+    "kubernetes.io/role/elb" = "1"
   }
 }
 
@@ -24,7 +26,7 @@ data "template_file" "user_data" {
   template = file("./scripts/master.sh")
 
   vars = {
-    controller_hostname      = var.controller_instance_private_hostname
+    controller_hostname = var.controller_instance_private_hostname
   }
 }
 

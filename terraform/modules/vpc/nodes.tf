@@ -8,6 +8,34 @@ resource "aws_vpc" "k8s_vpc" {
   }
 }
 
+# Subnet in Availability Zone 1
+resource "aws_subnet" "alb_subnet_az1" {
+  vpc_id                  = aws_vpc.k8s_vpc.id
+  cidr_block              = "10.0.6.0/24"
+  availability_zone       = "eu-west-2b"
+  map_public_ip_on_launch = true
+  
+  tags = {
+    Name = "ALB Subnet AZ1"
+    "kubernetes.io/cluster/k8s" = "shared"
+    "kubernetes.io/role/elb"    = "1"
+  }
+}
+
+# Subnet in Availability Zone 2
+resource "aws_subnet" "alb_subnet_az2" {
+  vpc_id                  = aws_vpc.k8s_vpc.id
+  cidr_block              = "10.0.5.0/24"
+  availability_zone       = "eu-west-2c"
+  map_public_ip_on_launch = true
+  
+  tags = {
+    Name = "ALB Subnet AZ2"
+    "kubernetes.io/cluster/k8s" = "shared"
+    "kubernetes.io/role/elb"    = "1"
+  }
+}
+
 
 resource "aws_subnet" "nodes_vpc_sub" {
   vpc_id                  = aws_vpc.k8s_vpc.id
@@ -16,6 +44,8 @@ resource "aws_subnet" "nodes_vpc_sub" {
   map_public_ip_on_launch = var.nodes_public_ip_on_launch
   tags = {
     Name = var.nodes_subnet_name
+    "kubernetes.io/role/internal-elb" = "1"
+    "kubernetes.io/cluster/k8s" = "shared"
   }
 }
 
@@ -26,6 +56,8 @@ resource "aws_subnet" "master_vpc_sub" {
   map_public_ip_on_launch = var.masters_ip_on_launch
   tags = {
     Name = var.master_subnet_name
+    "kubernetes.io/cluster/k8s" = "shared"
+    "kubernetes.io/role/elb"    = "1"
   }
 }
 
@@ -46,7 +78,7 @@ resource "aws_subnet" "nginx_vpc_sub" {
   availability_zone       = var.availability_zone
   map_public_ip_on_launch = var.nginx_ip_on_launch
   tags = {
-    Name = var.nginx_subnet_name
+    Name                        = var.nginx_subnet_name
   }
 }
 
@@ -109,10 +141,20 @@ resource "aws_route_table_association" "nodes_subnet_association_with_nat" {
 
 resource "aws_route_table_association" "master_subnet_association_with_nat" {
   subnet_id      = aws_subnet.master_vpc_sub.id
-  route_table_id = aws_route_table.private_route_table_with_nat.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "alb_subnet_az2" {
+  subnet_id      = aws_subnet.alb_subnet_az2.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "alb_subnet_az1" {
+  subnet_id      = aws_subnet.alb_subnet_az1.id
+  route_table_id = aws_route_table.public.id
 }
 
 resource "aws_route_table_association" "controller_subnet_association_with_nat" {
   subnet_id      = aws_subnet.controller_vpc_sub.id
-  route_table_id = aws_route_table.private_route_table_with_nat.id
+  route_table_id = aws_route_table.public.id
 }
