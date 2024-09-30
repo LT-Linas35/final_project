@@ -1,39 +1,39 @@
 # AWS region
-aws_region = "us-east-1"
+aws_region = "eu-west-2"
 
 nginx = {
-  ami                     = "ami-0583d8c7a9c35822c"
+  ami                     = "ami-07d1e0a32156d0d21"
   instance_type           = "t2.micro"
   instance_name           = "nginx"
   key_name                = "Linas"
   map_public_ip_on_launch = true
-  nginx_count             = "1"
+  nginx_count             = "0"
 }
 
 controller = {
-  ami                     = "ami-0583d8c7a9c35822c"
-  instance_type           = "t3.small"
+  ami                     = "ami-07d1e0a32156d0d21"
+  instance_type           = "t3.medium"
   instance_name           = "controller"
   key_name                = "Linas"
-  map_public_ip_on_launch = false
+  map_public_ip_on_launch = true
 }
 
 k8s-master = {
-  ami                     = "ami-0583d8c7a9c35822c"
-  instance_type           = "t3.small"
+  ami                     = "ami-07d1e0a32156d0d21"
+  instance_type           = "t3.medium"
   instance_name           = "k8s-masters"
   key_name                = "Linas"
-  map_public_ip_on_launch = false
+  map_public_ip_on_launch = true
   k8s-master_count        = "1"
 }
 
 # AWS EC2 NODES Variables
 k8s-nodes = {
-  ami                     = "ami-0583d8c7a9c35822c"
-  instance_type           = "t2.micro"
+  ami                     = "ami-07d1e0a32156d0d21"
+  instance_type           = "t3.medium"
   instance_name           = "k8s-nodes"
   key_name                = "Linas"
-  map_public_ip_on_launch = false
+  map_public_ip_on_launch = true
   k8s-node_count          = "1"
 }
 
@@ -49,7 +49,7 @@ k8s_vpc = {
   controller_subnet_name       = "controller-subnet"
   master_subnet_name           = "master-subnet"
   nodes_subnet_name            = "nodes-subnet"
-  availability_zone            = "us-east-1a"
+  availability_zone            = "eu-west-2a"
   enable_dns_hostnames         = true
   enable_dns_support           = true
 }

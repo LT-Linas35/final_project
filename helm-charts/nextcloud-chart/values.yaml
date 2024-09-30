@@ -1,0 +1,14 @@
+replicaCount: 1
+
+image:
+  repository: linas37/nextcloud
+  tag: latest
+
+service:
+  type: LoadBalancer
+  port: 80
+
+ingress:
+  port: 80
+  scheme: internet-facing
+  subnets: "subnet-0f2b0c8e1fb4cb53d, subnet-09783f4cfa6adeaf1"

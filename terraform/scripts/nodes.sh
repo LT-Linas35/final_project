@@ -2,37 +2,6 @@
 
 set -xv
 
-REPO="prometheus/node_exporter"
-LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
-VERSION=$${LATEST_RELEASE#v}
-DOWNLOAD_URL="https://github.com/$REPO/releases/download/$LATEST_RELEASE/node_exporter-$VERSION.linux-amd64.tar.gz"
-curl -L $DOWNLOAD_URL -o node_exporter-linux-amd64.tar.gz
-tar -xvf node_exporter-linux-amd64.tar.gz
-cp node_exporter-$VERSION.linux-amd64/node_exporter /usr/local/bin/
-chmod +x /usr/local/bin/node_exporter
-yes | rm -dR node_exporter-$VERSION.linux-amd64
-
-
-cat <<EOF | tee /etc/systemd/system/node_exporter.service
-[Unit]
-Description=Node Exporter
-Wants=network-online.target
-After=network-online.target
-
-[Service]
-User=node_exporter
-Group=node_exporter
-Type=simple
-ExecStart=/usr/local/bin/node_exporter
-
-[Install]
-WantedBy=default.target
-EOF
-
-useradd -rs /bin/false node_exporter
-systemctl daemon-reload
-systemctl enable --now node_exporter
-
 
 rpm -Uvh https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
 dnf -y install nano kernel-devel-$(uname -r) puppet-agent
@@ -45,7 +14,7 @@ modprobe ip_vs_sh
 modprobe overlay
 
 
-cat <<EOF | tee /etc/modules-load.d/kubernetes.conf
+cat <<EOF > /etc/modules-load.d/kubernetes.conf
 br_netfilter
 ip_vs
 ip_vs_rr
@@ -54,7 +23,7 @@ ip_vs_sh
 overlay
 EOF
 
-cat <<EOF | tee /etc/sysctl.d/kubernetes.conf
+cat <<EOF > /etc/sysctl.d/kubernetes.conf
 net.ipv4.ip_forward = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
@@ -75,7 +44,17 @@ systemctl enable --now containerd.service
 
 
 
-cat <<EOF | tee /etc/yum.repos.d/kubernetes.repo
+#cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+#[kubernetes]
+#name=Kubernetes
+#baseurl=https://pkgs.k8s.io/core:/stable:/v1.29/rpm/
+#enabled=1
+#gpgcheck=1
+#gpgkey=https://pkgs.k8s.io/core:/stable:/v1.29/rpm/repodata/repomd.xml.key
+#exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+#EOF
+
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
@@ -89,7 +68,7 @@ dnf makecache; dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernet
 systemctl enable --now kubelet.service
 
 
-cat <<EOF >> /etc/systemd/system/k8s-node-cleanup.service
+cat <<EOF > /etc/systemd/system/k8s-node-cleanup.service
 [Unit]
 Description=Remove Kubernetes node from cluster before shutdown
 DefaultDependencies=no
@@ -105,24 +84,27 @@ TimeoutSec=30
 WantedBy=halt.target shutdown.target
 EOF
 
-cat <<EOF >> /usr/local/bin/k8s-node-cleanup.sh
+chmod +x /usr/local/bin/k8s-node-cleanup.sh
+
+cat <<EOF > /etc/systemd/system/k8s-node-cleanup.service
 #!/bin/bash
 
-NODE_NAME=$(hostname)
+NODE_NAME=\$(hostname)
 export KUBECONFIG=/etc/kubernetes/admin.conf
-/usr/local/bin/kubectl drain $NODE_NAME --ignore-daemonsets --delete-emptydir-data --force
-/usr/local/bin/kubectl delete node $NODE_NAME
+/usr/local/bin/kubectl drain \$NODE_NAME --ignore-daemonsets --delete-emptydir-data --force
+/usr/local/bin/kubectl delete node \$NODE_NAME
 EOF
 
 chmod +x /usr/local/bin/k8s-node-cleanup.sh
 
-systemctl daemon-reload
-systemctl enable k8s-node-cleanup.service
+#systemctl daemon-reload
+#systemctl enable k8s-node-cleanup.service
 
 set +xv
-cat <<EOF >> /home/ec2-user/Linas.pem
-${ec2_key}
+cat <<EOF > /home/ec2-user/Linas.pem
+
 EOF
+
 set -xv 
 chmod 600 /home/ec2-user/Linas.pem
 
@@ -131,9 +113,9 @@ ssh -i /home/ec2-user/Linas.pem ec2-user@${controller_hostname} "ansible-playboo
 
 rm /home/ec2-user/Linas.pem
 
-export pupethost=`hostname`
+export pupethost=$(hostname | awk '{print $1}')
 
-cat <<EOF | tee /etc/puppetlabs/puppet/puppet.conf
+cat <<EOF > /etc/puppetlabs/puppet/puppet.conf
 [main]
 certname = $pupethost
 server = ${controller_hostname}
@@ -141,5 +123,5 @@ EOF
 
 /opt/puppetlabs/bin/puppet ssl bootstrap
 
-systemctl enable --now puppet
+systemctl enable puppet
 systemctl reboot

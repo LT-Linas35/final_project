@@ -8,7 +8,7 @@ resource "aws_instance" "nginx" {
   user_data              = data.template_file.user_data.rendered
 
   root_block_device {
-    volume_size = 4
+    volume_size = 10
     volume_type = "gp3"
   }
   
