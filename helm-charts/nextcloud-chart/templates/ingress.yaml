@@ -5,7 +5,6 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": {{ .Values.ingress.port }} }]'
     alb.ingress.kubernetes.io/scheme: {{ .Values.ingress.scheme }}
-    alb.ingress.kubernetes.io/subnets: {{ .Values.ingress.subnets }}
     alb.ingress.kubernetes.io/target-type: instance
 spec:
   ingressClassName: alb
