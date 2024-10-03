@@ -87,8 +87,8 @@ jobs:
           linas37/nextcloud:latest
           linas37/nextcloud:${{ github.event.inputs.release_version }}
         secrets: |
-          NEW_RELIC_API_KEY_PHP=${{ secrets.NEW_RELIC_API_KEY_PHP }}
-          NEW_RELIC_ACCOUNT_ID_PHP=${{ secrets.NEW_RELIC_ACCOUNT_ID_PHP }}
+          id: NEW_RELIC_API_KEY_PHP
+          id: NEW_RELIC_ACCOUNT_ID_PHP
         labels: ${{ steps.meta.outputs.labels }}
 
     - name: Generate artifact attestation
