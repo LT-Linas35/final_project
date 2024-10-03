@@ -1,4 +1,4 @@
-name: CI/CD pipeline with Trivy and Docker image publish
+name: CI pipeline with Trivy and Docker image publish
 
 on:
   workflow_dispatch:
@@ -88,6 +88,9 @@ jobs:
           linas37/nextcloud:latest
           linas37/nextcloud:${{ github.event.inputs.release_version }}
         labels: ${{ steps.meta.outputs.labels }}
+        secrets: |
+          "NEW_RELIC_ACCOUNT_ID_PHP=${{ secrets.NEW_RELIC_ACCOUNT_ID_PHP }}"
+          "NEW_RELIC_ACCOUNT_ID_PHP=${{ secrets.NEW_RELIC_ACCOUNT_ID_PHP }}"
 
     - name: Generate artifact attestation
       uses: actions/attest-build-provenance@v1
