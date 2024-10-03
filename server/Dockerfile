@@ -1,7 +1,7 @@
 FROM redhat/ubi9:9.4
 RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP,env=NEW_RELIC_API_KEY_PHP,NEW_RELIC_ACCOUNT_ID_PHP,env=NEW_RELIC_ACCOUNT_ID_PHP  
 
-RUN dnf update -y && dnf -y upgrade && dnf install -y  yum-utils unzip wget git \
+RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget git \
     bash-completion policycoreutils-python-utils bzip2 httpd && \
     dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
     dnf -y install https://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
