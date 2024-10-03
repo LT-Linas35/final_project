@@ -13,9 +13,9 @@ RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget 
     
 RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
     --mount=type=secret,id=NEW_RELIC_ACCOUNT_ID_PHP \
-    export NEW_RELIC_API_KEY_PHP=$(cat /run/secrets/NEW_RELIC_API_KEY_PHP) && \
-    export NEW_RELIC_ACCOUNT_ID_PHP=$(cat /run/secrets/NEW_RELIC_ACCOUNT_ID_PHP) && \
     curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && \
+    NEW_RELIC_API_KEY=$(cat /run/secrets/NEW_RELIC_API_KEY_PHP) \
+    NEW_RELIC_ACCOUNT_ID=$(cat /run/secrets/NEW_RELIC_ACCOUNT_ID_PHP) \
     NEW_RELIC_REGION=EU /usr/local/bin/newrelic install -n php-agent-installer
 
 
