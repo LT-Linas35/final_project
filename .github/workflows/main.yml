@@ -17,33 +17,60 @@ jobs:
       contents: read
       security-events: write
       actions: read
-    name: Build and check with Trivy
-    runs-on: "ubuntu-20.04"
+    name: Build, scan with Trivy, and push Docker image
+    runs-on: ubuntu-20.04
+
     steps:
+      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build an image from Dockerfile
-        run: |
-          cd server
-          docker build --secret NEW_RELIC_API_KEY_PHP=${{ secrets.NEW_RELIC_API_KEY_PHP }} \
-                       --secret NEW_RELIC_ACCOUNT_ID_PHP=${{ secrets.NEW_RELIC_ACCOUNT_ID_PHP }} \
-                       -t docker.io/linas37/nextcloud:${{ github.sha }} .
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+      # Set up Docker Buildx for building
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Log in to Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          image-ref: 'docker.io/linas37/nextcloud:${{ github.sha }}'
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Build Docker image using Buildx
+      - name: Build Docker image with Buildx
+        id: build_image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./server  # Ensure this is the correct path to your Dockerfile
+          push: false  # Build but don't push yet
+          tags: |
+            docker.io/linas37/nextcloud:${{ github.sha }}
+            docker.io/linas37/nextcloud:latest
+            docker.io/linas37/nextcloud:${{ github.event.inputs.release_version }}
+          platforms: linux/amd64  # Only one platform
+          secrets: |
+            id=NEW_RELIC_API_KEY_PHP,src=${{ secrets.NEW_RELIC_API_KEY_PHP }}
+            id=NEW_RELIC_ACCOUNT_ID_PHP,src=${{ secrets.NEW_RELIC_ACCOUNT_ID_PHP }}
+
+      # Run Trivy to scan the built image
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v6
+        with:
+          image-ref: docker.io/linas37/nextcloud:${{ github.sha }}
           format: 'template'
           template: '@/contrib/sarif.tpl'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
 
+      # Upload Trivy scan results to GitHub Security tab
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
 
+      # Check Trivy scan results and conditionally push to registry
       - name: Check Trivy scan results
+        id: check_trivy
         run: |
           if grep -q '"ruleId":' trivy-results.sarif; then
             echo "Critical or High vulnerabilities found!"
@@ -51,43 +78,27 @@ jobs:
           else
             echo "No critical or high vulnerabilities found."
           fi
-          
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      -
-        name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - 
-        name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: linas37/nextcloud
-      -
-        name: Build and push
+
+      # Push Docker image to Docker Hub if Trivy check passes
+      - name: Push Docker image to Docker Hub
+        if: success()  # Only run if previous steps succeeded (Trivy scan passed)
         uses: docker/build-push-action@v6
         with:
-          context: "{{defaultContext}}:server" 
-          push: true
+          context: ./server  # Ensure this is the correct path to your Dockerfile
+          push: true  # Push to Docker Hub
           tags: |
-            linas37/nextcloud:${{ github.sha }}
-            linas37/nextcloud:latest
-            linas37/nextcloud:${{ github.event.inputs.release_version }}
-          secrets: |
-            id=NEW_RELIC_API_KEY_PHP,src=${{ secrets.NEW_RELIC_API_KEY_PHP }}
-            id=NEW_RELIC_ACCOUNT_ID_PHP,src=${{ secrets.NEW_RELIC_ACCOUNT_ID_PHP }}
+            docker.io/linas37/nextcloud:${{ github.sha }}
+            docker.io/linas37/nextcloud:latest
+            docker.io/linas37/nextcloud:${{ github.event.inputs.release_version }}
+          platforms: linux/amd64  # Only one platform
           labels: ${{ steps.meta.outputs.labels }}
-      - 
-        name: Generate artifact attestation
+
+      # Generate artifact attestation
+      - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
         with:
           subject-name: docker.io/linas37/nextcloud
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true  
+          subject-digest: ${{ steps.build_image.outputs.digest }}
+          push-to-registry: true
+
+
