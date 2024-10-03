@@ -1,5 +1,5 @@
 FROM redhat/ubi9:9.4
-RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP,env=NEW_RELIC_API_KEY_PHP,NEW_RELIC_ACCOUNT_ID_PHP,env=NEW_RELIC_ACCOUNT_ID_PHP  
+RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP,env=NEW_RELIC_API_KEY_PHP id=NEW_RELIC_ACCOUNT_ID_PHP,env=NEW_RELIC_ACCOUNT_ID_PHP  
 
 RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget git \
     bash-completion policycoreutils-python-utils bzip2 httpd && \
