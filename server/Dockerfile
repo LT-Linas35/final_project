@@ -8,15 +8,15 @@ RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget 
     dnf -y update && dnf install -y  php php-cli php-gd php-mbstring php-intl php-pecl-apcu \
     php-mysqlnd php-opcache php-json php-zip && dnf install -y php-redis && \
     git clone https://github.com/LT-Linas35/nextcloud_server.git /var/www/html/nextcloud && \
-    mkdir -p /var/www/html/nextcloud/data && chown -R apache:apache /var/www/html/nextcloud && \
+    mkdir -p /var/www/html/nextcloud/data && dnf clean all && chown -R apache:apache /var/www/html/nextcloud && \
     chmod -R 755 /var/www/html/nextcloud && mkdir -p /var/run/php-fpm/ # Ta date reikia primountinti
     
 RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
     --mount=type=secret,id=NEW_RELIC_ACCOUNT_ID_PHP \
+    sh -c 'NEW_RELIC_API_KEY=$(cat /run/secrets/NEW_RELIC_API_KEY_PHP) && \
+    NEW_RELIC_ACCOUNT_ID=$(cat /run/secrets/NEW_RELIC_ACCOUNT_ID_PHP) && \
     curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && \
-    NEW_RELIC_API_KEY=$(cat /run/secrets/NEW_RELIC_API_KEY_PHP) \
-    NEW_RELIC_ACCOUNT_ID=$(cat /run/secrets/NEW_RELIC_ACCOUNT_ID_PHP) \
-    NEW_RELIC_REGION=EU /usr/local/bin/newrelic install -n php-agent-installer
+    NEW_RELIC_REGION=EU /usr/local/bin/newrelic install -n php-agent-installer'
 
 
 COPY nextcloud.conf /etc/httpd/conf.d/
