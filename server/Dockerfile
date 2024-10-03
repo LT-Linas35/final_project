@@ -13,7 +13,7 @@ RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget 
 
 RUN rpm -Uvh http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm && \
     curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && \
-    dnf -y install newrelic-php5 && 
+    dnf -y install newrelic-php5
 
 RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
     --mount=type=secret,id=NEW_RELIC_ACCOUNT_ID_PHP \
