@@ -12,7 +12,7 @@ RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget 
     chmod -R 755 /var/www/html/nextcloud && mkdir -p /var/run/php-fpm/ # Ta date reikia primountinti
 
 RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
-    ls /run/secrets/ && echo ls && sudo ls /run/secrets/ && echo "su sudo"
+    ls /run/secrets/rhsm && echo ls && sudo ls /run/secrets/rhsm && echo "su sudo"
     
 #RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP,env=NEW_RELIC_API_KEY_PHP \
 #    --mount=type=secret,id=NEW_RELIC_ACCOUNT_ID_PHP,env=NEW_RELIC_ACCOUNT_ID_PHP \
