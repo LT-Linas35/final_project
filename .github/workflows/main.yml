@@ -48,8 +48,8 @@ jobs:
             docker.io/linas37/nextcloud:latest
             docker.io/linas37/nextcloud:${{ github.event.inputs.release_version }}
           secrets: |
-            id=NEW_RELIC_API_KEY_PHP,src=${{ secrets.NEW_RELIC_API_KEY_PHP }}
-            id=NEW_RELIC_ACCOUNT_ID_PHP,src=${{ secrets.NEW_RELIC_ACCOUNT_ID_PHP }}
+            NEW_RELIC_API_KEY_PHP=${{ secrets.NEW_RELIC_API_KEY_PHP }}
+            NEW_RELIC_ACCOUNT_ID_PHP=${{ secrets.NEW_RELIC_ACCOUNT_ID_PHP }}
 
       # Run Trivy to scan the built image
       - name: Run Trivy vulnerability scanner
@@ -89,7 +89,9 @@ jobs:
             docker.io/linas37/nextcloud:${{ github.sha }}
             docker.io/linas37/nextcloud:latest
             docker.io/linas37/nextcloud:${{ github.event.inputs.release_version }}
-          platforms: linux/amd64  # Only one platform
+            secrets: |
+              NEW_RELIC_API_KEY_PHP=${{ secrets.NEW_RELIC_API_KEY_PHP }}
+              NEW_RELIC_ACCOUNT_ID_PHP=${{ secrets.NEW_RELIC_ACCOUNT_ID_PHP }}
           labels: ${{ steps.meta.outputs.labels }}
 
       # Generate artifact attestation
