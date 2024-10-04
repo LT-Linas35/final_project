@@ -17,6 +17,7 @@ jobs:
       contents: read
       security-events: write
       actions: read
+      id-token: write
     name: Build, scan with Trivy, and push Docker image
     runs-on: ubuntu-20.04
 
