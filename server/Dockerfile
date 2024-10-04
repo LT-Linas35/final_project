@@ -6,10 +6,12 @@ RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget 
     dnf -y install https://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
     dnf -y module reset php && dnf -y module install php:remi-8.2 && \
     dnf -y update && dnf install -y  php php-cli php-gd php-mbstring php-intl php-pecl-apcu \
-    php-mysqlnd php-opcache php-json php-zip && dnf install -y php-redis supervisor && \
+    php-mysqlnd php-opcache php-json php-zip && dnf install -y php-redis supervisor php-process && \
     git clone https://github.com/LT-Linas35/nextcloud_server.git /var/www/html/nextcloud && \
     mkdir -p /var/www/html/nextcloud/data && dnf clean all && chown -R apache:apache /var/www/html/nextcloud && \
     chmod -R 755 /var/www/html/nextcloud && mkdir -p /var/run/php-fpm/ # Ta date reikia primountinti
+RUN sudo sed -i 's/;php_admin_value\[memory_limit\] = 128M/php_admin_value[memory_limit] = 512M/' /etc/php-fpm.d/www.conf
+
 
 #RUN rpm -Uvh http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm && \
 #    curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && \
