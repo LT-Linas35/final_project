@@ -5,7 +5,7 @@ RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget 
     dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
     dnf -y install php-pecl-imagick && \
     dnf -y install https://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
-    dnf -y module reset php && dnf -y module install php:remi-8.2 && \
+    dnf -y module reset php && dnf -y module install php:remi-8.4 && \
     dnf -y update && dnf install -y  php php-cli php-gd php-mbstring php-intl php-pecl-apcu \
     php-mysqlnd php-opcache php-json php-zip && dnf install -y php-redis supervisor php-process mod_ssl php-bcmath php-gmp && \
     git clone https://github.com/LT-Linas35/nextcloud_server.git /var/www/html/nextcloud && \
