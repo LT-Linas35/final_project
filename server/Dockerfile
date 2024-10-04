@@ -3,7 +3,7 @@ FROM rockylinux:9
 RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget git \
     bash-completion policycoreutils-python-utils bzip2 httpd && \
     dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
-    dnf -y update && dnf install -y php php-cli php-gd php-mbstring php-intl php-pecl-apcu \
+    dnf -y update && dnf install -y php php-cli php-gd php-mbstring php-intl php-pecl-apcu php-sodium \
     php-mysqlnd php-opcache php-json php-zip php-redis supervisor php-process mod_ssl php-bcmath php-gmp php-pecl-imagick && \
     dnf clean all && \
     git clone https://github.com/LT-Linas35/nextcloud_server.git /var/www/html/nextcloud && \
