@@ -29,7 +29,7 @@ RUN sudo sed -i 's/;php_admin_value\[memory_limit\] = 128M/php_admin_value[memor
   
 COPY nextcloud.conf /etc/httpd/conf.d/
 COPY generate_keys.sh /tmp/
-RUN chmod +x /etc/generate_keys.sh
-COPY supervisord.conf /tmp/generate_keys.sh
+RUN chmod +x /tmp/generate_keys.sh
+COPY supervisord.conf /etc/generate_keys.sh
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
 
