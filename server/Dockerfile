@@ -1,6 +1,6 @@
 FROM redhat/ubi9:9.4
 
-RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget git \
+RUN dnf update -y && dnf -y upgrade && dnf install -y supervisor sudo yum-utils unzip wget git \
     bash-completion policycoreutils-python-utils bzip2 httpd && \
     dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
     dnf -y install https://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
