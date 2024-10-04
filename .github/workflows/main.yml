@@ -99,11 +99,11 @@ jobs:
             NEW_RELIC_ACCOUNT_ID_PHP=${{ secrets.NEW_RELIC_ACCOUNT_ID_PHP }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # Generate artifact attestation
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v1.4.3
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          subject-digest: ${{ steps.build_image.outputs.digest }}
-          push-to-registry: true
+#      # Generate artifact attestation
+#      - name: Generate artifact attestation
+#        uses: actions/attest-build-provenance@v1.4.3
+#        with:
+#          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+#          subject-digest: ${{ steps.build_image.outputs.digest }}
+#          push-to-registry: true
 
