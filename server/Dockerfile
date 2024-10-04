@@ -6,7 +6,7 @@ RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget 
     dnf -y install https://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
     dnf -y module reset php && dnf -y module install php:remi-8.2 && \
     dnf -y update && dnf install -y  php php-cli php-gd php-mbstring php-intl php-pecl-apcu \
-    php-mysqlnd php-opcache php-json php-zip && dnf install -y php-redis supervisor php-process && \
+    php-mysqlnd php-opcache php-json php-zip && dnf install -y php-redis supervisor php-process mod_ssl && \
     git clone https://github.com/LT-Linas35/nextcloud_server.git /var/www/html/nextcloud && \
     mkdir -p /var/www/html/nextcloud/data && dnf clean all && chown -R www-data /var/www/html/nextcloud && \
     chmod -R 755 /var/www/html/nextcloud && mkdir -p /var/run/php-fpm/
@@ -27,7 +27,7 @@ RUN sudo sed -i 's/;php_admin_value\[memory_limit\] = 128M/php_admin_value[memor
 #    find /etc /opt/etc /usr/local/etc -type f -name newrelic.ini -exec sed -i -e "s/$NEW_RELIC_API_KEY/$NR_INSTALL_KEY/" -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname = \"nextcloud\"/" {} \; 2>/dev/null && \
 #    NEW_RELIC_REGION=EU /usr/local/bin/newrelic install -n logs-integration
   
-
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/pki/tls/private/localhost.key -out /etc/pki/tls/certs/localhost.crt -subj "/C=LT/ST=Vilnius/L=Vilnius/O=NextCloud/"
 COPY nextcloud.conf /etc/httpd/conf.d/
 
 COPY supervisord.conf /etc/
