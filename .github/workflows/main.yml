@@ -14,7 +14,7 @@ permissions:
 jobs:
   trivy:
     permissions:
-      contents: read
+      contents: write
       security-events: write
       actions: read
       id-token: write
