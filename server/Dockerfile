@@ -1,14 +1,13 @@
-FROM redhat/ubi9:9.4
+FROM rockylinux:9
 
 RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget git \
     bash-completion policycoreutils-python-utils bzip2 httpd && \
     dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
-    dnf -y install https://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
-    dnf -y module reset php && dnf -y module install php:remi-8.4 && \
-    dnf -y update && dnf install -y  php php-cli php-gd php-mbstring php-intl php-pecl-apcu \
-    php-mysqlnd php-opcache php-json php-zip && dnf install -y php-redis supervisor php-process mod_ssl php-bcmath php-gmp && \
+    dnf -y update && dnf install -y php php-cli php-gd php-mbstring php-intl php-pecl-apcu \
+    php-mysqlnd php-opcache php-json php-zip php-redis supervisor php-process mod_ssl php-bcmath php-gmp php-pecl-imagick && \
+    dnf clean all && \
     git clone https://github.com/LT-Linas35/nextcloud_server.git /var/www/html/nextcloud && \
-    mkdir -p /var/www/html/nextcloud/data && dnf clean all && chown -R apache /var/www/html/nextcloud && \
+    mkdir -p /var/www/html/nextcloud/data && chown -R apache /var/www/html/nextcloud && \
     chmod -R 755 /var/www/html/nextcloud && mkdir -p /var/run/php-fpm/
 RUN sudo sed -i 's/;php_admin_value\[memory_limit\] = 128M/php_admin_value[memory_limit] = 512M/' /etc/php-fpm.d/www.conf
 
