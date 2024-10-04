@@ -27,8 +27,7 @@ RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget 
   
 
 COPY nextcloud.conf /etc/httpd/conf.d/
-#COPY ca.key /etc/ssl/certs/
-#COPY ca.crt /etc/ssl/certs/
 
+COPY supervisord.conf /etc/
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
 
