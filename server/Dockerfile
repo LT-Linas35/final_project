@@ -27,9 +27,8 @@ RUN sudo sed -i 's/;php_admin_value\[memory_limit\] = 128M/php_admin_value[memor
 #    find /etc /opt/etc /usr/local/etc -type f -name newrelic.ini -exec sed -i -e "s/$NEW_RELIC_API_KEY/$NR_INSTALL_KEY/" -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname = \"nextcloud\"/" {} \; 2>/dev/null && \
 #    NEW_RELIC_REGION=EU /usr/local/bin/newrelic install -n logs-integration
   
-#RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/pki/tls/private/localhost.key -out /etc/pki/tls/certs/localhost.crt -subj "/C=LT/ST=Vilnius/L=Vilnius/O=NextCloud/"
 COPY nextcloud.conf /etc/httpd/conf.d/
-
+COPY generate_keys.sh /tmp/
 COPY supervisord.conf /etc/
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
 
