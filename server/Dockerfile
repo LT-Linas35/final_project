@@ -28,7 +28,8 @@ RUN sudo sed -i 's/;php_admin_value\[memory_limit\] = 128M/php_admin_value[memor
 #    NEW_RELIC_REGION=EU /usr/local/bin/newrelic install -n logs-integration
   
 COPY nextcloud.conf /etc/httpd/conf.d/
-COPY generate_keys.sh /tmp/
-COPY supervisord.conf /etc/
+COPY generate_keys.sh startsecs=0
+COPY supervisord.conf /etc/generate_keys.sh
+RUN chmod +x startsecs=0
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
 
