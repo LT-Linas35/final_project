@@ -4,7 +4,7 @@ RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget 
     bash-completion policycoreutils-python-utils bzip2 httpd && \
     dnf -y install epel-release https://rpms.remirepo.net/enterprise/remi-release-$(rpm -E %rhel).rpm && \
     dnf -y module reset php && dnf -y module enable php:remi-8.4 && dnf -y config-manager --set-enabled crb && \
-    dnf -y update && dnf install -y php php-cli php-gd php-mbstring php-intl php-pecl-apcu php-sodium php-ldap ffmpeg-free \
+    dnf -y update && dnf install -y php php-cli php-gd php-mbstring php-intl php-pecl-apcu php-sodium php-ldap ffmpeg-free libreoffice \
     php-mysqlnd php-opcache php-json php-zip php-redis supervisor php-process mod_ssl php-bcmath php-gmp php-pecl-imagick-im7 && \
     dnf -y clean all && \
     git clone https://github.com/LT-Linas35/nextcloud_server.git /var/www/html/nextcloud && \
