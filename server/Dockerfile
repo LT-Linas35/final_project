@@ -27,7 +27,7 @@ RUN sudo sed -i 's/;php_admin_value\[memory_limit\] = 128M/php_admin_value[memor
 #    find /etc /opt/etc /usr/local/etc -type f -name newrelic.ini -exec sed -i -e "s/$NEW_RELIC_API_KEY/$NR_INSTALL_KEY/" -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname = \"nextcloud\"/" {} \; 2>/dev/null && \
 #    NEW_RELIC_REGION=EU /usr/local/bin/newrelic install -n logs-integration
 WORKDIR /var/www/html/nextcloud
-RUN sudo -u apache php occ db:add-missing-indices
+RUN echo "extension=apcu.so" >> /etc/php.ini && sudo -u apache php occ db:add-missing-indices
 COPY nextcloud.conf /etc/httpd/conf.d/
 COPY .htaccess .
 COPY generate_keys.sh /tmp/
