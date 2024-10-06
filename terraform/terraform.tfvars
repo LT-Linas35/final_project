@@ -1,6 +1,8 @@
 # AWS region
 aws_region = "eu-west-2"
 
+CLUSTER_NAME = "k8s"
+
 nginx = {
   ami                     = "ami-07d1e0a32156d0d21"
   instance_type           = "t2.micro"
@@ -12,7 +14,7 @@ nginx = {
 
 controller = {
   ami                     = "ami-07d1e0a32156d0d21"
-  instance_type           = "t3.medium"
+  instance_type           = "t3.small"
   instance_name           = "controller"
   key_name                = "Linas"
   map_public_ip_on_launch = true
@@ -41,10 +43,10 @@ k8s-nodes = {
 k8s_vpc = {
   vpc_cidr_block               = "10.0.0.0/16"
   vpc_name                     = "my-vpc"
-  nginx_subnet_cidr_block      = "10.0.4.0/28"
-  controller_subnet_cidr_block = "10.0.3.0/28"
-  master_subnet_cidr_block     = "10.0.2.0/28"
-  nodes_subnet_cidr_block      = "10.0.1.0/28"
+  nginx_subnet_cidr_block      = "10.0.4.0/24"
+  controller_subnet_cidr_block = "10.0.3.0/24"
+  master_subnet_cidr_block     = "10.0.2.0/24"
+  nodes_subnet_cidr_block      = "10.0.1.0/24"
   nginx_subnet_name            = "nginx-subnet"
   controller_subnet_name       = "controller-subnet"
   master_subnet_name           = "master-subnet"

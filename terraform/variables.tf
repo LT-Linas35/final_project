@@ -4,6 +4,11 @@ variable "aws_region" {
   type        = string
 }
 
+variable "CLUSTER_NAME" {
+  type        = string
+  description = "Kubernetes cluster name"
+}
+
 ######################################################################
 variable "nginx" {
   description = "Configuration for NGinx instances"

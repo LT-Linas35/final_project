@@ -69,6 +69,7 @@ resource "aws_subnet" "controller_vpc_sub" {
   map_public_ip_on_launch = var.controller_ip_on_launch
   tags = {
     Name = var.controller_subnet_name
+
   }
 }
 
@@ -79,6 +80,8 @@ resource "aws_subnet" "nginx_vpc_sub" {
   map_public_ip_on_launch = var.nginx_ip_on_launch
   tags = {
     Name                        = var.nginx_subnet_name
+    "kubernetes.io/cluster/k8s" = "shared"
+    "kubernetes.io/role/elb"    = "1"  
   }
 }
 

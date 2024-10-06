@@ -9,7 +9,7 @@ resource "aws_instance" "k8s-nodes" {
   iam_instance_profile   = var.ec2_instance_profile_name
 
   root_block_device {
-    volume_size = 10
+    volume_size = 15
     volume_type = "gp3"
   }
 
