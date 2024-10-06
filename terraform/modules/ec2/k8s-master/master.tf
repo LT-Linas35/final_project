@@ -11,10 +11,9 @@ resource "aws_instance" "k8s-master" {
   user_data              = data.template_file.user_data.rendered
 
   root_block_device {
-    volume_size = 10
-    volume_type = "gp3"
+    volume_size = var.volume_size
+    volume_type = var.volume_type
   }
-
 
   tags = {
     Name = "${var.instance_name}-${count.index + 1}"

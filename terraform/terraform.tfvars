@@ -7,9 +7,11 @@ nginx = {
   ami                     = "ami-07d1e0a32156d0d21"
   instance_type           = "t2.micro"
   instance_name           = "nginx"
-  key_name                = "Linas"
+  key_name                = "Linas-eu-out"
   map_public_ip_on_launch = true
-  nginx_count             = "0"
+  nginx_count             = "1"
+  volume_type             = "gp3"
+  volume_size             = "10"
 }
 
 controller = {
@@ -17,7 +19,9 @@ controller = {
   instance_type           = "t3.small"
   instance_name           = "controller"
   key_name                = "Linas"
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
+  volume_type             = "gp3"
+  volume_size             = "10"
 }
 
 k8s-master = {
@@ -25,8 +29,10 @@ k8s-master = {
   instance_type           = "t3.medium"
   instance_name           = "k8s-masters"
   key_name                = "Linas"
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
   k8s-master_count        = "1"
+  volume_type             = "gp3"
+  volume_size             = "10"
 }
 
 # AWS EC2 NODES Variables
@@ -35,8 +41,10 @@ k8s-nodes = {
   instance_type           = "t3.medium"
   instance_name           = "k8s-nodes"
   key_name                = "Linas"
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
   k8s-node_count          = "1"
+  volume_type             = "gp3"
+  volume_size             = "15"
 }
 
 # AWS VPC WEB

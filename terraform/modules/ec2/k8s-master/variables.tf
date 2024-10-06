@@ -46,3 +46,13 @@ variable "ec2_instance_profile_name" {
   description = "EC2 Instance profile name"
   type        = string
 }
+
+variable "volume_size" {
+  description = "Masters volume size"
+  type        = string
+}
+
+variable "volume_type" {
+  description = "Masters Volume tyoe"
+  type        = string
+}

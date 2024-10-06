@@ -19,6 +19,8 @@ variable "nginx" {
     key_name                = string
     map_public_ip_on_launch = bool
     nginx_count             = string
+    volume_type             = string
+    volume_size             = number
   })
 }
 
@@ -31,6 +33,8 @@ variable "controller" {
     instance_type           = string
     key_name                = string
     map_public_ip_on_launch = bool
+    volume_type             = string
+    volume_size             = number
   })
 }
 
@@ -44,6 +48,8 @@ variable "k8s-master" {
     key_name                = string
     map_public_ip_on_launch = bool
     k8s-master_count        = string
+    volume_type             = string
+    volume_size             = number
   })
 }
 
@@ -58,6 +64,8 @@ variable "k8s-nodes" {
     key_name                = string
     map_public_ip_on_launch = bool
     k8s-node_count          = string
+    volume_type             = string
+    volume_size             = number
   })
 }
 

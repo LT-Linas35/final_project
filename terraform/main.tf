@@ -13,7 +13,7 @@ terraform {
 }
 
 provider "aws" {
-  region     = var.aws_region
+  region = var.aws_region
 }
 
 module "nodes_sg" {
@@ -66,6 +66,9 @@ module "nginx" {
   subnet_id                            = module.vpc.nginx_subnet_id
   nginx_count                          = var.nginx.nginx_count
   controller_instance_private_hostname = module.controller.controller_instance_private_hostname
+  volume_type                          = var.nginx.volume_type
+  volume_size                          = var.nginx.volume_size
+
 }
 
 
@@ -81,6 +84,8 @@ module "k8s-master" {
   master_subnet_cidr_block             = var.k8s_vpc.master_subnet_cidr_block
   controller_instance_private_hostname = module.controller.controller_instance_private_hostname
   ec2_instance_profile_name            = aws_iam_instance_profile.master_instance_profile.name
+  volume_type                          = var.k8s-master.volume_type
+  volume_size                          = var.k8s-master.volume_size
 }
 
 
@@ -95,6 +100,9 @@ module "k8s-nodes" {
   k8s-node_count                       = var.k8s-nodes.k8s-node_count
   controller_instance_private_hostname = module.controller.controller_instance_private_hostname
   ec2_instance_profile_name            = aws_iam_instance_profile.node_instance_profile.name
+  volume_type                          = var.k8s-nodes.volume_type
+  volume_size                          = var.k8s-nodes.volume_size
+
 }
 
 module "controller" {
@@ -105,9 +113,11 @@ module "controller" {
   key_name                    = var.controller.key_name
   subnet_id                   = module.vpc.controller_subnet_id
   instance_type               = var.controller.instance_type
+  volume_type                 = var.controller.volume_type
+  volume_size                 = var.controller.volume_size
 }
 
-
+/*
 resource "aws_s3_bucket" "nextcloud_bucket" {
   bucket = "lino-nextcloud-storage"
   tags = {
@@ -193,3 +203,4 @@ resource "aws_iam_role_policy_attachment" "worker_node_policy_attachment" {
   role       = aws_iam_role.worker_node_role.name
   policy_arn = aws_iam_policy.s3_access_policy.arn
 }
+*/

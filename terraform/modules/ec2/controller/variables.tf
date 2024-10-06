@@ -28,6 +28,20 @@ variable "key_name" {
   description = "AWS Key Name"
   type        = string
 }
+
+variable "volume_size" {
+  description = "Controller volume size"
+  type        = string
+}
+
+variable "volume_type" {
+  description = "Controller Volume tyoe"
+  type        = string
+}
+
+
+
+
 /*
 variable "k8s-master_instance_private_ip" {
   description = "Masters private IPs"

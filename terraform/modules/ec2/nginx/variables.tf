@@ -39,3 +39,13 @@ variable "controller_instance_private_hostname" {
   description = "Controller IP address"
   type        = string
 }
+
+variable "volume_size" {
+  description = "NGinx volume size"
+  type        = string
+}
+
+variable "volume_type" {
+  description = "NGinx Volume tyoe"
+  type        = string
+}
