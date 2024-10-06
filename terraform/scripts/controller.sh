@@ -6,6 +6,14 @@ set -xv
 # Upgrade all system packages to the latest version
 dnf -y upgrade
 
+set +xv
+cat <<EOF > /home/ec2-user/.ssh/id_rsa
+
+EOF
+chown ec2-user:ec2-user /home/ec2-user/.ssh/id_rsa
+chmod 600 /home/ec2-user/.ssh/id_rsa
+set -xv 
+
 # Create an Ansible playbook to copy kube config to the ec2-user's home directory
 cat <<EOF > /home/ec2-user/get_config.yaml
 ---
@@ -315,7 +323,44 @@ class nginx {
 }
 EOF
 
-# Configure Ansible settings
+# Configure Ansible to disable host key checking and set SSH connection settings
 cat <<EOF > /etc/ansible/ansible.cfg
 [defaults]
-host_key_checking =
+host_key_checking = False
+[ssh_connection]
+ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o IdentityFile=/home/ec2-user/.ssh/id_rsa
+EOF
+
+# Enable and start the Puppet server service
+systemctl enable --now puppetserver
+
+# Install Helm, a Kubernetes package manager
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+sh ./get_helm.sh
+ln -s /usr/local/bin/helm /usr/bin/
+
+# Enable the Kubernetes API Flask service
+systemctl enable k8s-api.service
+
+# Install k9s, a CLI tool for managing Kubernetes clusters
+rpm -i https://github.com/derailed/k9s/releases/download/v0.32.5/k9s_linux_amd64.rpm
+
+# Install Oh My Zsh for better terminal experience and change shell to zsh for ec2-user
+sudo -u ec2-user sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+usermod -s /usr/bin/zsh ec2-user
+
+# Update .zshrc to check for kube config and run an Ansible playbook if it doesn't exist
+cat <<EOF >> /home/ec2-user/.zshrc
+
+KUBE_CONFIG="\$HOME/.kube/config"
+
+if [ ! -f "\$KUBE_CONFIG" ]; then
+    echo "Kube config file not found. Running Ansible playbook to copy it."
+    mkdir -p \$HOME/.kube
+    ansible-playbook /home/ec2-user/get_config.yaml
+fi
+EOF
+
+# Reboot the system to apply changes
+systemctl reboot

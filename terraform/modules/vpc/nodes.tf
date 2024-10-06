@@ -144,7 +144,7 @@ resource "aws_route_table_association" "nodes_subnet_association_with_nat" {
 
 resource "aws_route_table_association" "master_subnet_association_with_nat" {
   subnet_id      = aws_subnet.master_vpc_sub.id
-  route_table_id = aws_route_table.public.id
+  route_table_id = aws_route_table.private_route_table_with_nat.id
 }
 
 resource "aws_route_table_association" "alb_subnet_az2" {
