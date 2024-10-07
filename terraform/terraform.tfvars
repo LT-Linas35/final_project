@@ -9,7 +9,7 @@ nginx = {
   instance_name           = "nginx"
   key_name                = "Linas-eu-out"
   map_public_ip_on_launch = true
-  nginx_count             = "1"
+  nginx_count             = "0"
   volume_type             = "gp3"
   volume_size             = "10"
 }
@@ -19,7 +19,7 @@ controller = {
   instance_type           = "t3.small"
   instance_name           = "controller"
   key_name                = "Linas"
-  map_public_ip_on_launch = false
+  map_public_ip_on_launch = true
   volume_type             = "gp3"
   volume_size             = "10"
 }
