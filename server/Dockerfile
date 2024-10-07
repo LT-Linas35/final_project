@@ -1,4 +1,4 @@
-FROM rockylinux:9
+FROM rockylinux:9.3-minimal
 
 RUN dnf update -y && dnf -y upgrade && dnf install -y sudo yum-utils unzip wget git \
     bash-completion policycoreutils-python-utils bzip2 httpd && \
