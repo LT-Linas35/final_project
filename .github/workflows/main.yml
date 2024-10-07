@@ -86,19 +86,14 @@ jobs:
       # Push Docker image to Docker Hub if Trivy check passes
       - name: Push Docker image to Docker Hub
         if: success()  # Only run if previous steps succeeded (Trivy scan passed)
-        uses: docker/build-push-action@v6
-        with:
-          context: ./server
-          push: true  # Push to Docker Hub
-          tags: |
-            docker.io/linas37/nextcloud:${{ github.sha }}
-            docker.io/linas37/nextcloud:latest
-            docker.io/linas37/nextcloud:${{ github.event.inputs.release_version }}
-          secrets: |
-            NEW_RELIC_API_KEY_PHP=${{ secrets.NEW_RELIC_API_KEY_PHP }}
-            NEW_RELIC_ACCOUNT_ID_PHP=${{ secrets.NEW_RELIC_ACCOUNT_ID_PHP }}
-            NR_INSTALL_KEY_PHP=${{ secrets.NR_INSTALL_KEY_PHP }}
-          labels: ${{ steps.meta.outputs.labels }}
+        run: |
+          docker tag ${{ steps.build_image.outputs.imageid }} docker.io/linas37/nextcloud:${{ github.sha }}
+          docker tag ${{ steps.build_image.outputs.imageid }} docker.io/linas37/nextcloud:latest
+          docker tag ${{ steps.build_image.outputs.imageid }} docker.io/linas37/nextcloud:${{ github.event.inputs.release_version }}
+          docker push docker.io/linas37/nextcloud:${{ github.sha }}
+          docker push docker.io/linas37/nextcloud:latest
+          docker push docker.io/linas37/nextcloud:${{ github.event.inputs.release_version }}
+
 
 #      # Generate artifact attestation
 #      - name: Generate artifact attestation
