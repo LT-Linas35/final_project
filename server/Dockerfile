@@ -20,7 +20,7 @@ RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
     export NR_INSTALL_KEY=$(cat /run/secrets/NR_INSTALL_KEY_PHP) && \
     ls -la /run/secrets/ && \
     rpm -Uvh http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm && \
-    dnf -y install newrelic-php5 && newrelic-install install && \
+    dnf -y install newrelic-php5 && NR_INSTALL_SILENT=1 newrelic-install install all \
     find /etc /opt/etc /usr/local/etc -type f -name newrelic.ini -exec sed -i -e "s/$NEW_RELIC_API_KEY/$NR_INSTALL_KEY/" -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname = \"NextCloud\"/" {} \; 2>/dev/null && \
     unset NEW_RELIC_API_KEY NEW_RELIC_ACCOUNT_ID NR_INSTALL_KEY
 # unsupported?    curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && NEW_RELIC_REGION=EU /usr/local/bin/newrelic install -n logs-integration
