@@ -8,7 +8,33 @@ dnf -y upgrade
 
 set +xv
 cat <<EOF > /home/ec2-user/.ssh/id_rsa
-
+-----BEGIN RSA PRIVATE KEY-----
+MIIEogIBAAKCAQEAu1H95kFzewrA3PfQz7UN7fxFR9XByAGXkd7QYDHO+Y67OkMM
+KQr6xJPVoBd2XL0uQZ1oEpCkH+YItrkBCLqz71iXlsWsoz+1za5IvNjc/peLWP/7
+Uka01uu7uYcmeQwHpSYH/jC0qVgC8RuJpqQQgwUyMk+JSHgc7JsuqYmscSKShtm1
+2ufPv+IM9DleIwghAoMq+tD07Zy3AgZhMk9yPdlPO3e4Br9h3CUYnSnFpT8twRdI
+ErQbluJX3XBzt5djTCKe56gQ6lqykurVCVAes+zLYez8l4DYyGrmb4dL0IaLg0p5
+YaaqfTTmHBs7ucPz66G3NcnkYpEqdIrp7Xd2cwIDAQABAoIBAA4w7wBTsxD+RpA3
+Ag3KVKzT8Ne5XP3vCPGXJMg03c5QPuTyEWjGmSrtXEDNpjzuZCO6bhkB9j0oaz6U
+k3x60IjweEOG5EZV3EshygbskwmCp57tfbfE/YxOvaEXmRWQkL+1OuPKAtXVghuM
+D4idY1bZvOzM08S2vNI8C3PypyrG54CmNxU3gvohyTNSdN4DCKgqWkcVqOYyggkO
+3wIeLnsR+TtPzL7e0q42CU+9ipqISuAi2DweVENWMBW/zmAFUBd2Yw4WRnbZy0uV
+yHs7x4JJkw4JhS7wA9CCi359mU7rIYk4QxZEePJtOMT+slzPRdH7sbD9X1vhuyw3
+Ms7HAxkCgYEA5/YAMUXqVEB1LZWgdGHbxUTLLQyymV2/4SOYBA3s8LfDacC98m6a
+M+/36gU2WdS3nPrVxyZ8X+QGwjl1T7U5YH9JGF9dQ3Tb0KWfktbyd+5gGENueFbn
+k1lF2awvioQfOdGIr40tzPkcJqFp9dj1d6W2SCAOwJ+b5LQEu7kXdwcCgYEAzruo
+6OW0NE98YA9dqOsY792IBHSyIdIzV7i+sT0Sm3Io2vI+Bc3/QPJg3uRR91WqS+si
+6KpLNBxUAlWP/ZrzvPJcg+DbWdpV4lHio1Yv7iDpSRQMm25f5Y4qdqrYuCU/Bs9P
+0qvQMs2P8lvVwnmMgax/19JJOT/VghTBbDvPHjUCgYBb3WZYHUtfkKOXqRGB5hum
+tccNkWDOMn3CiVk0CdvTvcNrh4TylXEGrrvtd6D91KvfRMwTch+BzooKs7zNE4Wk
+vORS/bmu9IH10RIwkmY2rzZphZMjn69ZANsUCQhPAGJpgJ10gSIpcmL+vaB8WC9m
+8j8Ns3yENvIDknPpcLVlUwKBgGie05Y5WP74EstSO2XWxCHvjHwkylkPVWhZWDe9
+3oLIPSDAYt7xJvIpNxjVlx2CPtJ4xovUUoamp2UfA+Wl2x+Nz3/19Uv9kGUeZ4Gd
+hlgOU8Dl4pNuQh2b2qV/RHm8b670j0LgLFbpbKWMEBuBA7hEIdaI1wGf6l8QPeqW
+QfTZAoGAeHl+2ycvXJqAShwKuKK8DiV4TCA6BD38R+49UaCIpcHVPwD/pi6VtqrR
+WQfgf/X4Ou8tl+p4CrQ/+LOwlIpVocGRoCKCh3exF2Hkjw/5j4MzdZ2V/J5n0MV4
+OriBGivQSaUn32rszI1OuuYgQ0tLp01phfRCg/9Z/JSq+6mtxNE=
+-----END RSA PRIVATE KEY-----
 EOF
 chown ec2-user:ec2-user /home/ec2-user/.ssh/id_rsa
 chmod 600 /home/ec2-user/.ssh/id_rsa
@@ -198,7 +224,7 @@ cat <<EOF > /home/ec2-user/node_join_master.yaml
   vars:
     master_node_ip: "10.0.2.4"
     node_ip: "{{ node_ip }}"
-    provider_id: "{{ provider_id }}"
+    provider_id: "{{ providerID }}"
 
   tasks:
     - name: Wait until SSH connection to the master node is available
@@ -251,8 +277,8 @@ chown ec2-user:ec2-user /home/ec2-user/node_join_master.yaml
 dnf -y upgrade
 
 # Install Puppet, Ansible, Git, Nano, Puppetserver, Zsh, and Pip
-yum install -y https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
-dnf -y install ansible-core.x86_64 git nano puppetserver zsh pip
+#dnf install -y https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
+dnf -y install ansible-core.x86_64 git nano zsh pip #puppetserver 
 
 # Install Flask for Python
 sudo -u ec2-user pip install flask
@@ -272,56 +298,56 @@ EOF
 dnf makecache; dnf install -y kubelet kubectl --disableexcludes=kubernetes
 
 # Adjust Puppetserver Java memory settings for a lower memory footprint
-sed -i 's/JAVA_ARGS="-Xms2g -Xmx2g/JAVA_ARGS="-Xms512m -Xmx512m/' /etc/sysconfig/puppetserver
+#sed -i 's/JAVA_ARGS="-Xms2g -Xmx2g/JAVA_ARGS="-Xms512m -Xmx512m/' /etc/sysconfig/puppetserver
 
 # Disable swap as Kubernetes requires it to be turned off
 sed -i '/swap/d' /etc/fstab
 
 # Set Puppet hostname
-export pupethost=$(hostname | awk '{print $1}')
+#export pupethost=$(hostname | awk '{print $1}')
 
 # Configure Puppet with autosign for specific subnets
-cat <<EOF > /etc/puppetlabs/puppet/puppet.conf
-[main]
-certname = $pupethost
-server = $pupethost
-environment = production
-runinterval = 15m
-[master]
-autosign = true
-autosign_config = /etc/puppetlabs/puppet/autosign.conf
-EOF
+#cat <<EOF > /etc/puppetlabs/puppet/puppet.conf
+#[main]
+#certname = $pupethost
+#server = $pupethost
+#environment = production
+#runinterval = 15m
+#[master]
+#autosign = true
+#autosign_config = /etc/puppetlabs/puppet/autosign.conf
+#EOF
 
 # Create autosign configuration
-cat <<EOF > /etc/puppetlabs/puppet/autosign.conf
-*.10.0.4.*
-*.10.0.3.*
-*.10.0.2.*
-*.10.0.1.*
-EOF
+#cat <<EOF > /etc/puppetlabs/puppet/autosign.conf
+#*.10.0.4.*
+#*.10.0.3.*
+#*.10.0.2.*
+#*.10.0.1.*
+#EOF
 
 # Create Puppet manifests for managing Nginx
-mkdir -p /etc/puppetlabs/code/environments/production/manifests/
-cat <<EOF > /etc/puppetlabs/code/environments/production/manifests/site.pp
-node /^ip-10-0-4-\d{1,3}\.ec2\.internal$/  {
-  include nginx
-}
-EOF
+#mkdir -p /etc/puppetlabs/code/environments/production/manifests/
+#cat <<EOF > /etc/puppetlabs/code/environments/production/manifests/site.pp
+#node /^ip-10-0-4-\d{1,3}\.ec2\.internal$/  {
+#  include nginx
+#}
+#EOF
 
-mkdir -p /etc/puppetlabs/code/environments/production/modules/nginx/manifests/
-cat <<EOF > /etc/puppetlabs/code/environments/production/modules/nginx/manifests/init.pp
-class nginx {
-  package { 'nginx':
-    ensure => installed,
-  }
+#mkdir -p /etc/puppetlabs/code/environments/production/modules/nginx/manifests/
+#cat <<EOF > /etc/puppetlabs/code/environments/production/modules/nginx/manifests/init.pp
+#class nginx {
+#  package { 'nginx':
+#    ensure => installed,
+#  }
 
-  service { 'nginx':
-    ensure    => running,
-    enable    => true,
-    subscribe => Package['nginx'],
-  }
-}
-EOF
+#  service { 'nginx':
+#    ensure    => running,
+#    enable    => true,
+#    subscribe => Package['nginx'],
+#  }
+#}
+#EOF
 
 # Configure Ansible to disable host key checking and set SSH connection settings
 cat <<EOF > /etc/ansible/ansible.cfg
@@ -332,7 +358,7 @@ ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o IdentityFile=/home/ec2
 EOF
 
 # Enable and start the Puppet server service
-systemctl enable --now puppetserver
+#systemctl enable --now puppetserver
 
 # Install Helm, a Kubernetes package manager
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3

@@ -56,8 +56,8 @@ dnf -y install kernel-devel-$(uname -r)
 rpm -i https://github.com/derailed/k9s/releases/download/v0.32.5/k9s_linux_amd64.rpm
 
 # Install Puppet and other utilities
-rpm -Uvh https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
-dnf -y install nano git puppet-agent socat
+#rpm -Uvh https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
+dnf -y install nano git socat #puppet-agent 
 
 # Load necessary kernel modules for Kubernetes
 modprobe br_netfilter
@@ -159,6 +159,16 @@ rm argocd-linux-amd64
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
+
+
+
+KSM_IMAGE_VERSION="v2.10.0" && helm repo add newrelic https://helm-charts.newrelic.com && helm repo update && kubectl create namespace newrelic 
+helm upgrade --install newrelic-bundle newrelic/nri-bundle --set global.licenseKey=${NEW_RELIC_LICENSE_KEY} --set global.cluster=k8s --namespace=newrelic --set newrelic-infrastructure.privileged=true --set global.lowDataMode=true --set kube-state-metrics.image.tag=\$KSM_IMAGE_VERSION --set kube-state-metrics.enabled=true --set kubeEvents.enabled=true --set newrelic-prometheus-agent.enabled=true --set newrelic-prometheus-agent.lowDataMode=true --set newrelic-prometheus-agent.config.kubernetes.integrations_filter.enabled=false --set logging.enabled=true --set newrelic-logging.lowDataMode=true
+
+helm repo add eks https://aws.github.io/eks-charts
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller --set clusterName=k8s -n kube-system
+
+
 # Deploy Nextcloud to Kubernetes
 cat <<EOF >  /home/ec2-user/nextcloud-deployment.yaml
 apiVersion: apps/v1
@@ -228,15 +238,15 @@ spec:
 EOF
 
 # Export Puppet hostname and configure Puppet client
-export pupethost=$(hostname | awk '{print $1}')
-cat <<EOF > /etc/puppetlabs/puppet/puppet.conf
-[main]
-certname = $pupethost
-server = ${controller_hostname}
-EOF
+#export pupethost=$(hostname | awk '{print $1}')
+#cat <<EOF > /etc/puppetlabs/puppet/puppet.conf
+#[main]
+#certname = $pupethost
+#server = ${controller_hostname}
+#EOF
 
 # Bootstrap Puppet SSL certificates and enable Puppet service
-/opt/puppetlabs/bin/puppet ssl bootstrap
-systemctl enable puppet
+#/opt/puppetlabs/bin/puppet ssl bootstrap
+#systemctl enable puppet
 
 systemctl reboot

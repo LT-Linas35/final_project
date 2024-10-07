@@ -54,18 +54,21 @@ chmod +x /home/ec2-user/send_metadata_to_leave.sh
 cat <<EOF > /etc/systemd/system/send_leave_node.service
 [Unit]
 Description=Send EC2 Metadata Leave Node Service
-After=shutdown.target
+DefaultDependencies=no
+Before=halt.target poweroff.target reboot.target shutdown.target
+After=network.target
 
 [Service]
 User=ec2-user
 WorkingDirectory=/home/ec2-user
-ExecStart=bash send_metadata_to_leave.sh
-Restart=no
-TimeoutStopSec=20
+ExecStop=/bin/bash /home/ec2-user/send_metadata_to_leave.sh
+RemainAfterExit=yes
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=halt.target poweroff.target reboot.target shutdown.target
 EOF
+
+
 
 # Enable the EC2 post service and send leave node service
 systemctl enable ec2_post.service
@@ -74,7 +77,7 @@ systemctl enable send_leave_node.service
 # Install Puppet and additional utilities
 rpm -Uvh https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
 dnf -y upgrade
-dnf -y install nano kernel-devel-$(uname -r) puppet-agent socat
+dnf -y install nano kernel-devel-$(uname -r) socatc #puppet-agent 
 
 # Load necessary kernel modules for Kubernetes networking
 modprobe br_netfilter
@@ -134,16 +137,16 @@ dnf makecache; dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernet
 systemctl enable --now kubelet.service
 
 # Configure Puppet agent
-export pupethost=$(hostname | awk '{print $1}')
-cat <<EOF > /etc/puppetlabs/puppet/puppet.conf
-[main]
-certname = $pupethost
-server = ${controller_hostname}
-EOF
+#export pupethost=$(hostname | awk '{print $1}')
+#cat <<EOF > /etc/puppetlabs/puppet/puppet.conf
+#[main]
+#certname = $pupethost
+#server = ${controller_hostname}
+#EOF
 
 # Bootstrap Puppet SSL certificates and enable Puppet service
-/opt/puppetlabs/bin/puppet ssl bootstrap
-systemctl enable puppet
+#/opt/puppetlabs/bin/puppet ssl bootstrap
+#systemctl enable puppet
 
 # Reboot the system to apply changes
 systemctl reboot
