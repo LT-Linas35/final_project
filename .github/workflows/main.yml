@@ -97,6 +97,7 @@ jobs:
           secrets: |
             NEW_RELIC_API_KEY_PHP=${{ secrets.NEW_RELIC_API_KEY_PHP }}
             NEW_RELIC_ACCOUNT_ID_PHP=${{ secrets.NEW_RELIC_ACCOUNT_ID_PHP }}
+            NR_INSTALL_KEY_PHP=${{ secrets.NR_INSTALL_KEY_PHP }}
           labels: ${{ steps.meta.outputs.labels }}
 
 #      # Generate artifact attestation
