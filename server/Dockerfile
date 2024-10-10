@@ -37,7 +37,7 @@ RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
     find /etc /opt/etc /usr/local/etc -type f -name newrelic.ini -exec sed -i -e "s/$NEW_RELIC_API_KEY/$NR_INSTALL_KEY/" -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname = \"NextCloud\"/" {} \; 2>/dev/null && \
     curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && NEW_RELIC_REGION=EU /usr/local/bin/newrelic install -n logs-integration && unset NEW_RELIC_API_KEY NEW_RELIC_ACCOUNT_ID NR_INSTALL_KEY    
 
-FROM fith_stage as main
+FROM fifth_stage as main
 
 WORKDIR /var/www/html/nextcloud
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
