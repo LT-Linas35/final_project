@@ -88,5 +88,5 @@ FROM second_stage AS third_tage
 FROM third_tage AS final
 
 WORKDIR /var/www/html/nextcloud
-USER apache
+#USER apache
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
