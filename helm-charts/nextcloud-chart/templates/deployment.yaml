@@ -19,16 +19,38 @@ spec:
         ports:
         - containerPort: 80
         env:
+        # Database variables
         - name: NEXTCLOUD_DB_TYPE
-          value: "{{ .Values.env.database.type }}"
+          value: "{{ .Values.database.type }}"
         - name: NEXTCLOUD_DB_NAME
-          value: "{{ .Values.env.database.name }}"
+          value: "{{ .Values.database.name }}"
+        - name: NEXTCLOUD_DB_HOST
+          value: "{{ .Values.database.host }}"
+        - name: NEXTCLOUD_DB_PORT
+          value: "{{ .Values.database.port }}"
         - name: NEXTCLOUD_DB_USER
-          value: "{{ .Values.env.database.user }}"
+          value: "{{ .Values.database.user }}"
         - name: NEXTCLOUD_DB_PASSWORD
-          value: "{{ .Values.env.database.password }}"
+          value: "{{ .Values.database.password }}"
+        # Admin variables
         - name: NEXTCLOUD_ADMIN_USER
-          value: "{{ .Values.env.admin.user }}"
+          value: "{{ .Values.admin.user }}"
         - name: NEXTCLOUD_ADMIN_PASSWORD
-          value: "{{ .Values.env.admin.password }}"
+          value: "{{ .Values.admin.password }}"
+        - name: NEXTCLOUD_ADMIN_EMAIL
+          value: "{{ .Values.admin.email }}"
+        # Redis configuration
+        - name: NEXTCLOUD_REDIS_HOST
+          value: "{{ .Values.redis.host }}"
+        - name: NEXTCLOUD_REDIS_PORT
+          value: "{{ .Values.redis.port }}"
+        - name: NEXTCLOUD_REDIS_TIMEOUT
+          value: "{{ .Values.redis.timeout }}"
+        - name: NEXTCLOUD_REDIS_DBINDEX
+          value: "{{ .Values.redis.dbindex }}"
+        # S3 bucket configuration
+        - name: NEXTCLOUD_S3_BUCKET
+          value: "{{ .Values.s3.bucket }}"
+        - name: NEXTCLOUD_S3_REGION
+          value: "{{ .Values.s3.region }}"
 
