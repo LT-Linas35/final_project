@@ -51,7 +51,9 @@ RUN dnf -y update \
 
 FROM first_stage AS second_stage
 
-RUN git clone https://github.com/LT-Linas35/nextcloud_server.git /var/www/html/nextcloud
+RUN LATEST_TAG=$(curl --silent "https://api.github.com/repos/vartotojas/projektas/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")') \
+&& \
+    git clone --branch $LATEST_TAG https://github.com/LT-Linas35/nextcloud_server.git /var/www/html/nextcloud
 
 COPY nextcloud.conf /etc/httpd/conf.d/
 #COPY .htaccess /var/www/html/nextcloud/
@@ -65,7 +67,11 @@ RUN mkdir -p /var/www/html/nextcloud/data \
 && \
     mkdir -p /var/run/php-fpm/ \
 && \
-    sed -i 's/;php_admin_value\[memory_limit\] = 128M/php_admin_value[memory_limit] = 512M/' /etc/php-fpm.d/www.conf
+    sed -i 's/;php_admin_value\[memory_limit\] = 128M/php_admin_value[memory_limit] = 512M/' /etc/php-fpm.d/www.conf \
+&& \
+    sed -i 's/memory_limit = 128M/memory_limit = 512M/' /etc/php.ini \
+&& \
+    echo "apc.enable_cli = 1" >> /etc/php.ini
 
 FROM second_stage AS third_tage
 
@@ -89,4 +95,5 @@ FROM third_tage AS final
 
 WORKDIR /var/www/html/nextcloud
 #USER apache
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+CMD ["php-fpm" && "httpd"]
