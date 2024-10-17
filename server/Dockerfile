@@ -51,7 +51,7 @@ RUN dnf -y update \
 
 FROM first_stage AS second_stage
 
-RUN LATEST_TAG=$(curl --silent "https://api.github.com/repos/vartotojas/projektas/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")') \
+RUN LATEST_TAG="$(curl --silent "https://api.github.com/repos/LT-Linas35/nextcloud_server/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')" \
 && \
     git clone --branch $LATEST_TAG https://github.com/LT-Linas35/nextcloud_server.git /var/www/html/nextcloud
 
