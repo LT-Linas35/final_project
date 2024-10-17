@@ -69,7 +69,6 @@ RUN mkdir -p /var/www/html/nextcloud/data \
 
 FROM second_stage AS third_tage
 
-# Jei naudoji BuildKit ir slaptus duomenis
 RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
     --mount=type=secret,id=NR_INSTALL_KEY_PHP \
     NEW_RELIC_API_KEY=$(cat /run/secrets/NEW_RELIC_API_KEY_PHP) \
@@ -82,9 +81,7 @@ RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
 && \
     NR_INSTALL_SILENT=1 newrelic-install install all \
 && \
-    find /etc /opt/etc /usr/local/etc -type f -name newrelic.ini -exec sed -i \
-    -e "s/$NEW_RELIC_API_KEY/$NR_INSTALL_KEY/" \
-    -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname = \"NextCloud\"/" {} \; 2>/dev/null \
+    find /etc /opt/etc /usr/local/etc -type f -name newrelic.ini -exec sed -i -e "s/$NEW_RELIC_API_KEY/$NR_INSTALL_KEY/" -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname = \"NextCloud\"/" {} \; 2>/dev/null \
 && \
     unset NEW_RELIC_API_KEY NEW_RELIC_ACCOUNT_ID NR_INSTALL_KEY
 
