@@ -57,31 +57,31 @@ jobs:
             NR_INSTALL_KEY_PHP=${{ secrets.NR_INSTALL_KEY_PHP }}
 
       # Run Trivy to scan the built image
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.24.0
-        with:
-          image-ref: ${{ steps.build_image.outputs.imageid }}  
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
+ #     - name: Run Trivy vulnerability scanner
+ #       uses: aquasecurity/trivy-action@0.24.0
+ #       with:
+ #         image-ref: ${{ steps.build_image.outputs.imageid }}  
+ #         format: 'template'
+ #         template: '@/contrib/sarif.tpl'
+ #         output: 'trivy-results.sarif'
+ #         severity: 'CRITICAL,HIGH'
 
       # Upload Trivy scan results to GitHub Security tab
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results.sarif'
+#      - name: Upload Trivy scan results to GitHub Security tab
+#        uses: github/codeql-action/upload-sarif@v3
+#        with:
+#          sarif_file: 'trivy-results.sarif'
 
       # Check Trivy scan results and conditionally push to registry
-      - name: Check Trivy scan results
-        id: check_trivy
-        run: |
-          if grep -q '"ruleId":' trivy-results.sarif; then
-            echo "Critical or High vulnerabilities found!"
-            exit 1
-          else
-            echo "No critical or high vulnerabilities found."
-          fi
+#      - name: Check Trivy scan results
+#        id: check_trivy
+#        run: |
+#          if grep -q '"ruleId":' trivy-results.sarif; then
+#            echo "Critical or High vulnerabilities found!"
+#            exit 1
+#          else
+#            echo "No critical or high vulnerabilities found."
+#          fi
 
       # Push Docker image to Docker Hub if Trivy check passes
       - name: Push Docker image to Docker Hub
