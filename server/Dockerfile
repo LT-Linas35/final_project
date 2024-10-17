@@ -80,15 +80,22 @@ FROM second_stage AS third_tage
 
 RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
     --mount=type=secret,id=NR_INSTALL_KEY_PHP \
-    NEW_RELIC_API_KEY=$(cat /run/secrets/NEW_RELIC_API_KEY_PHP) && \
-    NR_INSTALL_KEY=$(cat /run/secrets/NR_INSTALL_KEY_PHP) && \
-    rpm -Uvh http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm && \
-    dnf -y install newrelic-php5 && \
-    NR_INSTALL_SILENT=1 newrelic-install install all && \
-    find /etc /opt/etc /usr/local/etc -type f -name newrelic.ini -exec sed -i \
-    -e "s/$NEW_RELIC_API_KEY/$NR_INSTALL_KEY/" \
-    -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname = \"NextCloud\"/" {} \; 2>/dev/null && \
-    unset NEW_RELIC_API_KEY NR_INSTALL_KEY
+    export NEW_RELIC_API_KEY=$(cat /run/secrets/NEW_RELIC_API_KEY_PHP) && \
+    export NR_INSTALL_KEY=$(cat /run/secrets/NR_INSTALL_KEY_PHP)
+
+RUN rpm -Uvh http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm && \
+    dnf -y install newrelic-php5
+
+RUN NR_INSTALL_SILENT=1 newrelic-install install all
+RUN echo ${NEW_RELIC_API_KEY}
+RUN echo ${NR_INSTALL_KEY}
+
+RUN find /etc /opt/etc /usr/local/etc -type f -name newrelic.ini -exec sed -i \
+    -e "s/${NEW_RELIC_API_KEY}/${NR_INSTALL_KEY}/" \
+    -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname = \"NextCloud\"/" {} \; 2>/dev/null
+
+RUN unset NEW_RELIC_API_KEY NR_INSTALL_KEY
+
 
 FROM third_tage AS final
 
