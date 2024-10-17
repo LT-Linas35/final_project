@@ -58,7 +58,7 @@ spec:
           mountPath: /var/www/html/nextcloud/config/my.config.php
           subPath: my.config.php
           readOnly: true
-        command: ["/bin/bash", "-c", "sudo -u apache php occ maintenance:install --admin-user=$NEXTCLOUD_ADMIN_USER --admin-pass=$NEXTCLOUD_ADMIN_PASSWORD --admin-email=$NEXTCLOUD_ADMIN_EMAIL && touch /var/www/html/nextcloud/.htaccess && sudo -u apache php /var/www/html/nextcloud/occ maintenance:update:htaccess && supervisord -c /etc/supervisord.conf"]
+        command: ["/bin/bash", "-c", "sudo -u apache php occ maintenance:install --admin-user=$NEXTCLOUD_ADMIN_USER --admin-pass=$NEXTCLOUD_ADMIN_PASSWORD --admin-email=$NEXTCLOUD_ADMIN_EMAIL && sudo -u apache touch /var/www/html/nextcloud/.htaccess && sudo -u apache php /var/www/html/nextcloud/occ maintenance:update:htaccess && supervisord -c /etc/supervisord.conf"]
       volumes:
       - name: config-volume
         configMap:
