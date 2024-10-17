@@ -1,6 +1,7 @@
 FROM rockylinux:9.3 AS first_stage
 
-RUN dnf -y update \
+RUN \
+    dnf -y update \
 && \
     dnf -y upgrade \
 && \
@@ -51,15 +52,17 @@ RUN dnf -y update \
 
 FROM first_stage AS second_stage
 
-RUN LATEST_TAG="$(curl --silent "https://api.github.com/repos/LT-Linas35/nextcloud_server/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')" \
+RUN \
+    LATEST_TAG="$(curl --silent "https://api.github.com/repos/LT-Linas35/nextcloud_server/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')" \
 && \
     git clone --branch $LATEST_TAG https://github.com/LT-Linas35/nextcloud_server.git /var/www/html/nextcloud
 
 COPY nextcloud.conf /etc/httpd/conf.d/
-#COPY .htaccess /var/www/html/nextcloud/
+COPY .htaccess /var/www/html/nextcloud/.htaccess
 COPY supervisord.conf /etc/
 
-RUN mkdir -p /var/www/html/nextcloud/data \
+RUN \
+    mkdir -p /var/www/html/nextcloud/data \
 && \
     chown -R apache /var/www/html/nextcloud \
 && \
@@ -75,25 +78,26 @@ RUN mkdir -p /var/www/html/nextcloud/data \
 
 FROM second_stage AS third_tage
 
-#RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
-#    --mount=type=secret,id=NR_INSTALL_KEY_PHP \
-#    NEW_RELIC_API_KEY=$(cat /run/secrets/NEW_RELIC_API_KEY_PHP) \
-#&& \
-#    NR_INSTALL_KEY=$(cat /run/secrets/NR_INSTALL_KEY_PHP) \
-#&& \
-#    rpm -Uvh http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm \
-#&& \
-#    dnf -y install newrelic-php5 \
-#&& \
-#    NR_INSTALL_SILENT=1 newrelic-install install all \
-#&& \
-#    find /etc /opt/etc /usr/local/etc -type f -name newrelic.ini -exec sed -i -e "s/$NEW_RELIC_API_KEY/$NR_INSTALL_KEY/" -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname = \"NextCloud\"/" {} \; 2>/dev/null \
-#&& \
-#    unset NEW_RELIC_API_KEY NEW_RELIC_ACCOUNT_ID NR_INSTALL_KEY
+RUN \
+    --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
+    --mount=type=secret,id=NR_INSTALL_KEY_PHP \
+&& \
+    NEW_RELIC_API_KEY=$(cat /run/secrets/NEW_RELIC_API_KEY_PHP) \
+&& \
+    NR_INSTALL_KEY=$(cat /run/secrets/NR_INSTALL_KEY_PHP) \
+&& \
+    rpm -Uvh http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm \
+&& \
+    dnf -y install newrelic-php5 \
+&& \
+    NR_INSTALL_SILENT=1 newrelic-install install all \
+&& \
+    find /etc /opt/etc /usr/local/etc -type f -name newrelic.ini -exec sed -i -e "s/$NEW_RELIC_API_KEY/$NR_INSTALL_KEY/" -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname = \"NextCloud\"/" {} \; 2>/dev/null \
+&& \
+    unset NEW_RELIC_API_KEY NEW_RELIC_ACCOUNT_ID NR_INSTALL_KEY
 
 FROM third_tage AS final
 
 WORKDIR /var/www/html/nextcloud
 #USER apache
-#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
-CMD ["php-fpm" && "httpd"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
