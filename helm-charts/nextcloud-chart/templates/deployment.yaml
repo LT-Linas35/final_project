@@ -18,3 +18,17 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         ports:
         - containerPort: 80
+        env:
+        - name: NEXTCLOUD_DB_TYPE
+          value: "{{ .Values.env.database.type }}"
+        - name: NEXTCLOUD_DB_NAME
+          value: "{{ .Values.env.database.name }}"
+        - name: NEXTCLOUD_DB_USER
+          value: "{{ .Values.env.database.user }}"
+        - name: NEXTCLOUD_DB_PASSWORD
+          value: "{{ .Values.env.database.password }}"
+        - name: NEXTCLOUD_ADMIN_USER
+          value: "{{ .Values.env.admin.user }}"
+        - name: NEXTCLOUD_ADMIN_PASSWORD
+          value: "{{ .Values.env.admin.password }}"
+
