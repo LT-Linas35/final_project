@@ -114,5 +114,8 @@ resource "aws_security_group" "master_sg" {
 
   tags = {
     Name = "master-sg"
+    Cluster     = var.Cluster
+    Environment = var.Environment
+    ManagedBy   = var.ManagedBy
   }
 }

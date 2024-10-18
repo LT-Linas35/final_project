@@ -4,9 +4,14 @@ resource "aws_instance" "k8s-nodes" {
   ami                    = var.ami
   key_name               = var.key_name
   subnet_id              = var.subnet_id
-  vpc_security_group_ids = [var.aws_securitygroup_web_sg_id]
+  vpc_security_group_ids = [var.aws_securitygroup_nodes_sg_id]
   user_data              = data.template_file.user_data.rendered
   iam_instance_profile   = var.ec2_instance_profile_name
+
+  depends_on = [
+    var.controller_instance_id,
+    var.master_instance_id
+  ]
 
   root_block_device {
     volume_size = var.volume_size
@@ -14,9 +19,12 @@ resource "aws_instance" "k8s-nodes" {
   }
 
   tags = {
-    Name = "${var.instance_name}-${count.index + 1}"
+    Name                        = "${var.instance_name}-${count.index + 1}"
     "kubernetes.io/cluster/k8s" = "shared"
-    "kubernetes.io/role/elb" = "1"
+    "kubernetes.io/role/elb"    = "1"
+    Cluster                     = var.Cluster
+    Environment                 = var.Environment
+    ManagedBy                   = var.ManagedBy
   }
 }
 

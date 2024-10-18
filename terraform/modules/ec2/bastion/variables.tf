@@ -1,25 +1,25 @@
-variable "aws_securitygroup_controller_sg_id" {
-  description = "ID of the security group for the controller server"
+variable "aws_securitygroup_bastion_sg_id" {
+  description = "ID of the security group for the bastion server"
   type        = string
 }
 
 variable "subnet_id" {
-  description = "Subnet ID for the controller EC2 instance"
+  description = "Subnet ID for the bastion EC2 instance"
   type        = string
 }
 
 variable "ami" {
-  description = "AMI ID for the controller EC2 instance"
+  description = "AMI ID for the bastion EC2 instance"
   type        = string
 }
 
 variable "instance_type" {
-  description = "Instance type for the controller EC2 instance"
+  description = "Instance type for the bastion EC2 instance"
   type        = string
 }
 
 variable "instance_name" {
-  description = "Name tag for the controller EC2 instance"
+  description = "Name tag for the bastion EC2 instance"
   type        = string
 }
 
@@ -28,13 +28,23 @@ variable "key_name" {
   type        = string
 }
 
+variable "bastion_count" {
+  description = "Bastion Proxy count"
+  type        = number
+}
+
+variable "controller_instance_private_hostname" {
+  description = "Controller IP address"
+  type        = string
+}
+
 variable "volume_size" {
-  description = "Controller volume size"
+  description = "Bastion volume size"
   type        = string
 }
 
 variable "volume_type" {
-  description = "Controller Volume type"
+  description = "Bastion volume type"
   type        = string
 }
 

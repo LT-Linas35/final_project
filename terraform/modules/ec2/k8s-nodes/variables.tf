@@ -1,26 +1,25 @@
-variable "aws_securitygroup_web_sg_id" {
-  description = "ID of the security group for the web server"
+variable "aws_securitygroup_nodes_sg_id" {
+  description = "ID of the security group for the nodes servers"
   type        = string
 }
 
 variable "subnet_id" {
-  description = "AMI ID for the WEB EC2 instance"
+  description = "Subnet ID for the Nodes EC2 instance"
   type        = string
 }
 
 variable "ami" {
-  description = "AMI ID for the WEB EC2 instance"
+  description = "AMI ID for the Nodes EC2 instance"
   type        = string
 }
 
 variable "instance_type" {
-  description = "Instance type for the WEB EC2 instance"
+  description = "Instance type for the Nodes EC2 instance"
   type        = string
-  default     = "t2.micro"
 }
 
 variable "instance_name" {
-  description = "Name tag for the WEB EC2 instance"
+  description = "Name tag for the Nodes EC2 instance"
   type        = string
 }
 
@@ -50,6 +49,31 @@ variable "volume_size" {
 }
 
 variable "volume_type" {
-  description = "Nodes Volume tyoe"
+  description = "Nodes volume type"
   type        = string
+}
+
+variable "Cluster" {
+  description = "The name of the Kubernetes cluster"
+  type        = string
+}
+
+variable "Environment" {
+  description = "The environment for the resources (e.g., Production, Development)"
+  type        = string
+}
+
+variable "ManagedBy" {
+  description = "The entity responsible for managing these resources"
+  type        = string
+}
+
+variable "controller_instance_id" {
+  description = "ID of the controller instance"
+  type        = string
+}
+
+variable "master_instance_id" {
+  description = "ID of the master instance"
+  type        = list(string)
 }

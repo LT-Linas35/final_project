@@ -74,10 +74,8 @@ EOF
 systemctl enable ec2_post.service
 systemctl enable send_leave_node.service
 
-# Install Puppet and additional utilities
-rpm -Uvh https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
 dnf -y upgrade
-dnf -y install nano kernel-devel-$(uname -r) socatc #puppet-agent 
+dnf -y install kernel-devel-$(uname -r) socat
 
 # Load necessary kernel modules for Kubernetes networking
 modprobe br_netfilter
@@ -136,17 +134,5 @@ EOF
 dnf makecache; dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 systemctl enable --now kubelet.service
 
-# Configure Puppet agent
-#export pupethost=$(hostname | awk '{print $1}')
-#cat <<EOF > /etc/puppetlabs/puppet/puppet.conf
-#[main]
-#certname = $pupethost
-#server = ${controller_hostname}
-#EOF
 
-# Bootstrap Puppet SSL certificates and enable Puppet service
-#/opt/puppetlabs/bin/puppet ssl bootstrap
-#systemctl enable puppet
-
-# Reboot the system to apply changes
 systemctl reboot

@@ -8,9 +8,7 @@ dnf -y upgrade
 
 set +xv
 cat <<EOF > /home/ec2-user/.ssh/id_rsa
------BEGIN RSA PRIVATE KEY-----
-
------END RSA PRIVATE KEY-----
+${EC2_KEY}
 EOF
 chown ec2-user:ec2-user /home/ec2-user/.ssh/id_rsa
 chmod 600 /home/ec2-user/.ssh/id_rsa
@@ -252,9 +250,8 @@ chown ec2-user:ec2-user /home/ec2-user/node_join_master.yaml
 # Upgrade all system packages again
 dnf -y upgrade
 
-# Install Puppet, Ansible, Git, Nano, Puppetserver, Zsh, and Pip
-#dnf install -y https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
-dnf -y install ansible-core.x86_64 git nano zsh pip #puppetserver 
+# Install Ansible, Git, Nano, Zsh, and Pip
+dnf -y install ansible-core.x86_64 git nano zsh pip
 
 # Install Flask for Python
 sudo -u ec2-user pip install flask
@@ -273,57 +270,12 @@ EOF
 # Install Kubernetes components
 dnf makecache; dnf install -y kubelet kubectl --disableexcludes=kubernetes
 
-# Adjust Puppetserver Java memory settings for a lower memory footprint
-#sed -i 's/JAVA_ARGS="-Xms2g -Xmx2g/JAVA_ARGS="-Xms512m -Xmx512m/' /etc/sysconfig/puppetserver
+
 
 # Disable swap as Kubernetes requires it to be turned off
 sed -i '/swap/d' /etc/fstab
 
-# Set Puppet hostname
-#export pupethost=$(hostname | awk '{print $1}')
 
-# Configure Puppet with autosign for specific subnets
-#cat <<EOF > /etc/puppetlabs/puppet/puppet.conf
-#[main]
-#certname = $pupethost
-#server = $pupethost
-#environment = production
-#runinterval = 15m
-#[master]
-#autosign = true
-#autosign_config = /etc/puppetlabs/puppet/autosign.conf
-#EOF
-
-# Create autosign configuration
-#cat <<EOF > /etc/puppetlabs/puppet/autosign.conf
-#*.10.0.4.*
-#*.10.0.3.*
-#*.10.0.2.*
-#*.10.0.1.*
-#EOF
-
-# Create Puppet manifests for managing Nginx
-#mkdir -p /etc/puppetlabs/code/environments/production/manifests/
-#cat <<EOF > /etc/puppetlabs/code/environments/production/manifests/site.pp
-#node /^ip-10-0-4-\d{1,3}\.ec2\.internal$/  {
-#  include nginx
-#}
-#EOF
-
-#mkdir -p /etc/puppetlabs/code/environments/production/modules/nginx/manifests/
-#cat <<EOF > /etc/puppetlabs/code/environments/production/modules/nginx/manifests/init.pp
-#class nginx {
-#  package { 'nginx':
-#    ensure => installed,
-#  }
-
-#  service { 'nginx':
-#    ensure    => running,
-#    enable    => true,
-#    subscribe => Package['nginx'],
-#  }
-#}
-#EOF
 
 # Configure Ansible to disable host key checking and set SSH connection settings
 cat <<EOF > /etc/ansible/ansible.cfg

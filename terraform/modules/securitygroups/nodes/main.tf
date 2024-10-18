@@ -1,14 +1,14 @@
 resource "aws_security_group" "nodes_sg" {
   name        = "nodes-sg"
-  description = "Allow inbound SSH and HTTP traffic and K8s"
+  description = "Allow inbound traffic from local subnets"
   vpc_id      = var.nodes_k8s_vpc_id
 
 
 
   ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
     cidr_blocks = [
       "10.0.3.0/24",
       "10.0.2.0/24",
@@ -16,7 +16,7 @@ resource "aws_security_group" "nodes_sg" {
     ]
   }
 
-/*
+  /*
 
   ingress {
     from_port   = 22
@@ -65,8 +65,11 @@ resource "aws_security_group" "nodes_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
+
   tags = {
-    Name = "nodes-sg"
+    Name        = "nodes-sg"
+    Cluster     = var.Cluster
+    Environment = var.Environment
+    ManagedBy   = var.ManagedBy
   }
 }

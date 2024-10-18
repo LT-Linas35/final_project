@@ -1,3 +1,4 @@
-output "aws_securitygroup_web_sg_id" {
-  value = aws_security_group.master_sg.id
+output "aws_securitygroup_master_sg_id" {
+  description = "The ID of the master security group"
+  value       = aws_security_group.master_sg.id
 }

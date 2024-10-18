@@ -1,5 +1,5 @@
-variable "master_k8s_vpc_id" {
-  description = "The VPC ID for the Kubernetes master nodes"
+variable "aws_vpc_main" {
+  description = "The main VPC ID for the infrastructure"
   type        = string
 }
 
@@ -15,5 +15,10 @@ variable "Environment" {
 
 variable "ManagedBy" {
   description = "The entity responsible for managing these resources"
+  type        = string
+}
+
+variable "name" {
+  description = "The name of the Redis SG"
   type        = string
 }

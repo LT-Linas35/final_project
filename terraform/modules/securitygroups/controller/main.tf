@@ -44,5 +44,8 @@ resource "aws_security_group" "controller_sg" {
 
   tags = {
     Name = "controller-sg"
+    Cluster     = var.Cluster
+    Environment = var.Environment
+    ManagedBy   = var.ManagedBy
   }
 }

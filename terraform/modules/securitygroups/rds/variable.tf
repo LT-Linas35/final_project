@@ -1,5 +1,5 @@
-variable "master_k8s_vpc_id" {
-  description = "The VPC ID for the Kubernetes master nodes"
+variable "aws_vpc_main_id" {
+  description = "The main VPC ID for the infrastructure"
   type        = string
 }
 
