@@ -11,9 +11,9 @@ resource "aws_security_group" "controller_sg" {
   }
 
   ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = [
       "10.0.3.0/24",
       "10.0.2.0/24",
@@ -21,7 +21,6 @@ resource "aws_security_group" "controller_sg" {
     ]
   }
 
-/*
 
   ingress {
     from_port   = 5000
@@ -33,7 +32,7 @@ resource "aws_security_group" "controller_sg" {
     ]
   }  
 
-*/
+
 
   egress {
     from_port   = 0
