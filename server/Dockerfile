@@ -59,7 +59,6 @@ RUN \
 
 COPY nextcloud.conf /etc/httpd/conf.d/
 COPY .htaccess /var/www/html/nextcloud/.htaccess
-RUN chown apache /var/www/html/nextcloud/.htaccess
 COPY supervisord.conf /etc/
 
 RUN \
@@ -95,5 +94,5 @@ RUN unset NEW_RELIC_API_KEY NR_INSTALL_KEY
 FROM third_tage AS final
 
 WORKDIR /var/www/html/nextcloud
-#USER apache
+USER apache
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
