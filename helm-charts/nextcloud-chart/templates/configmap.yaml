@@ -12,6 +12,7 @@ data:
          array (
          0 => '*',
       ),
+      'installed' => true,
       'datadirectory' => '/var/www/html/nextcloud/data',
       'memcache.local' => '\\OC\\Memcache\\APCu',
       'memcache.distributed' => '\\OC\\Memcache\\Redis',
