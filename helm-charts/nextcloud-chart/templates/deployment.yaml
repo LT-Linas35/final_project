@@ -73,7 +73,8 @@ spec:
               --database-user=$NEXTCLOUD_DB_USER \
               --database-pass=$NEXTCLOUD_DB_PASSWORD; \
               sed -i "/);/i \  'installed' => true," config/config.php; \
-              mkdir data/.ocdata
+              mkdir -p data/.ocdata; \
+              php occ db:add-missing-indices; \
               supervisord -c /etc/supervisord.conf
       volumes:
       - name: config-volume
