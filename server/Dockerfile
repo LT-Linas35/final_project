@@ -59,6 +59,7 @@ RUN \
 
 COPY nextcloud.conf /etc/httpd/conf.d/
 COPY .htaccess /var/www/html/nextcloud/.htaccess
+RUN chown apache /var/www/html/nextcloud/.htaccess
 COPY supervisord.conf /etc/
 
 RUN \
