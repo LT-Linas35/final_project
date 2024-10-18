@@ -3,12 +3,12 @@ entries:
   nextcloud-chart:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-10-18T10:42:53.464279702+03:00"
+    created: "2024-10-18T11:00:36.062831873+03:00"
     description: A Helm chart for Kubernetes
     digest: baf3bb4f6a352efd0b3ddc87728bcbe65d11d0bed03cb04f02a477e5889ab774
     name: nextcloud-chart
     type: application
     urls:
-    - https://github.com/LT-Linas35/final_project/raw/refs/heads/main/helm-charts/nextcloud-chart/nextcloud-chart-0.2.0.tgz
+    - https://github.com/LT-Linas35/final_project/blob/main/helm-charts/nextcloud-chart/nextcloud-chart-0.2.0.tgz
     version: 0.2.0
-generated: "2024-10-18T10:42:53.46397132+03:00"
+generated: "2024-10-18T11:00:36.062490852+03:00"
