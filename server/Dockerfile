@@ -94,6 +94,6 @@ RUN unset NEW_RELIC_API_KEY NR_INSTALL_KEY
 FROM third_tage AS final
 
 WORKDIR /var/www/html/nextcloud
-RUN chown apache -R /run/php-fpm/ && chown apache -R /var/run/httpd/ && chown apache -R /var/log/httpd
-USER apache
+#RUN chown apache -R /run/php-fpm/ && chown apache -R /var/run/httpd/ && chown apache -R /var/log/httpd
+#USER apache
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
