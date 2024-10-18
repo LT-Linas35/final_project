@@ -46,7 +46,7 @@ k8s-master = {
   k8s_master_count        = "1"                     # Number of master nodes
   volume_type             = "gp3"                   # EBS volume type for the master nodes
   volume_size             = "10"                    # Size of the EBS volume in GiB
-  k8s-master_count          = 1                     # At the moment supported only one unless manualy added
+  k8s-master_count        = 1                       # At the moment supported only one unless manualy added
 }
 
 # Kubernetes Nodes Configuration
@@ -97,8 +97,8 @@ rds = {
   engine            = "mysql"        # Database engine used by RDS
   engine_version    = "8.0"          # Version of the database engine
   instance_class    = "db.t4g.micro" # Instance class for the RDS instance
-//  username               = ""            # Username (pass through TerraForm Cloud or secret management)
-//  password               = ""         # Password (pass through TerraForm Cloud or secret management)
+  //  username               = ""         # Username (pass through TerraForm Cloud or secret management)
+  //  password               = ""         # Password (pass through TerraForm Cloud or secret management)
   parameter_group_name   = "default.mysql8.0"           # Parameter group for MySQL 8.0
   skip_final_snapshot    = true                         # Skip the final snapshot when deleting the RDS instance
   publicly_accessible    = false                        # Make the RDS instance private
@@ -125,9 +125,9 @@ redis = {
 
 # NextCloud Installation Configuration
 nextcloud_install = {
-//  ADMIN_USER     = ""          # Admin user for NextCloud (pass through TerraForm Cloud or secret management)
-//  ADMIN_PASSWORD = ""          # Admin password for NextCloud (pass through TerraForm Cloud or secret management)
-//  ADMIN_EMAIL    = ""   # Admin email for NextCloud (pass through TerraForm Cloud or secret management)
+  //  ADMIN_USER     = ""          # Admin user for NextCloud (pass through TerraForm Cloud or secret management)
+  //  ADMIN_PASSWORD = ""          # Admin password for NextCloud (pass through TerraForm Cloud or secret management)
+  //  ADMIN_EMAIL    = ""          # Admin email for NextCloud (pass through TerraForm Cloud or secret management)
   REDIS_TIMEOUT = 0                # Redis timeout value for NextCloud
   REDIS_DBINDEX = 0                # Redis database index for NextCloud
   S3_BUCKET     = "lino-nextcloud" # S3 bucket name used for NextCloud storage
