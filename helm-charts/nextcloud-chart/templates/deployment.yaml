@@ -70,7 +70,7 @@ spec:
                                       --database-user=$NEXTCLOUD_DB_USER \
                                       --database-pass=$NEXTCLOUD_DB_PASSWORD \
                                 ; \
-                                      sed -i "/);/i \  'installed' => true," config/config.php;
+                                      sed -i "/);/i \  'installed' => true," config/config.php; \
                                       supervisord -c /etc/supervisord.conf"]
       volumes:
       - name: config-volume
