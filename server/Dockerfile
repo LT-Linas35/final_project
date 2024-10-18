@@ -95,5 +95,6 @@ FROM third_tage AS final
 
 WORKDIR /var/www/html/nextcloud
 #RUN chown apache -R /run/php-fpm/ && chown apache -R /var/run/httpd/ && chown apache -R /var/log/httpd
-#USER apache
+RUN sed -i '/^root.*ALL$/a apache ALL=(ALL) NOPASSWD: /usr/sbin/httpd, /usr/sbin/php-fpm' /etc/sudoers
+USER apache
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
