@@ -94,5 +94,5 @@ RUN unset NEW_RELIC_API_KEY NR_INSTALL_KEY
 FROM third_tage AS final
 
 WORKDIR /var/www/html/nextcloud
-USER apache
+#USER apache
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
