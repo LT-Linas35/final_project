@@ -95,5 +95,5 @@ FROM third_tage AS final
 
 WORKDIR /var/www/html/nextcloud
 RUN sed -i '/^root.*ALL$/a apache ALL=(ALL) NOPASSWD: /usr/sbin/httpd, /usr/sbin/php-fpm, /usr/bin/supervisord' /etc/sudoers
-USER apache
+#USER apache
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
