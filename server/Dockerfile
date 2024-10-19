@@ -77,8 +77,6 @@ RUN \
     echo "apc.enable_cli = 1" >> /etc/php.ini
 
 FROM second_stage AS third_tage
-#     --mount=type=secret,id=NEW_RELIC_ACCOUNT_ID_PHP     export NEW_RELIC_ACCOUNT_ID=$(cat /run/secrets/NEW_RELIC_ACCOUNT_ID_PHP) && \
-
 
 RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
     --mount=type=secret,id=NR_INSTALL_KEY_PHP \
@@ -95,5 +93,6 @@ FROM third_tage AS final
 
 WORKDIR /var/www/html/nextcloud
 RUN sed -i '/^root.*ALL$/a apache ALL=(ALL) NOPASSWD: /usr/sbin/httpd, /usr/sbin/php-fpm, /usr/bin/supervisord' /etc/sudoers
-#USER apache
+RUN  chown -R apache /var/www/html/nextcloud; chmod -R 755 /var/www/html/nextcloud # twice to make sure right permissions
+USER apache
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
