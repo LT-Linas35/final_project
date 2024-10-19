@@ -75,6 +75,7 @@ spec:
               sed -i "/);/i \  'installed' => true," config/config.php; \
               mkdir -p data/.ocdata; \
               php occ db:add-missing-indices; \
+              php occ maintenance:repair; \
               sudo supervisord -c /etc/supervisord.conf
       volumes:
       - name: config-volume
