@@ -1,17 +1,22 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
-  name: {{ .Release.Name }}-nextcloud
+  name: {{ .Release.Name }}-blue-green
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    blueGreen:
+      activeService: {{ .Release.Name }}-active
+      previewService: {{ .Release.Name }}-preview
+      autoPromotionEnabled: false
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-nextcloud
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-nextcloud
+        app: {{ .Release.Name }}
     spec:
       containers:
       - name: nextcloud-container
