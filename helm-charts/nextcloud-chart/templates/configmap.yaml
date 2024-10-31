@@ -13,7 +13,6 @@ data:
          0 => '*',
       ),
       'datadirectory' => '/var/www/html/nextcloud/data',
-      /*
       'memcache.local' => '\\OC\\Memcache\\APCu',
       'memcache.distributed' => '\\OC\\Memcache\\Redis',
       'memcache.locking' => '\\OC\\Memcache\\Redis',
@@ -24,6 +23,7 @@ data:
         'timeout' => '{{ .Values.redis.timeout }}',
         'dbindex' => '{{ .Values.redis.dbindex }}',
       ),
+/*
       'objectstore' =>
       array (
         'class' => '\\OC\\Files\\ObjectStore\\S3',
@@ -33,5 +33,5 @@ data:
           'region' => '{{ .Values.s3.region }}',
         ),
       ),
-      */
+*/
     );
