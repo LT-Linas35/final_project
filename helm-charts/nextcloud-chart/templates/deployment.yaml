@@ -74,6 +74,9 @@ spec:
               --database-pass=$NEXTCLOUD_DB_PASSWORD; \
               sed -i "/);/i \  'installed' => true," config/config.php; \
               mkdir -p data/.ocdata; \
+              chown apache data/.ocdata; \
+              chown apache config/config.php; \
+              echo $NEXTCLOUD_ADMIN_USER $NEXTCLOUD_ADMIN_PASSWORD $NEXTCLOUD_ADMIN_EMAIL $NEXTCLOUD_DB_TYPE $NEXTCLOUD_DB_NAME $NEXTCLOUD_DB_HOST $NEXTCLOUD_DB_PORT $NEXTCLOUD_DB_USER $NEXTCLOUD_DB_PASSWORD 
               supervisord -c /etc/supervisord.conf
       volumes:
       - name: config-volume
