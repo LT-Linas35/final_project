@@ -13,6 +13,7 @@ data:
          0 => '*',
       ),
       'datadirectory' => '/var/www/html/nextcloud/data',
+      /*
       'memcache.local' => '\\OC\\Memcache\\APCu',
       'memcache.distributed' => '\\OC\\Memcache\\Redis',
       'memcache.locking' => '\\OC\\Memcache\\Redis',
@@ -32,4 +33,5 @@ data:
           'region' => '{{ .Values.s3.region }}',
         ),
       ),
+      */
     );
