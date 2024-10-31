@@ -20,6 +20,7 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}
+        role: active
     spec:
       containers:
       - name: nextcloud-container
