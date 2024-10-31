@@ -62,8 +62,7 @@ spec:
           - "/bin/bash"
           - "-c"
           - |
-              set -xv
-              php occ maintenance:install \
+              sudo -u apache php occ maintenance:install \
               --admin-user=$NEXTCLOUD_ADMIN_USER \
               --admin-pass=$NEXTCLOUD_ADMIN_PASSWORD \
               --admin-email=$NEXTCLOUD_ADMIN_EMAIL \
