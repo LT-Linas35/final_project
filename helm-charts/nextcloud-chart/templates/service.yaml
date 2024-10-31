@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Release.Name }}-nextcloud-service
+  annotations:
+  service.beta.kubernetes.io/aws-load-balancer-type: "alb"
   labels:
     app: {{ .Release.Name }}-nextcloud
 spec:
