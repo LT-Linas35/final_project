@@ -13,12 +13,12 @@ spec:
   selector:
     matchLabels:
       app: {{ .Release.Name }}
-      role: active
-      role: preview
   template:
     metadata:
       labels:
         app: {{ .Release.Name }}
+        role: active
+        role: preview
     spec:
       containers:
       - name: nextcloud-container
