@@ -10,9 +10,9 @@ spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     blueGreen:
-      activeService: {{ .Release.Name }}-active
+      activeService: {{ .Release.Name }}
       previewService: {{ .Release.Name }}-preview
-      autoPromotionEnabled: true
+      autoPromotionEnabled: false
   selector:
     matchLabels:
       app: {{ .Release.Name }}
