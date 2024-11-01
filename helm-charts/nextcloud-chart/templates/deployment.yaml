@@ -13,6 +13,7 @@ spec:
   selector:
     matchLabels:
       app: {{ .Release.Name }}
+      role: active
   template:
     metadata:
       labels:
