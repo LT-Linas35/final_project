@@ -6,3 +6,16 @@ metadata:
   annotations:
     argocd-image-updater.argoproj.io/image-list: nextcloud=linas37/nextcloud
     argocd-image-updater.argoproj.io/nextcloud.update-strategy: latest
+spec:
+  project: default
+  source:
+    repoURL: 'ttps://github.com/LT-Linas35/final_project.git'
+    path: helm-charts/nextcloud-chart
+    targetRevision: HEAD
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: nextcloud
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
