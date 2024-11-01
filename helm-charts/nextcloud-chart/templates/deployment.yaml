@@ -13,6 +13,10 @@ spec:
       activeService: {{ .Release.Name }}
       previewService: {{ .Release.Name }}-preview
       autoPromotionEnabled: false
+      trafficRouting:
+        alb:
+          ingress: {{ .Release.Name }}-ingress
+          servicePort: 80
   selector:
     matchLabels:
       app: {{ .Release.Name }}
