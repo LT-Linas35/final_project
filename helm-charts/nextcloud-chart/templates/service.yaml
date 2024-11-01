@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Name }}
   namespace: nextcloud
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: {{ .Release.Name }}
   ports:
