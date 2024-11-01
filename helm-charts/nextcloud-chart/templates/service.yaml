@@ -7,7 +7,6 @@ spec:
   type: {{ .Values.service.type }}
   selector:
     app: {{ .Release.Name }}
-    role: active
   ports:
   - port: {{ .Values.service.port }}
     targetPort: 80
@@ -22,7 +21,6 @@ spec:
   type: {{ .Values.service.type }}
   selector:
     app: {{ .Release.Name }}
-    role: preview
   ports:
   - port:  {{ .Values.service.port }}
     targetPort: 80
