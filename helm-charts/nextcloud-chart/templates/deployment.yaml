@@ -1,15 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Release.Name }}-rolling
   namespace: nextcloud
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
-    blueGreen:
-      activeService: {{ .Release.Name }}
-      previewService: {{ .Release.Name }}-preview
-      autoPromotionEnabled: true
+    canary:
+      steps:
+        - setWeight: 25
+        - pause: { duration: 360s }
+        - setWeight: 50        
+        - pause: { duration: 360s } 
+        - setWeight: 100        
   selector:
     matchLabels:
       app: {{ .Release.Name }}
@@ -17,7 +20,6 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}
-        role: active
     spec:
       containers:
       - name: nextcloud-container
