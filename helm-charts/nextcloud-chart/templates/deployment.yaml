@@ -9,7 +9,7 @@ spec:
     blueGreen:
       activeService: {{ .Release.Name }}
       previewService: {{ .Release.Name }}-preview
-      autoPromotionEnabled: false
+      autoPromotionEnabled: true
   selector:
     matchLabels:
       app: {{ .Release.Name }}
