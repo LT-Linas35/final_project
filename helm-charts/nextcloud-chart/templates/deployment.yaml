@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: {{ .Release.Name }}-blue-green-blue-green
+  name: {{ .Release.Name }}
   namespace: nextcloud
   annotations:
     argocd-image-updater.argoproj.io/image-list: nextcloud={{ .Values.image.repository }}
