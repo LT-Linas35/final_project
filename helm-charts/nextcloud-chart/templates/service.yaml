@@ -7,7 +7,7 @@ spec:
   type: {{ .Values.service.type }}
   selector:
     app: {{ .Release.Name }}
-    role: leader
+    L1: K1
   ports:
   - port: {{ .Values.service.port }}
     targetPort: 80
