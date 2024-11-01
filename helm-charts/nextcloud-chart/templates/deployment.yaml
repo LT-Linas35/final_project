@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: {{ .Release.Name }}-blue-green
-  namespace: default
+  namespace: nextcloud
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
