@@ -18,7 +18,6 @@ spec:
       labels:
         app: {{ .Release.Name }}
         role: active
-        role: preview
     spec:
       containers:
       - name: nextcloud-container
