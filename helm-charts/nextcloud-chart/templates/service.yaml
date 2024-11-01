@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Name }}
   namespace: nextcloud
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: {{ .Release.Name }}
   ports:
