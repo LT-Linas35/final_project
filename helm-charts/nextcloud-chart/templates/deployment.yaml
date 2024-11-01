@@ -13,11 +13,11 @@ spec:
   selector:
     matchLabels:
       app: {{ .Release.Name }}
+      L1: K1
   template:
     metadata:
       labels:
         app: {{ .Release.Name }}
-        role: leader
     spec:
       containers:
       - name: nextcloud-container
