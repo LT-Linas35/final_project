@@ -3,6 +3,9 @@ kind: Rollout
 metadata:
   name: {{ .Release.Name }}
   namespace: nextcloud
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: nextcloud={{ .Values.image.repository }}
+    argocd-image-updater.argoproj.io/nextcloud.update-strategy: {{ .Values.image.tag }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
@@ -22,7 +25,7 @@ spec:
         app: {{ .Release.Name }}
     spec:
       containers:
-      - name: nextcloud-container
+      - name: nextcloud
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         ports:
         - containerPort: 80
