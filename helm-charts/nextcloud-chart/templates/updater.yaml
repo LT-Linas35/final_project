@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: nextcloud-rollout
-  namespace: nextcloud
+  namespace: Default
   annotations:
     argocd-image-updater.argoproj.io/image-list: nextcloud=linas37/nextcloud
     argocd-image-updater.argoproj.io/nextcloud.update-strategy: latest
