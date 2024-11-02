@@ -23,7 +23,6 @@ data:
         'timeout' => '{{ .Values.redis.timeout }}',
         'dbindex' => '{{ .Values.redis.dbindex }}',
       ),
-      /*
       'objectstore' =>
       array (
         'class' => '\\OC\\Files\\ObjectStore\\S3',
@@ -33,5 +32,4 @@ data:
           'region' => '{{ .Values.s3.region }}',
         ),
       ),
-      */
     );
