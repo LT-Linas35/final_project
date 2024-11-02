@@ -15,11 +15,14 @@ service:
   port: 80                              # Service port for external access
 
 canarySteps:
-  - setWeight: 25                       # Canary deployment weight step 1
-    pauseDuration: 360s                 # Pause duration after step 1
-  - setWeight: 50                       # Canary deployment weight step 2
-    pauseDuration: 360s                 # Pause duration after step 2
-  - setWeight: 100                      # Final weight to complete deployment
+  step1:
+    setWeight: 25                      # Canary deployment weight step 1
+    pauseDuration: "360s"              # Pause duration after step 1
+  step2:
+    setWeight: 50                      # Canary deployment weight step 2
+    pauseDuration: "360s"              # Pause duration after step 2
+  step3:
+    setWeight: 100                     # Final weight to complete deployment                 
 
 ingress:
   port: 80                              # Ingress port for the application
