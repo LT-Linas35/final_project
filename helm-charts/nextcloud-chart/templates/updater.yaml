@@ -2,20 +2,20 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: nextcloud-rollout
-  namespace: default
+  namespace: {{ .Values.applicationNamespace }}
   annotations:
-    argocd-image-updater.argoproj.io/image-list: nextcloud=linas37/nextcloud
-    argocd-image-updater.argoproj.io/nextcloud.update-strategy: latest
+    argocd-image-updater.argoproj.io/image-list: nextcloud={{ .Values.image.repository }}
+    argocd-image-updater.argoproj.io/nextcloud.update-strategy: {{ .Values.image.updateStrategy }}
 spec:
-  project: default
+  project: {{ .Values.project }}
   source:
-    repoURL: 'https://github.com/LT-Linas35/final_project.git'
-    path: helm-charts/nextcloud-chart
-    targetRevision: HEAD
+    repoURL: {{ .Values.source.repoURL }}
+    path: {{ .Values.source.path }}
+    targetRevision: {{ .Values.source.targetRevision }}
   destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: nextcloud
+    server: {{ .Values.destination.server }}
+    namespace: {{ .Values.namespace }}
   syncPolicy:
     automated:
-      prune: true
-      selfHeal: true
+      prune: {{ .Values.syncPolicy.prune }}
+      selfHeal: {{ .Values.syncPolicy.selfHeal }}
