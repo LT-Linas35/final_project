@@ -85,7 +85,12 @@ FROM third_tage AS final
 
 WORKDIR /var/www/html/nextcloud
 
-RUN  chown -R apache /var/www/html/nextcloud; chmod -R 755 /var/www/html/nextcloud # twice to make sure right permissions
-RUN mkdir -p ./data/.ocdata
+RUN  <<EOF
+chown -R apache /var/www/html/nextcloud
+chmod -R 755 /var/www/html/nextcloud # twice to make sure right permissions
+mkdir -p ./data/.ocdata 
+mkdir -p /run/php-fpm 
+chown apache /run/php-fpm
+EOF
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
