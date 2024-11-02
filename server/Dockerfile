@@ -71,8 +71,8 @@ EOL
 EOF
 FROM second_stage AS third_tage
 
-RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP
-    --mount=type=secret,id=NR_INSTALL_KEY_PHP
+RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
+    --mount=type=secret,id=NR_INSTALL_KEY_PHP \
     export NEW_RELIC_API_KEY=$(cat /run/secrets/NEW_RELIC_API_KEY_PHP) && \
     export NR_INSTALL_KEY=$(cat /run/secrets/NR_INSTALL_KEY_PHP) && \
     rpm -Uvh http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm && \
