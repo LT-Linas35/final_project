@@ -11,7 +11,7 @@ image:
   updateStrategy: latest                # Image update strategy (e.g., latest)
 
 service:
-  type: LoadBalancer                    # Service type, e.g., LoadBalancer, ClusterIP, etc.
+  type: ClusterIP                    # Service type, e.g., LoadBalancer, ClusterIP, etc.
   port: 80                              # Service port for external access
 
 canarySteps:
