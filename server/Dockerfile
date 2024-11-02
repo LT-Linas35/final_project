@@ -58,7 +58,7 @@ RUN \
     git clone --branch $LATEST_TAG --depth 1 https://github.com/LT-Linas35/nextcloud_server.git /var/www/html/nextcloud
 
 COPY nextcloud.conf /etc/httpd/conf.d/
-COPY .htaccess /var/www/html/nextcloud/.htaccess
+#COPY .htaccess /var/www/html/nextcloud/.htaccess
 COPY supervisord.conf /etc/
 
 RUN \
@@ -80,10 +80,13 @@ FROM second_stage AS third_tage
 
 RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
     --mount=type=secret,id=NR_INSTALL_KEY_PHP \
-    export NEW_RELIC_API_KEY=$(cat /run/secrets/NEW_RELIC_API_KEY_PHP) && \
-    export NR_INSTALL_KEY=$(cat /run/secrets/NR_INSTALL_KEY_PHP) && \
-    rpm -Uvh http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm && \
-    dnf -y install newrelic-php5 && NR_INSTALL_SILENT=1 newrelic-install install all \
+    export NEW_RELIC_API_KEY=$(cat /run/secrets/NEW_RELIC_API_KEY_PHP) \
+    && \
+    export NR_INSTALL_KEY=$(cat /run/secrets/NR_INSTALL_KEY_PHP) \
+    && \
+    rpm -Uvh http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm \
+    && \
+    dnf -y install newrelic-php5 && NR_INSTALL_SILENT=1 newrelic-install install all ;\
     find /etc /opt/etc /usr/local/etc -type f -name newrelic.ini -exec sed -i -e "s/$NEW_RELIC_API_KEY/$NR_INSTALL_KEY/" -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname = \"NextCloud\"/" {} \; 2>/dev/null
 
 RUN unset NEW_RELIC_API_KEY NR_INSTALL_KEY
@@ -95,6 +98,6 @@ WORKDIR /var/www/html/nextcloud
 RUN sed -i '/^root.*ALL$/a apache ALL=(ALL) NOPASSWD: /usr/sbin/httpd, /usr/sbin/php-fpm, /usr/bin/supervisord' /etc/sudoers
 RUN  chown -R apache /var/www/html/nextcloud; chmod -R 755 /var/www/html/nextcloud # twice to make sure right permissions
 RUN mkdir -p ./data/.ocdata
-RUN echo e >> ./test
+RUN echo f >> ./test
 #USER apache
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
