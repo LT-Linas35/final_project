@@ -12,6 +12,7 @@ data:
          array (
          0 => '*',
       ),
+      'logfile' => '/var/log/httpd/nextcloud.log',
       'datadirectory' => '/var/www/html/nextcloud/data',
       'memcache.local' => '\\OC\\Memcache\\APCu',
       'memcache.distributed' => '\\OC\\Memcache\\Redis',
