@@ -163,11 +163,12 @@ sudo -u ec2-user argocd app create nextcloud-rollout \
 --helm-set s3.region=${S3_NEXTCLOUD_REGION} \
 --helm-set s3.key=${S3_USER_KEY} \
 --helm-set s3.secret=${S3_USER_SECRET} \
---helm-set canarySteps[0].setWeight=${canarySteps_0_setWeight} \
---helm-set canarySteps[0].pauseDuration=${canarySteps_0_pauseDuration} \
---helm-set canarySteps[1].setWeight=${canarySteps_1_setWeight} \
---helm-set canarySteps[1].pauseDuration=${canarySteps_1_pauseDuration} \
---helm-set canarySteps[2].setWeight=${canarySteps_2_setWeight}
+--helm-set canarySteps.step1.setWeight=${canarySteps_0_setWeight} \
+--helm-set canarySteps.step1.pauseDuration=${canarySteps_0_pauseDuration} \
+--helm-set canarySteps.step2.setWeight=${canarySteps_1_setWeight} \
+--helm-set canarySteps.step2.pauseDuration=${canarySteps_1_pauseDuration} \
+--helm-set canarySteps.step3.setWeight=${canarySteps_2_setWeight}
+
 
 
 
