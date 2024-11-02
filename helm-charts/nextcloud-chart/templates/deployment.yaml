@@ -9,9 +9,11 @@ spec:
     canary:
       steps:
         - setWeight: {{ .Values.canarySteps.step1.setWeight }}
-          pause: { duration: {{ .Values.canarySteps.step1.pauseDuration }} }
+        - pause: 
+            duration: {{ .Values.canarySteps.step1.pauseDuration }}
         - setWeight: {{ .Values.canarySteps.step2.setWeight }}
-          pause: { duration: {{ .Values.canarySteps.step2.pauseDuration }} }
+        - pause: 
+            duration: {{ .Values.canarySteps.step2.pauseDuration }}
         - setWeight: {{ .Values.canarySteps.step3.setWeight }}
   selector:
     matchLabels:
