@@ -59,15 +59,14 @@ RUN <<EOF
     sed -i 's/;php_admin_value\[memory_limit\] = 128M/php_admin_value[memory_limit] = 512M/' /etc/php-fpm.d/www.conf
     sed -i 's/memory_limit = 128M/memory_limit = 512M/' /etc/php.ini
     echo "apc.enable_cli = 1" >> /etc/php.ini
-    cat <<EOL >> /etc/php.d/10-opcache.ini
-opcache.enable=1 \
-opcache.interned_strings_buffer=32 \
-opcache.max_accelerated_files=10000 \
-opcache.memory_consumption=128 \
-opcache.save_comments=1 \
-opcache.revalidate_freq=60 \
-opcache.jit=1255 \
-opcache.jit_buffer_size=128M \
+cat <<EOL >> /etc/php.d/10-opcache.ini
+opcache.interned_strings_buffer=32
+opcache.max_accelerated_files=10000
+opcache.memory_consumption=128
+opcache.save_comments=1
+opcache.revalidate_freq=60
+opcache.jit=1255
+opcache.jit_buffer_size=128M
 EOL
 EOF
 FROM second_stage AS third_tage
