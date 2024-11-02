@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: nextcloud-config
   labels:
-    app: {{ .Release.Name }}-nextcloud
+    app: {{ .Release.Name }}-rollout
 data:
   my.config.php: |
     <?php
