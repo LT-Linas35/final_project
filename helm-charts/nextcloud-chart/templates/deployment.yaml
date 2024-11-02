@@ -9,8 +9,10 @@ spec:
     canary:
       steps:
 {{- range $index, $step := .Values.canarySteps }}
-        - setWeight: {{ $step.setWeight }}
-          pause: { duration: {{ $step.pauseDuration }} }
+      - setWeight: {{ $step.setWeight }}
+        {{- if $step.pauseDuration }}
+        pause: { duration: {{ $step.pauseDuration }} }
+        {{- end }}
 {{- end }}
   selector:
     matchLabels:
