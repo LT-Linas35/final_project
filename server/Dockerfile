@@ -85,11 +85,13 @@ FROM third_tage AS final
 
 WORKDIR /var/www/html/nextcloud
 
+COPY .htaccess /var/www/html/nextcloud/
+
 RUN  <<EOF
-chown -R apache /var/www/html/nextcloud
-chmod -R 755 /var/www/html/nextcloud # twice to make sure right permissions
 mkdir -p ./data/.ocdata 
 mkdir -p /run/php-fpm 
+chown -R apache /var/www/html/nextcloud
+chmod -R 755 /var/www/html/nextcloud # twice to make sure right permissions
 chown apache /run/php-fpm
 EOF
 
