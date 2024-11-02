@@ -59,9 +59,11 @@ resource "aws_iam_user_policy" "s3_user_policy" {
           "s3:PutObject",
           "s3:DeleteObject"
         ]
-        Resource = "*"
+        Resource = [
+          "arn:aws:s3:::${var.nextcloud_install.S3_BUCKET}",   
+          "arn:aws:s3:::${var.nextcloud_install.S3_BUCKET}/*"
+        ]
       }
     ]
   })
 }
-
