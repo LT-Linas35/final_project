@@ -1,13 +1,40 @@
-replicaCount: 3
+# Helm chart values configuration
+
+namespace: nextcloud                    # Namespace for deployment and services
+applicationNamespace: default           # Namespace for the ArgoCD Application resource
+
+replicaCount: 3                         # Number of replicas for the Rollout deployment
 
 image:
-  repository: linas37/nextcloud
-  tag: latest
+  repository: linas37/nextcloud         # Docker repository for the Nextcloud image
+  tag: latest                           # Tag for the image version
+  updateStrategy: latest                # Image update strategy (e.g., latest)
 
 service:
-  type: LoadBalancer
-  port: 80
+  type: LoadBalancer                    # Service type, e.g., LoadBalancer, ClusterIP, etc.
+  port: 80                              # Service port for external access
+
+canarySteps:
+  - setWeight: 25                       # Canary deployment weight step 1
+    pauseDuration: 360s                 # Pause duration after step 1
+  - setWeight: 50                       # Canary deployment weight step 2
+    pauseDuration: 360s                 # Pause duration after step 2
+  - setWeight: 100                      # Final weight to complete deployment
 
 ingress:
-  port: 80
-  scheme: internet-facing
+  port: 80                              # Ingress port for the application
+  scheme: internet-facing               # Scheme type for the Ingress (e.g., internet-facing or internal)
+
+project: default                        # ArgoCD project
+
+source:
+  repoURL: 'https://github.com/LT-Linas35/final_project.git' # Repository URL
+  path: helm-charts/nextcloud-chart     # Path in the repository
+  targetRevision: HEAD                  # Target revision to use in the repository
+
+destination:
+  server: 'https://kubernetes.default.svc'  # Kubernetes API server destination
+
+syncPolicy:
+  prune: true                           # Prune resources removed from the chart
+  selfHeal: true                        # Enable self-healing for ArgoCD
