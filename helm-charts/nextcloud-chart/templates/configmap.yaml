@@ -18,21 +18,22 @@ data:
       'memcache.distributed' => '\\OC\\Memcache\\Redis',
       'memcache.locking' => '\\OC\\Memcache\\Redis',
       'redis' =>
-      array (
-        'host' => '{{ .Values.redis.host }}',
-        'port' => '{{ .Values.redis.port }}',
-        'timeout' => '{{ .Values.redis.timeout }}',
-        'dbindex' => '{{ .Values.redis.dbindex }}',
-      ),
-      /*
-      'objectstore' =>
-      array (
-        'class' => '\\OC\\Files\\ObjectStore\\S3',
-        'arguments' =>
         array (
-          'bucket' => '{{ .Values.s3.bucket }}',
-          'region' => '{{ .Values.s3.region }}',
-        ),
+          'host' => '{{ .Values.redis.host }}',
+          'port' => '{{ .Values.redis.port }}',
+          'timeout' => '{{ .Values.redis.timeout }}',
+          'dbindex' => '{{ .Values.redis.dbindex }}',
       ),
-      */
+      'objectstore' =>
+        array (
+          'class' => '\\OC\\Files\\ObjectStore\\S3',
+          'arguments' =>
+            array (
+              'bucket' => '{{ .Values.s3.bucket }}',
+              'region' => '{{ .Values.s3.region }}',
+              'autocreate' => true,
+              'key'    => '{{ .Values.s3.key }}',
+              'secret' => '{{ .Values.s3.secret }}',
+            ),
+        ),
     );
