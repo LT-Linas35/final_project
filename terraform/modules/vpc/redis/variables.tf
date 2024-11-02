@@ -1,5 +1,6 @@
 variable "aws_vpc_main" {
-    type = string
+  description = "The main VPC ID for the infrastructure"
+  type        = string
 }
 
 variable "Cluster" {

@@ -3,290 +3,25 @@
 # Enable verbose mode and command tracing for debugging purposes
 set -xv
 
+# dnf -y update
 # Upgrade all system packages to the latest version
-dnf -y upgrade
+# dnf -y upgrade
 
-set +xv
-cat <<EOF > /home/ec2-user/.ssh/id_rsa
-${EC2_KEY}
-EOF
-chown ec2-user:ec2-user /home/ec2-user/.ssh/id_rsa
-chmod 600 /home/ec2-user/.ssh/id_rsa
-set -xv 
+# Install necessary tools: Nano, Zsh, Git, jq, unzip
+dnf -y install nano zsh git jq unzip # ansible-core.x86_64 pip
 
-# Create an Ansible playbook to copy kube config to the ec2-user's home directory
-cat <<EOF > /home/ec2-user/get_config.yaml
----
-- name: Copy kube config to ec2-user's home directory
-  hosts: localhost
-  become: yes
-  vars:
-    remote_ip: "10.0.2.4"
-    kube_config_source: "/etc/kubernetes/admin.conf"
-    kube_config_temp: "/tmp/admin.conf"
-    kube_config_destination: "/home/ec2-user/.kube/config"
-
-  tasks:
-    - name: Wait for SSH connection to remote host
-      wait_for_connection:
-        timeout: 300
-      delegate_to: "{{ remote_ip }}"
-
-    - name: Fetch kube config from remote host
-      ansible.builtin.fetch:
-        src: "{{ kube_config_source }}"
-        dest: "{{ kube_config_temp }}"
-        flat: yes
-      delegate_to: "{{ remote_ip }}"
-      become: yes
-      become_user: root
-
-    - name: Copy kube config to ec2-user home directory
-      ansible.builtin.copy:
-        src: "{{ kube_config_temp }}"
-        dest: "{{ kube_config_destination }}"
-        owner: ec2-user
-        group: ec2-user
-        mode: '0600'
-      become: yes
-      become_user: ec2-user
-EOF
-
-# Create a systemd service to run the Kubernetes API Flask service
-cat <<EOF > /etc/systemd/system/k8s-api.service
-[Unit]
-Description=K8s API Flask Service
-After=network.target
-
-[Service]
-User=ec2-user
-WorkingDirectory=/home/ec2-user
-ExecStart=/usr/bin/python3 /home/ec2-user/k8s-api.py
-Restart=always
-RestartSec=5
-TimeoutStopSec=20
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# Create a Python Flask application to handle Kubernetes API requests
-cat <<EOF > /home/ec2-user/k8s-api.py
-from flask import Flask, request
-import subprocess
-
-app = Flask(__name__)
-
-@app.route('/run-playbook', methods=['POST'])
-def run_playbook():
-    data = request.get_json(force=True)
-    if not data or 'action' not in data:
-        return {"status": "error", "message": "Missing action"}, 400
-
-    node_ip = request.remote_addr
-    action = data['action']
-
-    if action == "leave_master_node":
-        playbook = "/home/ec2-user/node_leave_master.yaml"
-        node_hostname = "unknown_hostname"
-
-        try:
-            hostname_command = ["getent", "hosts", node_ip]
-            hostname_result = subprocess.run(hostname_command, capture_output=True, text=True, check=True)
-            node_hostname = hostname_result.stdout.split()[1]
-        except (subprocess.CalledProcessError, IndexError):
-            print("Failed to resolve hostname from IP address, using default value.")
-
-        command = [
-            "ansible-playbook", playbook,
-            "-e", f"node_ip={node_ip}",
-            "-e", f"node_hostname={node_hostname}"
-        ]
-
-    elif action == "join_master_node":
-        if 'providerID' not in data:
-            return {"status": "error", "message": "Missing providerID for join_master_node action"}, 400
-        
-        playbook = "/home/ec2-user/node_join_master.yaml"
-        providerID = data['providerID']
-
-        command = [
-            "ansible-playbook", playbook,
-            "-e", f"node_ip={node_ip}",
-            "-e", f"providerID={providerID}"
-        ]
-    else:
-        return {"status": "error", "message": "Unknown action"}, 400
-
-    try:
-        print(f"Running command: {' '.join(command)}")
-        result = subprocess.run(command, capture_output=True, text=True, check=True)
-        return {"status": "success", "output": result.stdout}, 200
-    except subprocess.CalledProcessError as e:
-        return {"status": "error", "output": e.stderr}, 500
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-EOF
-
-# Set ownership and permissions for the Python Flask application
-chown ec2-user:ec2-user /home/ec2-user/k8s-api.py
-
-# Create an Ansible playbook to handle node leave from the Kubernetes master
-cat <<EOF > /home/ec2-user/node_leave_master.yaml
----
-- name: Leave Kubernetes node from master and remove providerID
-  hosts: localhost
-  become: yes
-  vars:
-    master_node_ip: "10.0.2.4"
-    node_ip: "{{ node_ip }}"
-    node_hostname: "{{ node_hostname }}"
-
-  tasks:
-    - name: Wait until SSH connection to the node is available
-      wait_for_connection:
-        delay: 10
-        timeout: 300
-      delegate_to: "{{ node_ip }}"
-
-    - name: Drain the Kubernetes node
-      shell: >
-        KUBECONFIG=/etc/kubernetes/admin.conf kubectl drain {{ node_hostname }}
-        --ignore-daemonsets --delete-emptydir-data
-      delegate_to: "{{ master_node_ip }}"
-      register: drain_result
-      until: drain_result.rc == 0
-      retries: 5
-      delay: 10
-
-    - name: Remove the Kubernetes node from the cluster
-      shell: >
-        KUBECONFIG=/etc/kubernetes/admin.conf kubectl delete node {{ node_hostname }}
-      delegate_to: "{{ master_node_ip }}"
-      register: delete_result
-      until: delete_result.rc == 0
-      retries: 5
-      delay: 10
-
-    - name: Debug node removal
-      debug:
-        msg: "Node {{ node_hostname }} has been successfully removed from the Kubernetes cluster."
-    - name: Reset Kubernetes node
-      shell: kubeadm reset -f
-      become: yes
-      delegate_to: "{{ node_ip }}"
-      register: reset_result
-      until: reset_result.rc == 0
-      retries: 5
-      delay: 10
-
-    - name: Debug node reset
-      debug:
-        msg: "Node {{ node_hostname }} has been successfully reset."
-EOF
-
-# Set ownership and permissions for the node leave playbook
-chown ec2-user:ec2-user /home/ec2-user/node_leave_master.yaml
-
-# Create an Ansible playbook to handle node joining the Kubernetes master
-cat <<EOF > /home/ec2-user/node_join_master.yaml
----
-- name: Join Kubernetes node to master and patch providerID
-  hosts: localhost
-  become: yes
-  vars:
-    master_node_ip: "10.0.2.4"
-    node_ip: "{{ node_ip }}"
-    provider_id: "{{ providerID }}"
-
-  tasks:
-    - name: Wait until SSH connection to the master node is available
-      wait_for_connection:
-        delay: 10
-        timeout: 300
-      delegate_to: "{{ master_node_ip }}"
-
-    - name: Get join command from master node
-      shell: kubeadm token create --print-join-command
-      delegate_to: "{{ master_node_ip }}"
-      register: join_command
-      until: join_command.rc == 0
-      retries: 5
-      delay: 10  # seconds between retries
-
-    - name: Run kubeadm join command on the node
-      become: yes
-      shell: "{{ join_command.stdout }}"
-      delegate_to: "{{ node_ip }}"
-      register: result
-      until: result.rc == 0
-      retries: 5
-      delay: 10
-
-    - name: Get the hostname of the node
-      shell: hostname
-      delegate_to: "{{ node_ip }}"
-      register: node_hostname
-
-    - name: Patch the Kubernetes node with providerID
-      shell: >
-        KUBECONFIG=/etc/kubernetes/admin.conf kubectl patch node {{ node_hostname.stdout }}
-        -p '{"spec": {"providerID": "{{ provider_id }}"}}'
-      delegate_to: "{{ master_node_ip }}"
-      register: patch_result
-      until: patch_result.rc == 0
-      retries: 5
-      delay: 10
-
-    - name: Debug provider_id
-      debug:
-        msg: "Provider ID: {{ provider_id }}"
-EOF
-
-# Set ownership and permissions for the node join playbook
-chown ec2-user:ec2-user /home/ec2-user/node_join_master.yaml
-
-# Upgrade all system packages again
-dnf -y upgrade
-
-# Install Ansible, Git, Nano, Zsh, and Pip
-dnf -y install ansible-core.x86_64 git nano zsh pip
-
-# Install Flask for Python
-sudo -u ec2-user pip install flask
-
-# Create Kubernetes repository configuration
-cat <<EOF > /etc/yum.repos.d/kubernetes.repo
-[kubernetes]
-name=Kubernetes
-baseurl=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
-enabled=1
-gpgcheck=1
-gpgkey=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/repodata/repomd.xml.key
-exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
-EOF
-
-# Install Kubernetes components
-dnf makecache; dnf install -y kubelet kubectl --disableexcludes=kubernetes
-
-
-
-# Disable swap as Kubernetes requires it to be turned off
-sed -i '/swap/d' /etc/fstab
-
-
+# Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+install -o root -g root -m 0755 kubectl /usr/bin/kubectl
+rm -rf kubectl
 
 # Configure Ansible to disable host key checking and set SSH connection settings
-cat <<EOF > /etc/ansible/ansible.cfg
-[defaults]
-host_key_checking = False
-[ssh_connection]
-ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o IdentityFile=/home/ec2-user/.ssh/id_rsa
-EOF
-
-# Enable and start the Puppet server service
-#systemctl enable --now puppetserver
+#cat <<EOF > /etc/ansible/ansible.cfg
+#[defaults]
+#host_key_checking = False
+#[ssh_connection]
+#ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o IdentityFile=/home/ec2-user/.ssh/id_rsa
+#EOF
 
 # Install Helm, a Kubernetes package manager
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
@@ -294,27 +29,153 @@ chmod 700 get_helm.sh
 sh ./get_helm.sh
 ln -s /usr/local/bin/helm /usr/bin/
 
-# Enable the Kubernetes API Flask service
-systemctl enable k8s-api.service
-
 # Install k9s, a CLI tool for managing Kubernetes clusters
 rpm -i https://github.com/derailed/k9s/releases/download/v0.32.5/k9s_linux_amd64.rpm
 
-# Install Oh My Zsh for better terminal experience and change shell to zsh for ec2-user
+# Install Oh My Zsh for a better terminal experience
 sudo -u ec2-user sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+sudo -u root sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
 usermod -s /usr/bin/zsh ec2-user
+usermod -s /usr/bin/zsh root
 
-# Update .zshrc to check for kube config and run an Ansible playbook if it doesn't exist
-cat <<EOF >> /home/ec2-user/.zshrc
+# Install AWS CLI
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+./aws/install --bin-dir /usr/bin --install-dir /usr/aws-cli
+rm -rf awscliv2.zip ./aws
 
-KUBE_CONFIG="\$HOME/.kube/config"
-
-if [ ! -f "\$KUBE_CONFIG" ]; then
-    echo "Kube config file not found. Running Ansible playbook to copy it."
-    mkdir -p \$HOME/.kube
-    ansible-playbook /home/ec2-user/get_config.yaml
-fi
+# Configure AWS credentials and region
+sudo -u ec2-user mkdir /home/ec2-user/.aws
+sudo -u ec2-user cat << EOF > /home/ec2-user/.aws/config
+[default]
+region = ${KOPS_REGION}
+output = json
+EOF
+sudo -u ec2-user cat << EOF > /home/ec2-user/.aws/credentials
+[default]
+aws_access_key_id = ${AWS_ACCESS_KEY_ID}
+aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}
 EOF
 
+# Install kOps for Kubernetes cluster management
+curl -Lo kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+chmod +x kops
+mv kops /usr/bin/kops
+
+# kOps cluster setup script
+sudo -u ec2-user cat << EOF > /home/ec2-user/kops.sh 
+#!/bin/bash
+export NAME=${Cluster}.k8s.local
+export KOPS_STATE_STORE=s3://${kops_state_bucket_name}
+export ZONES=\$(aws ec2 describe-availability-zones --region ${KOPS_REGION} | jq -r '.AvailabilityZones[0].ZoneName')
+export VPC_ID=${KOPS_VPC_ID}
+export NETWORK_CIDR=10.0.0.0/16
+
+kops create cluster --name=\$NAME --cloud=aws --zones=\$ZONES \
+--discovery-store=s3://${kops_oidc_bucket_name}/\$NAME/discovery --network-id=\$VPC_ID \
+--subnets=${kops_subnet_id} --utility-subnets=${kops_utility_subnet_id} --node-size=${NODE_SIZE} \
+--node-count=${NODE_COUNT} --control-plane-size=${CONTROL_PLANE_SIZE} \
+--control-plane-count=${CONTROL_PLANE_COUNT} --topology=${KOPS_TOPOLOGY} \
+--api-loadbalancer-type=${KOPS_NLB} --networking=amazonvpc
+
+kops update cluster --name \$NAME --yes --admin
+kops validate cluster --wait 15m
+EOF
+sudo -u ec2-user bash /home/ec2-user/kops.sh
+
+# Install ArgoCD
+VERSION=$(curl -L -s https://raw.githubusercontent.com/argoproj/argo-cd/stable/VERSION)
+curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/download/v$VERSION/argocd-linux-amd64
+install -m 555 argocd-linux-amd64 /usr/bin/argocd
+rm argocd-linux-amd64
+
+# Install Ingress-Nginx
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+helm install ingress-nginx ingress-nginx/ingress-nginx
+
+# Set up ArgoCD and expose as LoadBalancer
+sudo -u ec2-user helm repo add argo https://argoproj.github.io/argo-helm
+sudo -u ec2-user helm install argocd argo/argo-cd
+sudo -u ec2-user kubectl patch svc argocd-server -p '{"spec": {"type": "LoadBalancer"}}'
+
+sleep 120 # Waiting for LoadBalancer to be ready
+
+export ARGOCD_SERVER_ADDRESS=$(sudo -u ec2-user kubectl get svc argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'; echo)
+export ADMIN_PASSWORD=$(sudo -u ec2-user kubectl get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 --decode; echo)
+
+# Login to ArgoCD
+sudo -u ec2-user argocd login $ARGOCD_SERVER_ADDRESS --username admin --password $ADMIN_PASSWORD --insecure
+
+# Install Argo Rollouts
+sudo -u ec2-user kubectl create ns argo-rollouts
+sudo -u ec2-user kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+
+# Install kubectl-argo-rollouts plugin
+curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64
+chmod +x ./kubectl-argo-rollouts-linux-amd64
+mv ./kubectl-argo-rollouts-linux-amd64 /usr/bin/kubectl-argo-rollouts
+
+# Install ArgoCD Image Updater
+sudo -u ec2-user kubectl apply -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
+
+# Install NewRelic monitoring with Helm
+sudo -u ec2-user helm repo add newrelic https://helm-charts.newrelic.com 
+sudo -u ec2-user helm repo update 
+sudo -u ec2-user kubectl create namespace newrelic 
+sudo -u ec2-user helm upgrade --install newrelic-bundle newrelic/nri-bundle --namespace=newrelic \
+--set global.licenseKey=${newrelic_global_licenseKey} \
+--set global.cluster=${Cluster}.k8s.local \
+--set newrelic-infrastructure.privileged=true \
+--set global.lowDataMode=true \
+--set kube-state-metrics.image.tag=${KSM_IMAGE_VERSION} \
+--set kube-state-metrics.enabled=true \
+--set kubeEvents.enabled=true \
+--set newrelic-prometheus-agent.enabled=true \
+--set newrelic-prometheus-agent.lowDataMode=true \
+--set newrelic-prometheus-agent.config.kubernetes.integrations_filter.enabled=false \
+--set logging.enabled=true \
+--set newrelic-logging.lowDataMode=true
+
+# Set up Nextcloud with ArgoCD
+sudo -u ec2-user kubectl create ns nextcloud
+sudo -u ec2-user argocd app create nextcloud-rollout \
+--repo https://github.com/LT-Linas35/final_project \
+--path helm-charts/nextcloud-chart \
+--dest-server https://kubernetes.default.svc \
+--dest-namespace nextcloud \
+--sync-policy automated \
+--helm-set database.type=${DATABASE_TYPE} \
+--helm-set database.name=${DATABASE_NAME} \
+--helm-set database.host=${DATABASE_HOST} \
+--helm-set database.port=${DATABASE_PORT} \
+--helm-set database.user=${DATABASE_USER} \
+--helm-set database.password=${DATABASE_PASSWORD} \
+--helm-set admin.user=${ADMIN_USER} \
+--helm-set admin.password=${ADMIN_PASSWORD} \
+--helm-set admin.email=${ADMIN_EMAIL} \
+--helm-set redis.host=${REDIS_HOST} \
+--helm-set redis.port=${REDIS_PORT} \
+--helm-set redis.timeout=${REDIS_TIMEOUT} \
+--helm-set redis.dbindex=${REDIS_DBINDEX} \
+--helm-set s3.bucket=${S3_NEXTCLOUD_BUCKET} \
+--helm-set s3.region=${S3_NEXTCLOUD_REGION} \
+--helm-set s3.key=${S3_USER_KEY} \
+--helm-set s3.secret=${S3_USER_SECRET} \
+--helm-set canarySteps[0].setWeight=${canarySteps_0_setWeight} \
+--helm-set canarySteps[0].pauseDuration=${canarySteps_0_pauseDuration} \
+--helm-set canarySteps[1].setWeight=${canarySteps_1_setWeight} \
+--helm-set canarySteps[1].pauseDuration=${canarySteps_1_pauseDuration} \
+--helm-set canarySteps[2].setWeight=${canarySteps_2_setWeight}
+
+
+
+
+
+#curl -s https://api.github.com/repos/LT-Linas35/final_project/contents/server | grep download_url | cut -d '"' -f 4 | while read url; do
+#  curl -O "$url"
+#done
+
 # Reboot the system to apply changes
-systemctl reboot
+#systemctl reboot

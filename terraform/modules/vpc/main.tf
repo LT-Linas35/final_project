@@ -11,72 +11,34 @@ resource "aws_vpc" "k8s_vpc" {
   }
 }
 
-# Subnet in Availability Zone 1
-resource "aws_subnet" "alb_subnet_az1" {
+
+resource "aws_subnet" "kops_vpc_sub" {
   vpc_id                  = aws_vpc.k8s_vpc.id
-  cidr_block              = var.alb_subnet_az1_cidr_block
-  availability_zone       = var.alb_subnet_az1_availability_zone
-  map_public_ip_on_launch = var.alb_subnet_az1_map_public_ip_on_launch
-
-  tags = {
-    Name                        = var.alb1_alb_subnet_az1_name
-    "kubernetes.io/cluster/k8s" = "shared"
-    "kubernetes.io/role/elb"    = "1"
-    Cluster                     = var.Cluster
-    Environment                 = var.Environment
-    ManagedBy                   = var.ManagedBy
-  }
-}
-
-# Subnet in Availability Zone 2
-resource "aws_subnet" "alb_subnet_az2" {
-  vpc_id                  = aws_vpc.k8s_vpc.id
-  cidr_block              = var.alb_subnet_az2_cidr_block
-  availability_zone       = var.alb_subnet_az2_availability_zone
-  map_public_ip_on_launch = var.alb_subnet_az2_map_public_ip_on_launch
-
-  tags = {
-    Name                        = var.alb2_alb_subnet_az2_name
-    "kubernetes.io/cluster/k8s" = "shared"
-    "kubernetes.io/role/elb"    = "1"
-    Cluster                     = var.Cluster
-    Environment                 = var.Environment
-    ManagedBy                   = var.ManagedBy
-  }
-}
-
-
-resource "aws_subnet" "nodes_vpc_sub" {
-  vpc_id                  = aws_vpc.k8s_vpc.id
-  cidr_block              = var.nodes_subnet_cidr_block
+  cidr_block              = var.kops_subnet_cidr_block
   availability_zone       = var.availability_zone
-  map_public_ip_on_launch = var.nodes_public_ip_on_launch
+  map_public_ip_on_launch = var.kops_ip_on_launch
 
   tags = {
-    Name                              = var.nodes_subnet_name
-    "kubernetes.io/role/internal-elb" = "1"
-    "kubernetes.io/cluster/k8s"       = "shared"
-    Cluster                           = var.Cluster
-    Environment                       = var.Environment
-    ManagedBy                         = var.ManagedBy
+    Name        = var.kops_subnet_name
+    Cluster     = var.Cluster
+    Environment = var.Environment
+    ManagedBy   = var.ManagedBy
   }
 }
 
-resource "aws_subnet" "master_vpc_sub" {
+resource "aws_subnet" "kops_nlb_vpc_sub" {
   vpc_id                  = aws_vpc.k8s_vpc.id
-  cidr_block              = var.master_subnet_cidr_block
+  cidr_block              = var.kops_nlb_subnet_cidr_block
   availability_zone       = var.availability_zone
-  map_public_ip_on_launch = var.masters_ip_on_launch
+  map_public_ip_on_launch = var.controller_ip_on_launch
+
   tags = {
-    Name                        = var.master_subnet_name
-    "kubernetes.io/cluster/k8s" = "shared"
-    "kubernetes.io/role/elb"    = "1"
-    Cluster                     = var.Cluster
-    Environment                 = var.Environment
-    ManagedBy                   = var.ManagedBy
+    Name        = var.kops_nlb_subnet_name
+    Cluster     = var.Cluster
+    Environment = var.Environment
+    ManagedBy   = var.ManagedBy
   }
 }
-
 
 resource "aws_subnet" "controller_vpc_sub" {
   vpc_id                  = aws_vpc.k8s_vpc.id
@@ -98,37 +60,36 @@ resource "aws_subnet" "bastion_vpc_sub" {
   availability_zone       = var.availability_zone
   map_public_ip_on_launch = var.bastion_ip_on_launch
 
-  tags = {
-    Name                        = var.bastion_subnet_name
-    "kubernetes.io/cluster/k8s" = "shared"
-    "kubernetes.io/role/elb"    = "1"
-    Cluster                     = var.Cluster
-    Environment                 = var.Environment
-    ManagedBy                   = var.ManagedBy
-  }
-}
 
-
-resource "aws_internet_gateway" "my_igw" {
-  vpc_id = aws_vpc.k8s_vpc.id
   tags = {
-    Name        = "my-igw"
+    Name        = var.bastion_subnet_name
     Cluster     = var.Cluster
     Environment = var.Environment
     ManagedBy   = var.ManagedBy
   }
 }
 
-resource "aws_route_table" "public" {
+
+resource "aws_internet_gateway" "nextcloud_igw" {
+  vpc_id = aws_vpc.k8s_vpc.id
+  tags = {
+    Name        = var.internet_gateway_nextcloud_igw_name
+    Cluster     = var.Cluster
+    Environment = var.Environment
+    ManagedBy   = var.ManagedBy
+  }
+}
+
+resource "aws_route_table" "nextcloud_public" {
   vpc_id = aws_vpc.k8s_vpc.id
 
   route {
     cidr_block = var.public_nat_cidr_block
-    gateway_id = aws_internet_gateway.my_igw.id
+    gateway_id = aws_internet_gateway.nextcloud_igw.id
   }
 
   tags = {
-    Name        = "public"
+    Name        = var.route_table_nextcloud_public_name
     Cluster     = var.Cluster
     Environment = var.Environment
     ManagedBy   = var.ManagedBy
@@ -137,10 +98,23 @@ resource "aws_route_table" "public" {
 
 resource "aws_route_table_association" "bastion" {
   subnet_id      = aws_subnet.bastion_vpc_sub.id
-  route_table_id = aws_route_table.public.id
+  route_table_id = aws_route_table.nextcloud_public.id
 }
 
+
+resource "aws_route_table_association" "kops" {
+  subnet_id      = aws_subnet.kops_vpc_sub.id
+  route_table_id = aws_route_table.private_route_table_with_nat.id
+}
+
+resource "aws_route_table_association" "kops_nlb" {
+  subnet_id      = aws_subnet.kops_nlb_vpc_sub.id
+  route_table_id = aws_route_table.nextcloud_public.id
+}
+
+
 resource "aws_eip" "nat_eip" {
+  //  vpc = true
 }
 
 resource "aws_nat_gateway" "nat_gateway" {
@@ -148,7 +122,7 @@ resource "aws_nat_gateway" "nat_gateway" {
   subnet_id     = aws_subnet.bastion_vpc_sub.id
 
   tags = {
-    Name        = "my-nat-gateway"
+    Name        = var.nat_gateway_nat_gateway_name
     Cluster     = var.Cluster
     Environment = var.Environment
     ManagedBy   = var.ManagedBy
@@ -164,34 +138,14 @@ resource "aws_route_table" "private_route_table_with_nat" {
   }
 
   tags = {
-    Name        = "private-route-table-with-nat"
+    Name        = var.route_table_private_route_table_with_nat_name
     Cluster     = var.Cluster
     Environment = var.Environment
     ManagedBy   = var.ManagedBy
   }
 }
 
-resource "aws_route_table_association" "nodes_subnet_association_with_nat" {
-  subnet_id      = aws_subnet.nodes_vpc_sub.id
-  route_table_id = aws_route_table.private_route_table_with_nat.id
-}
-
-resource "aws_route_table_association" "master_subnet_association_with_nat" {
-  subnet_id      = aws_subnet.master_vpc_sub.id
-  route_table_id = aws_route_table.private_route_table_with_nat.id
-}
-
-resource "aws_route_table_association" "alb_subnet_az2" {
-  subnet_id      = aws_subnet.alb_subnet_az2.id
-  route_table_id = aws_route_table.public.id
-}
-
-resource "aws_route_table_association" "alb_subnet_az1" {
-  subnet_id      = aws_subnet.alb_subnet_az1.id
-  route_table_id = aws_route_table.public.id
-}
-
 resource "aws_route_table_association" "controller_subnet_association_with_nat" {
   subnet_id      = aws_subnet.controller_vpc_sub.id
-  route_table_id = aws_route_table.public.id
+  route_table_id = aws_route_table.nextcloud_public.id
 }

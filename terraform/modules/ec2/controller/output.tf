@@ -11,4 +11,3 @@ output "controller_instance_private_hostname" {
 output "controller_instance_id" {
   value = aws_instance.controller.id
 }
-

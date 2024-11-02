@@ -28,10 +28,12 @@ variable "key_name" {
   type        = string
 }
 
-variable "bastion_count" {
-  description = "Bastion Proxy count"
-  type        = number
+variable "create_bastion" {
+  description = "Flag to determine if the bastion host should be created (1/0)"
+  type        = string
+  default     = false
 }
+
 
 variable "controller_instance_private_hostname" {
   description = "Controller IP address"

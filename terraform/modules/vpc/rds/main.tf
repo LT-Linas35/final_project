@@ -26,6 +26,6 @@ resource "aws_subnet" "rds2" {
 
 resource "aws_db_subnet_group" "db_subnet_group" {
   name        = var.db_subnet_group_name
-  description = "Subnet group for RDS"
+  description = var.db_subnet_group_description
   subnet_ids  = [aws_subnet.rds1.id, aws_subnet.rds2.id]
 }

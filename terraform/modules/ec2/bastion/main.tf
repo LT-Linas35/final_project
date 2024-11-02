@@ -1,5 +1,5 @@
 resource "aws_instance" "bastion" {
-  count                  = var.bastion_count
+  count                  = var.create_bastion ? 1 : 0
   instance_type          = var.instance_type
   ami                    = var.ami
   key_name               = var.key_name
