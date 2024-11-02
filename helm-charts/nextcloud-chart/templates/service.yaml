@@ -5,6 +5,7 @@ metadata:
   namespace: nextcloud
 spec:
   type: LoadBalancer
+  sessionAffinity: ClientIP
   selector:
     app: {{ .Release.Name }}
   ports:
