@@ -8,11 +8,10 @@ spec:
   strategy:
     canary:
       steps:
-        - setWeight: {{ .Values.canarySteps[0].setWeight }}
-          pause: { duration: {{ .Values.canarySteps[0].pauseDuration }} }
-        - setWeight: {{ .Values.canarySteps[1].setWeight }}
-          pause: { duration: {{ .Values.canarySteps[1].pauseDuration }} }
-        - setWeight: {{ .Values.canarySteps[2].setWeight }}
+{{- range $index, $step := .Values.canarySteps }}
+        - setWeight: {{ $step.setWeight }}
+          pause: { duration: {{ $step.pauseDuration }} }
+{{- end }}
   selector:
     matchLabels:
       app: {{ .Release.Name }}
