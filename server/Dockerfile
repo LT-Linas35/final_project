@@ -86,7 +86,8 @@ RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
     && \
     rpm -Uvh http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm \
     && \
-    dnf -y install newrelic-php5 && NR_INSTALL_SILENT=1 newrelic-install install all ;\
+    dnf -y install newrelic-php5 && NR_INSTALL_SILENT=1 newrelic-install install all \
+    && \
     find /etc /opt/etc /usr/local/etc -type f -name newrelic.ini -exec sed -i -e "s/$NEW_RELIC_API_KEY/$NR_INSTALL_KEY/" -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname = \"NextCloud\"/" {} \; 2>/dev/null
 
 RUN unset NEW_RELIC_API_KEY NR_INSTALL_KEY
@@ -98,6 +99,5 @@ WORKDIR /var/www/html/nextcloud
 RUN sed -i '/^root.*ALL$/a apache ALL=(ALL) NOPASSWD: /usr/sbin/httpd, /usr/sbin/php-fpm, /usr/bin/supervisord' /etc/sudoers
 RUN  chown -R apache /var/www/html/nextcloud; chmod -R 755 /var/www/html/nextcloud # twice to make sure right permissions
 RUN mkdir -p ./data/.ocdata
-RUN echo f >> ./test
 #USER apache
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
