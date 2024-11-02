@@ -49,7 +49,7 @@ RUN <<EOF
 EOF
 
 COPY nextcloud.conf /etc/httpd/conf.d/
-#COPY .htaccess /var/www/html/nextcloud/.htaccess
+COPY .htaccess /var/www/html/nextcloud/.htaccess
 COPY supervisord.conf /etc/
 
 RUN <<EOF
@@ -84,8 +84,6 @@ RUN --mount=type=secret,id=NEW_RELIC_API_KEY_PHP \
 FROM third_tage AS final
 
 WORKDIR /var/www/html/nextcloud
-
-COPY .htaccess /var/www/html/nextcloud/
 
 RUN  <<EOF
 mkdir -p ./data/.ocdata 
