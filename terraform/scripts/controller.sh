@@ -110,6 +110,7 @@ sleep 3
 # Login to ArgoCD
 sudo -u ec2-user argocd login $ARGOCD_SERVER_ADDRESS --username admin --password $ADMIN_PASSWORD --insecure
 
+# Change ArgoCD password
 sudo -u ec2-user argocd account update-password --account admin --current-password $ADMIN_PASSWORD --new-password ${ARGOCD_PASSWORD}
 
 
