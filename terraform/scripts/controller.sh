@@ -124,7 +124,7 @@ chmod +x ./kubectl-argo-rollouts-linux-amd64
 mv ./kubectl-argo-rollouts-linux-amd64 /usr/bin/kubectl-argo-rollouts
 
 # Install ArgoCD Image Updater
-sudo -u ec2-user kubectl apply -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
+sudo -u ec2-user kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
 
 # Install NewRelic monitoring with Helm
 sudo -u ec2-user helm repo add newrelic https://helm-charts.newrelic.com 
