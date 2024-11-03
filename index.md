@@ -174,55 +174,168 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
 
 ### Terraform Cloud Setup
 
-1. **Configure Variables**:
-   - Go to [Terraform Cloud](https://app.terraform.io/session) and configure the necessary variables for your deployment.
-   - Ensure the following variables are set:
+# Terraform Cloud and Helm Setup for NextCloud
 
-     - **AWS Credentials**:
-       - `AWS_ACCESS_KEY_ID`
-       - `AWS_SECRET_ACCESS_KEY`
+This guide provides a complete setup process for configuring **Terraform Cloud**, managing infrastructure variables, and deploying **NextCloud** using **Helm**.
 
-     - **NewRelic**:
-       - `newrelic` (set as a JSON object):
+### 1. Configure Variables in Terraform Cloud
 
-         ```json
-         {
-           "newrelic_global_licenseKey": "YOUR LICENSE KEY"
-         }
-         ```
+To deploy your infrastructure, navigate to [Terraform Cloud](https://app.terraform.io/session) and set up the following variables:
 
-     - **NextCloud Installation**:
-       - `nextcloud_install` (set as a JSON object):
+- **AWS Credentials**:
+  - **`AWS_ACCESS_KEY_ID`**: Your AWS access key, required to interact with AWS resources.
+  - **`AWS_SECRET_ACCESS_KEY`**: AWS secret key, ensuring secure authentication.
 
-         ```json
-         {
-           "ADMIN_USER": "YOUR USERNAME",
-           "ADMIN_PASSWORD": "YOUR PASSWORD",
-           "ADMIN_EMAIL": "YOUR EMAIL"
-         }
-         ```
+- **NewRelic Configuration**:
+  - **`newrelic`** (as a JSON object):
+    ```json
+    {
+      "newrelic_global_licenseKey": "YOUR_LICENSE_KEY"
+    }
+    ```
+  - **`newrelic_global_licenseKey`**: License key for monitoring with NewRelic.
 
-     - **RDS Database Credentials**:
-       - `rds` (set as a JSON object):
+- **NextCloud Installation Configuration**:
+  - **`nextcloud_install`** (as a JSON object):
+    ```json
+    {
+      "ADMIN_USER": "YOUR_USERNAME",
+      "ADMIN_PASSWORD": "YOUR_PASSWORD",
+      "ADMIN_EMAIL": "YOUR_EMAIL"
+    }
+    ```
+  - **`ADMIN_USER`**, **`ADMIN_PASSWORD`**, **`ADMIN_EMAIL`**: Administrative credentials for NextCloud.
 
-         ```json
-         {
-           "username": "NEXTCLOUD DB USERNAME",
-           "password": "NEXTCLOUD DB PASSWORD"
-         }
-         ```
+- **RDS Database Credentials**:
+  - **`rds`** (as a JSON object):
+    ```json
+    {
+      "username": "NEXTCLOUD_DB_USERNAME",
+      "password": "NEXTCLOUD_DB_PASSWORD"
+    }
+    ```
+  - **`username`** and **`password`**: RDS instance credentials for NextCloud.
 
-     - **Cluster Configuration**:
-       - `cluster` (set as a JSON object):
+- **Cluster Configuration**:
+  - **`cluster`** (as a JSON object):
+    ```json
+    {
+      "ARGOCD_PASSWORD": "YOUR_PASSWORD"
+    }
+    ```
+  - **`ARGOCD_PASSWORD`**: Password required to access ArgoCD.
 
-         ```json
-         {
-           "ARGOCD_PASSWORD": "YOUR PASSWORD"
-         }
-         ```
+### 2. Terraform Variables Configuration (`terraform.tfvars`)
 
-2. **Set NextCloud Helm Chart Values**:
-   - Configure specific NextCloud Helm [Chart values](https://github.com/LT-Linas35/final_project/blob/main/helm-charts/nextcloud-chart/values.yaml) as needed for your deployment.
+Below is the recommended `terraform.tfvars` file to manage the infrastructure settings for deploying NextCloud:
+
+```hcl
+# Important: All empty variables should be securely set in Terraform Cloud.
+
+# AWS Region Configuration
+aws_region = "eu-west-2"  # AWS region for deploying resources.
+
+# NewRelic Configuration
+newrelic = {
+  newrelic_global_licenseKey = ""           # NewRelic license key for monitoring.
+  KSM_IMAGE_VERSION          = "v2.10.0"    # Version of Kubernetes State Metrics (KSM) image.
+}
+
+# NextCloud Installation Configuration
+nextcloud_install = {
+  ADMIN_USER     = ""               # Admin user for NextCloud.
+  ADMIN_PASSWORD = ""               # Admin password for NextCloud.
+  ADMIN_EMAIL    = ""               # Admin email for NextCloud.
+  REDIS_TIMEOUT  = 0                  # Redis timeout setting (default).
+  REDIS_DBINDEX  = 0                  # Redis database index for caching.
+  S3_BUCKET      = "lino-nextcloud" # S3 bucket for storing NextCloud data.
+}
+
+# Canary Deployment Strategy for ArgoCD Rollout
+canary = {
+  canarySteps_0_setWeight     = 25     # Weight percentage for the first canary step.
+  canarySteps_0_pauseDuration = "360s" # Pause duration after the first canary step.
+
+  canarySteps_1_setWeight     = 50     # Weight percentage for the second canary step.
+  canarySteps_1_pauseDuration = "360s" # Pause duration after the second canary step.
+
+  canarySteps_2_setWeight     = 100    # Final weight percentage for full deployment.
+}
+
+# Bastion Server Configuration
+bastion = {
+  ami                     = "ami-07d1e0a32156d0d21" # AMI ID for the bastion server.
+  instance_type           = "t2.micro"              # EC2 instance type for the bastion.
+  instance_name           = "bastion"               # Name tag for the bastion instance.
+  key_name                = "Linas-eu-out"          # SSH key pair to access the bastion.
+  map_public_ip_on_launch = true                    # Assign a public IP on launch.
+  create_bastion          = 0                       # Flag to create the bastion (1 to create, 0 to skip).
+  volume_type             = "gp3"                   # EBS volume type.
+  volume_size             = "10"                    # EBS volume size in GiB.
+}
+
+# RDS Database Configuration
+rds = {
+  username = ""   # RDS username.
+  password = ""   # RDS password.
+}
+```
+
+### 3. Configure Helm Chart Values for NextCloud Deployment (`values.yaml`)
+
+The following `values.yaml` configuration is used to deploy NextCloud via Helm. Properly configuring these values ensures a smooth deployment:
+
+```yaml
+# Helm Chart Configuration for NextCloud
+
+namespace: nextcloud                    # Namespace where the NextCloud resources will be deployed.
+
+applicationNamespace: argocd            # Namespace for the ArgoCD application resource.
+
+replicaCount: 3                         # Number of replicas for the NextCloud deployment.
+
+image:
+  repository: linas37/nextcloud         # Docker image repository for NextCloud.
+  tag: latest                           # Image version tag.
+  updateStrategy: latest                # Update strategy for the image.
+
+service:
+  type: ClusterIP                       # Kubernetes service type (e.g., ClusterIP, LoadBalancer).
+  port: 80                              # Port number for external access.
+
+canarySteps:
+  step1:
+    setWeight: 25                       # Weight for the first canary step.
+    pauseDuration: "360s"               # Pause duration after step one.
+  step2:
+    setWeight: 50                       # Weight for the second canary step.
+    pauseDuration: "360s"               # Pause duration after step two.
+  step3:
+    setWeight: 100                      # Final weight to complete deployment.
+
+ingress:
+  port: 80                              # Ingress port for external traffic.
+  scheme: internet-facing               # Ingress scheme type (e.g., internet-facing).
+
+project: default                        # ArgoCD project to manage the deployment.
+
+source:
+  repoURL: 'https://github.com/LT-Linas35/final_project.git' # Repository URL for Helm chart source.
+  path: helm-charts/nextcloud-chart     # Path to the Helm chart in the repository.
+  targetRevision: HEAD                  # Revision of the repository.
+
+destination:
+  server: 'https://kubernetes.default.svc'  # Kubernetes API server URL for deployment.
+
+syncPolicy:
+  prune: true                           # Prune old resources no longer needed.
+  selfHeal: true                        # Enable self-healing by ArgoCD.
+```
+
+### Summary
+This guide details all the necessary steps to configure your variables in **Terraform Cloud**, set up the required `terraform.tfvars`, and configure **NextCloud** deployment using Helm via `values.yaml`. This will ensure a smooth deployment process for both your infrastructure and application.
+
+
 
 ---
 
