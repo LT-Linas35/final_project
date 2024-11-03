@@ -63,5 +63,6 @@ data "template_file" "user_data" {
     canarySteps_1_setWeight     = var.canarySteps_1_setWeight
     canarySteps_1_pauseDuration = var.canarySteps_1_pauseDuration
     canarySteps_2_setWeight     = var.canarySteps_2_setWeight
+    ARGOCD_PASSWORD             = var.ARGOCD_PASSWORD
   }
 }
