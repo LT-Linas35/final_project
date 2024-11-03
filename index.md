@@ -75,17 +75,17 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
     - On Dispatch: ([Terraform Apply](https://github.com/LT-Linas35/final_project/blob/main/.github/workflows/terraform-apply.yml)).
     - API call from `nextcloud_server` for CI pipeline ([main.yml](https://github.com/LT-Linas35/final_project/blob/main/.github/workflows/main.yml)).
 
-- **Helm Chart**: [NextCloud Helm Chart](helm-charts/nextcloud-chart) for Kubernetes deployment.
-- **Server**: [NextCloud Dockerfile](server/Dockerfile).
-- **Terraform**: Complete AWS infrastructure setup ([terraform](terraform/)).
+- **Helm Chart**: [NextCloud Helm Chart](https://github.com/LT-Linas35/final_project/tree/main/helm-charts/nextcloud-chart) for Kubernetes deployment.
+- **Server**: [NextCloud Dockerfile](https://github.com/LT-Linas35/final_project/blob/main/server/Dockerfile).
+- **Terraform**: Complete AWS infrastructure setup ([terraform](https://github.com/LT-Linas35/final_project/tree/main/terraform)).
 
 ---
 
 ## Terraform Configuration and Modules
 
 ### Configuration File
-- **Variables**: [terraform.tfvars](terraform/terraform.tfvars)  
-  Central file with configurations for all modules. For security group configurations, see [securitygroups module](terraform/modules/securitygroups/).
+- **Variables**: [terraform.tfvars](https://github.com/LT-Linas35/final_project/blob/main/terraform/terraform.tfvars)  
+  Central file with configurations for all modules. For security group configurations, see [securitygroups module](https://github.com/LT-Linas35/final_project/tree/main/terraform/modules/securitygroups).
 
 ### Modules Overview
 - **VPC Module**:
@@ -103,7 +103,7 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
     - **Ingress**: 22 TCP from all sources
     - **Egress**: Controller CIDR
   - **Controller**:  
-    kOps control plane, stores sensitive data ([controller.sh](terraform/scripts/controller.sh))  
+    kOps control plane, stores sensitive data ([controller.sh](https://github.com/LT-Linas35/final_project/blob/main/terraform/scripts/controller.sh))  
     Safe to shut down after cluster creation.
     - **Ingress**: 22 TCP from Bastion CIDR
     - **Egress**: All sources
@@ -144,8 +144,9 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
     - **SonarCloud**: Requires `SONAR_TOKEN`.
     - **Terraform Apply**: Requires `TF_CLOUD_ORGANIZATION`, `TF_API_TOKEN`, and `TF_WORKSPACE`.
     - **Docker Registry**: Requires `DOCKER_USERNAME` and `DOCKER_PASSWORD`.
-  - **NewRelic**: Add credentials in [main.yml](.github/workflows/main.yml) for PHP monitoring:
+  - **NewRelic**: Add credentials in security for PHP monitoring :
     - `NEW_RELIC_API_KEY_PHP`, `NEW_RELIC_ACCOUNT_ID_PHP`, `NR_INSTALL_KEY_PHP`.
+    - [main.yml](.github/workflows/main.yml)
 
 ### Terraform Cloud Setup
 - Configure variables in Terraform Cloud ([Terraform Cloud](https://app.terraform.io/session)).
