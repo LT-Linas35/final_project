@@ -1,44 +1,46 @@
-
 variable "aws_region" {
   description = "The AWS region to deploy resources in"
   type        = string
 }
 
 variable "ARGOCD_PASSWORD" {
-type        = string
-description = "Password for ArgoCD access."
+  type        = string
+  description = "Password for ArgoCD access."
 }
 
 variable "newrelic_global_licenseKey" {
-type        = string
-description = "Global license key for NewRelic monitoring."
+  type        = string
+  description = "Global license key for NewRelic monitoring."
 }
 
 variable "RDS_USERNAME" {
-type        = string
-description = "Username for database access."
+  type        = string
+  description = "Username for database access."
 }
 
 variable "RDS_PASSWORD" {
-type        = string
-description = "Password for database access."
+  type        = string
+  description = "Password for database access."
 }
 
 variable "ADMIN_USER" {
-type        = string
-description = "Admin user for NextCloud."
+  type        = string
+  description = "Admin user for NextCloud."
 }
 
 variable "ADMIN_PASSWORD" {
-type        = string
-description = "Admin password for NextCloud."
+  type        = string
+  description = "Admin password for NextCloud."
 }
 
 variable "ADMIN_EMAIL" {
-type        = string
-description = "Admin email for NextCloud."
+  type        = string
+  description = "Admin email for NextCloud."
 }
 
+variable "create_bastion" {
+  type        = string
+}
 
 variable "cluster" {
   type = object({
@@ -97,7 +99,6 @@ variable "bastion" {
     instance_type           = string
     key_name                = string
     map_public_ip_on_launch = bool
-    create_bastion          = number
     volume_type             = string
     volume_size             = number
   })
