@@ -147,5 +147,5 @@ resource "aws_route_table" "private_route_table_with_nat" {
 
 resource "aws_route_table_association" "controller_subnet_association_with_nat" {
   subnet_id      = aws_subnet.controller_vpc_sub.id
-  route_table_id = aws_route_table.nextcloud_public.id
+  route_table_id = aws_route_table.private_route_table_with_nat.id
 }
