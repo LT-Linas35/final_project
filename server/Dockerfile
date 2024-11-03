@@ -51,6 +51,7 @@ EOF
 COPY nextcloud.conf /etc/httpd/conf.d/
 COPY .htaccess /var/www/html/nextcloud/.htaccess
 COPY supervisord.conf /etc/
+RUN chown apache /etc/supervisord.conf
 
 RUN <<EOF
     mkdir -p /var/www/html/nextcloud/data 
@@ -93,6 +94,6 @@ chmod -R 755 /var/www/html/nextcloud # twice to make sure right permissions
 chown apache /run/php-fpm
 EOF
 RUN sed -i '/^root.*ALL$/a apache ALL=(ALL) NOPASSWD: /usr/sbin/httpd, /usr/sbin/php-fpm, /usr/bin/supervisord' /etc/sudoers
-#USER apache
+USER apache
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
