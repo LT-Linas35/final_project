@@ -49,7 +49,7 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
 ### Terraform Modules and Configuration
 
 - **Variables**: [`terraform/terraform.tfvars`](terraform/terraform.tfvars)  
-  _Configures all modules excluding security groups; for security groups see [modules/securitygroups/](modules/securitygroups/)._
+  _Configures all modules excluding security groups; for security groups see [modules/securitygroups/](terrafrom/modules/securitygroups/)._
 - **Modules**:
   - **VPC**:
     - CIDR: `10.0.0.0/16`  
