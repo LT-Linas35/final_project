@@ -119,7 +119,31 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
   - **State Buckets**:
     - kOps state storage.
     - kOps OIDC configuration files.
-
+- **Users**:
+  - **Username**: `kops`
+    - **Group**: `kops`
+    - **Attached Policies**:
+      - `AmazonEC2FullAccess`
+      - `AmazonRoute53FullAccess`
+      - `AmazonS3FullAccess`
+      - `IAMFullAccess`
+      - `AmazonVPCFullAccess`
+      - `AmazonSQSFullAccess`
+      - `AmazonEventBridgeFullAccess`
+    - **Purpose**: This user is utilized for kOps administration, providing access to manage EC2, Route 53, S3, IAM, VPC, SQS, and EventBridge resources.
+  - **Username**: `nextcloud-s3-user`
+  - **Policy**: `s3-user-policy`
+    -  **Permissions**:
+      - `s3:CreateBucket`
+      - `s3:ListBucket`
+      - `s3:GetObject`
+      - `s3:PutObject`
+      - `s3:DeleteObject`
+    - **Resources**:
+      - `arn:aws:s3:::${var.nextcloud_install.S3_BUCKET}`
+      - `arn:aws:s3:::${var.nextcloud_install.S3_BUCKET}/*`
+    - **Purpose**: This user is designated for storing NextCloud data in AWS S3, with the necessary permissions to manage the specified S3 bucket and its contents.
+    
 ---
 
 ## Logging and Monitoring
@@ -165,4 +189,6 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
 ## After deployment
 
   - **View LoadBalancers**: ArgoCD and NextCloud load balancers available in AWS Console.
+  - **Log in to controller**:
+      
   
