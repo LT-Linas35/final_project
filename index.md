@@ -174,6 +174,30 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
 
 ### Terraform Cloud Setup
 - Configure variables in ([Terraform Cloud](https://app.terraform.io/session)).
+  - Minimum variables must be set
+    - AWS_ACCESS_KEY_ID
+    - AWS_SECRET_ACCESS_KEY
+  - Additional variables (json format)
+    - newrelic
+      {
+        "newrelic_global_licenseKey": "YOUR LICENSE KEY"
+      }
+    - nextcloud_install
+      {
+        "ADMIN_USER": "YOUR USERNAME",
+        "ADMIN_PASSWORD": "YOUR PASSWORD",
+        "ADMIN_EMAIL": "YOUR EMAIL"
+      }
+    - rds
+      {
+        "username": "NEXTCLOUD DB USERNAME",
+        "password": "NEXTCLOUD DB PASSWORD"
+      }
+    - cluter
+      {
+        "ARGOCD_PASSWORD": "YOUR PASSWORD"
+      }
+
 - Set NextCloud Helm [Chart values](https://github.com/LT-Linas35/final_project/blob/main/helm-charts/nextcloud-chart/values.yaml).
 
 ---
