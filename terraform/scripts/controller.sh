@@ -105,12 +105,13 @@ sleep 120 # Waiting for LoadBalancer to be ready
 export ARGOCD_SERVER_ADDRESS=$(sudo -u ec2-user kubectl -n argocd get svc argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'; echo)
 export ADMIN_PASSWORD=$(sudo -u ec2-user kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 --decode; echo)
 
-argocd account update-password --account admin --current-password $ADMIN_PASSWORD --new-password ${ARGOCD_PASSWORD}
-
 sleep 3
 
 # Login to ArgoCD
-sudo -u ec2-user argocd login $ARGOCD_SERVER_ADDRESS --username admin --password ${ARGOCD_PASSWORD} --insecure
+sudo -u ec2-user argocd login $ARGOCD_SERVER_ADDRESS --username admin --password $ADMIN_PASSWORD --insecure
+
+sudo -u ec2-user argocd account update-password --account admin --current-password $ADMIN_PASSWORD --new-password ${ARGOCD_PASSWORD}
+
 
 # Install Argo Rollouts
 sudo -u ec2-user kubectl create ns argo-rollouts
