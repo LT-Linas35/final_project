@@ -172,12 +172,6 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
     - `NEW_RELIC_API_KEY_PHP`, `NEW_RELIC_ACCOUNT_ID_PHP`, `NR_INSTALL_KEY_PHP`.
     - [main.yml](.github/workflows/main.yml)
 
-### Terraform Cloud Setup
-
-# Terraform Cloud and Helm Setup for NextCloud
-
-This guide provides a complete setup process for configuring **Terraform Cloud**, managing infrastructure variables, and deploying **NextCloud** using **Helm**.
-
 # Terraform Cloud and Helm Setup for NextCloud
 
 ## 1. Configure Variables in Terraform Cloud
@@ -219,8 +213,6 @@ The following `values.yaml` configuration is used to deploy NextCloud via Helm. 
 
 ### Summary
 This guide details all the necessary steps to configure your variables in **Terraform Cloud**, set up the required `terraform.tfvars`, and configure **NextCloud** deployment using Helm via `values.yaml`. This will ensure a smooth deployment process for both your infrastructure and application.
-
-
 
 ---
 
