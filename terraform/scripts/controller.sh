@@ -91,22 +91,26 @@ install -m 555 argocd-linux-amd64 /usr/bin/argocd
 rm argocd-linux-amd64
 
 # Install Ingress-Nginx
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-helm install ingress-nginx ingress-nginx/ingress-nginx
+sudo -u ec2-user helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+sudo -u ec2-user helm repo update
+sudo -u ec2-user helm install ingress-nginx ingress-nginx/ingress-nginx
 
 # Set up ArgoCD and expose as LoadBalancer
 sudo -u ec2-user helm repo add argo https://argoproj.github.io/argo-helm
-sudo -u ec2-user helm install argocd argo/argo-cd
-sudo -u ec2-user kubectl patch svc argocd-server -p '{"spec": {"type": "LoadBalancer"}}'
+sudo -u ec2-user helm install argocd argo/argo-cd --namespace argocd --create-namespace
+sudo -u ec2-user kubectl -n argocd patch svc argocd-server -p '{"spec": {"type": "LoadBalancer"}}'
 
 sleep 120 # Waiting for LoadBalancer to be ready
 
-export ARGOCD_SERVER_ADDRESS=$(sudo -u ec2-user kubectl get svc argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'; echo)
-export ADMIN_PASSWORD=$(sudo -u ec2-user kubectl get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 --decode; echo)
+export ARGOCD_SERVER_ADDRESS=$(sudo -u ec2-user kubectl -n argocd get svc argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'; echo)
+export ADMIN_PASSWORD=$(sudo -u ec2-user kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 --decode; echo)
+
+argocd account update-password --account admin --current-password $ADMIN_PASSWORD --new-password ${ARGOCD_PASSWORD}
+
+sleep 3
 
 # Login to ArgoCD
-sudo -u ec2-user argocd login $ARGOCD_SERVER_ADDRESS --username admin --password $ADMIN_PASSWORD --insecure
+sudo -u ec2-user argocd login $ARGOCD_SERVER_ADDRESS --username admin --password ${ARGOCD_PASSWORD} --insecure
 
 # Install Argo Rollouts
 sudo -u ec2-user kubectl create ns argo-rollouts
@@ -168,10 +172,6 @@ sudo -u ec2-user argocd app create nextcloud-rollout \
 --helm-set canarySteps.step2.setWeight=${canarySteps_1_setWeight} \
 --helm-set canarySteps.step2.pauseDuration=${canarySteps_1_pauseDuration} \
 --helm-set canarySteps.step3.setWeight=${canarySteps_2_setWeight}
-
-
-
-
 
 
 #curl -s https://api.github.com/repos/LT-Linas35/final_project/contents/server | grep download_url | cut -d '"' -f 4 | while read url; do
