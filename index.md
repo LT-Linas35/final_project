@@ -225,112 +225,14 @@ To deploy your infrastructure, navigate to [Terraform Cloud](https://app.terrafo
     ```
   - **`ARGOCD_PASSWORD`**: Password required to access ArgoCD.
 
-### 2. Terraform Variables Configuration (`terraform.tfvars`)
+### 2. Terraform Variables Configuration [`terraform.tfvars`](https://github.com/LT-Linas35/final_project/blob/main/terraform/terraform.tfvars)
 
-Below is the recommended `terraform.tfvars` file to manage the infrastructure settings for deploying NextCloud:
 
-```hcl
-# Important: All empty variables should be securely set in Terraform Cloud.
 
-# AWS Region Configuration
-aws_region = "eu-west-2"  # AWS region for deploying resources.
-
-# NewRelic Configuration
-newrelic = {
-  newrelic_global_licenseKey = ""           # NewRelic license key for monitoring.
-  KSM_IMAGE_VERSION          = "v2.10.0"    # Version of Kubernetes State Metrics (KSM) image.
-}
-
-# NextCloud Installation Configuration
-nextcloud_install = {
-  ADMIN_USER     = ""               # Admin user for NextCloud.
-  ADMIN_PASSWORD = ""               # Admin password for NextCloud.
-  ADMIN_EMAIL    = ""               # Admin email for NextCloud.
-  REDIS_TIMEOUT  = 0                  # Redis timeout setting (default).
-  REDIS_DBINDEX  = 0                  # Redis database index for caching.
-  S3_BUCKET      = "lino-nextcloud" # S3 bucket for storing NextCloud data.
-}
-
-# Canary Deployment Strategy for ArgoCD Rollout
-canary = {
-  canarySteps_0_setWeight     = 25     # Weight percentage for the first canary step.
-  canarySteps_0_pauseDuration = "360s" # Pause duration after the first canary step.
-
-  canarySteps_1_setWeight     = 50     # Weight percentage for the second canary step.
-  canarySteps_1_pauseDuration = "360s" # Pause duration after the second canary step.
-
-  canarySteps_2_setWeight     = 100    # Final weight percentage for full deployment.
-}
-
-# Bastion Server Configuration
-bastion = {
-  ami                     = "ami-07d1e0a32156d0d21" # AMI ID for the bastion server.
-  instance_type           = "t2.micro"              # EC2 instance type for the bastion.
-  instance_name           = "bastion"               # Name tag for the bastion instance.
-  key_name                = "Linas-eu-out"          # SSH key pair to access the bastion.
-  map_public_ip_on_launch = true                    # Assign a public IP on launch.
-  create_bastion          = 0                       # Flag to create the bastion (1 to create, 0 to skip).
-  volume_type             = "gp3"                   # EBS volume type.
-  volume_size             = "10"                    # EBS volume size in GiB.
-}
-
-# RDS Database Configuration
-rds = {
-  username = ""   # RDS username.
-  password = ""   # RDS password.
-}
-```
-
-### 3. Configure Helm Chart Values for NextCloud Deployment (`values.yaml`)
+### 3. Configure Helm Chart Values for NextCloud Deployment ([`values.yaml`](https://github.com/LT-Linas35/final_project/blob/main/helm-charts/nextcloud-chart/values.yaml)
 
 The following `values.yaml` configuration is used to deploy NextCloud via Helm. Properly configuring these values ensures a smooth deployment:
 
-```yaml
-# Helm Chart Configuration for NextCloud
-
-namespace: nextcloud                    # Namespace where the NextCloud resources will be deployed.
-
-applicationNamespace: argocd            # Namespace for the ArgoCD application resource.
-
-replicaCount: 3                         # Number of replicas for the NextCloud deployment.
-
-image:
-  repository: linas37/nextcloud         # Docker image repository for NextCloud.
-  tag: latest                           # Image version tag.
-  updateStrategy: latest                # Update strategy for the image.
-
-service:
-  type: ClusterIP                       # Kubernetes service type (e.g., ClusterIP, LoadBalancer).
-  port: 80                              # Port number for external access.
-
-canarySteps:
-  step1:
-    setWeight: 25                       # Weight for the first canary step.
-    pauseDuration: "360s"               # Pause duration after step one.
-  step2:
-    setWeight: 50                       # Weight for the second canary step.
-    pauseDuration: "360s"               # Pause duration after step two.
-  step3:
-    setWeight: 100                      # Final weight to complete deployment.
-
-ingress:
-  port: 80                              # Ingress port for external traffic.
-  scheme: internet-facing               # Ingress scheme type (e.g., internet-facing).
-
-project: default                        # ArgoCD project to manage the deployment.
-
-source:
-  repoURL: 'https://github.com/LT-Linas35/final_project.git' # Repository URL for Helm chart source.
-  path: helm-charts/nextcloud-chart     # Path to the Helm chart in the repository.
-  targetRevision: HEAD                  # Revision of the repository.
-
-destination:
-  server: 'https://kubernetes.default.svc'  # Kubernetes API server URL for deployment.
-
-syncPolicy:
-  prune: true                           # Prune old resources no longer needed.
-  selfHeal: true                        # Enable self-healing by ArgoCD.
-```
 
 ### Summary
 This guide details all the necessary steps to configure your variables in **Terraform Cloud**, set up the required `terraform.tfvars`, and configure **NextCloud** deployment using Helm via `values.yaml`. This will ensure a smooth deployment process for both your infrastructure and application.
