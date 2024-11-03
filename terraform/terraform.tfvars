@@ -99,6 +99,11 @@ s3 = {
   s3_bucket_public_access_oidc_store_block_block_public_policy     = false                  # Set to "true" to block public bucket policies, preventing public access policies.
   s3_bucket_public_access_oidc_store_block_restrict_public_buckets = false                  # When "true", restricts public bucket policies; "false" allows public policies.
   s3_bucket_acl_oidc_store_acl                                     = "public-read"          # Sets the bucket's ACL; "public-read" permits public read access.
+  s3_bucket_public_access_block_kops_state_block_public_acls       = false
+  s3_bucket_public_access_block_kops_state_block_public_policy     = false
+  s3_bucket_public_access_block_kops_state_ignore_public_acls      = false
+  s3_bucket_public_access_block_kops_state_restrict_public_buckets = false
+
 }
 
 
