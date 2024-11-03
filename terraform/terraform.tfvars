@@ -131,6 +131,7 @@ k8s_vpc = {
 # RDS Configuration for NextCloud Database
 rds = {
   Name                        = "NextCloud"                  # Name tag for the RDS instance
+  storage_encrypted           = true
   allocated_storage           = 20                           # Amount of storage (in GiB) allocated to RDS
   db_name                     = "nextcloud"                  # Name of the database in the RDS instance
   engine                      = "mysql"                      # Database engine used by RDS
