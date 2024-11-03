@@ -4,6 +4,42 @@ variable "aws_region" {
   type        = string
 }
 
+variable "ARGOCD_PASSWORD" {
+type        = string
+description = "Password for ArgoCD access."
+}
+
+variable "newrelic_global_licenseKey" {
+type        = string
+description = "Global license key for NewRelic monitoring."
+}
+
+variable "RDS_USERNAME" {
+type        = string
+description = "Username for database access."
+}
+
+variable "RDS_PASSWORD" {
+type        = string
+description = "Password for database access."
+}
+
+variable "ADMIN_USER" {
+type        = string
+description = "Admin user for NextCloud."
+}
+
+variable "ADMIN_PASSWORD" {
+type        = string
+description = "Admin password for NextCloud."
+}
+
+variable "ADMIN_EMAIL" {
+type        = string
+description = "Admin email for NextCloud."
+}
+
+
 variable "cluster" {
   type = object({
     CLUSTER_NAME               = string
@@ -22,7 +58,6 @@ variable "cluster" {
     kops_nlb_subnet_name       = string
     KOPS_TOPOLOGY              = string
     KOPS_NLB                   = string
-    ARGOCD_PASSWORD            = string
   })
 }
 
@@ -49,7 +84,6 @@ variable "s3" {
 
 variable "newrelic" {
   type = object({
-    newrelic_global_licenseKey = string
     KSM_IMAGE_VERSION          = string
   })
 }
@@ -114,8 +148,6 @@ variable "rds" {
     engine                      = string
     engine_version              = string
     instance_class              = string
-    username                    = string
-    password                    = string
     parameter_group_name        = string
     skip_final_snapshot         = bool
     publicly_accessible         = bool
@@ -146,9 +178,6 @@ variable "redis" {
 
 variable "nextcloud_install" {
   type = object({
-    ADMIN_USER     = string
-    ADMIN_PASSWORD = string
-    ADMIN_EMAIL    = string
     REDIS_TIMEOUT  = number
     REDIS_DBINDEX  = number
     S3_BUCKET      = string
