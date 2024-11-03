@@ -11,6 +11,7 @@ ADMIN_PASSWORD             = ""               # Admin password for NextCloud (pa
 ADMIN_EMAIL                = ""               # Admin email for NextCloud (pass through TerraForm Cloud or secret management)
 RDS_USERNAME               = ""               # Username (pass through TerraForm Cloud or secret management)
 RDS_PASSWORD               = ""               # Password (pass through TerraForm Cloud or secret management)
+create_bastion             = 1                # Flag to determine if the bastion host should be created (1/0)
 
 aws_region = "eu-west-2"
 
@@ -50,7 +51,6 @@ bastion = {
   instance_name           = "bastion"               # Name tag for the bastion instance
   key_name                = "Linas-eu-out"          # SSH key pair name to access the bastion server
   map_public_ip_on_launch = true                    # Assign a public IP to the bastion server
-  create_bastion          = 0                       # Flag to determine if the bastion host should be created (1/0)
   volume_type             = "gp3"                   # EBS volume type for the bastion instance
   volume_size             = "10"                    # Size of the EBS volume in GiB
 }
