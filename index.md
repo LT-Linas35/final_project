@@ -30,6 +30,11 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
 - **Infrastructure**:
   - **AWS**: Cloud provider.
     - **aws-cli**: CLI for interacting with AWS services.
+    - **RDS**: Managed relational database service used to store NextCloud’s database.
+    - **Redis**: In-memory data store used for caching to improve NextCloud performance.
+    - **EC2**: Compute instances for hosting applications and managing the Kubernetes cluster.
+    - **VPC**: Virtual Private Cloud providing a secure network for all infrastructure components.
+    - **S3**: Object storage used for storing NextCloud files and kOps state files.
 - **Monitoring and Logging**:
   - **NewRelic**: Monitoring and observability platform.
 
@@ -98,21 +103,16 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
     - `10.0.5.0/24`: Redis
     - `10.0.6.0/24` and `10.0.7.0/24`: RDS Instances
 - **EC2 Module**:
-  - **Bastion**:  
-    Connects to the Controller (only created if set to 1, default 0).
+  - **Bastion**: Connects to the Controller (only created if set to 1, default 0).
     - **Ingress**: 22 TCP from all sources
     - **Egress**: Controller CIDR
-  - **Controller**:  
-    kOps control plane, stores sensitive data ([controller.sh](https://github.com/LT-Linas35/final_project/blob/main/terraform/scripts/controller.sh))  
-    Safe to shut down after cluster creation.
+  - **Controller**: kOps control plane, stores sensitive data ([controller.sh](https://github.com/LT-Linas35/final_project/blob/main/terraform/scripts/controller.sh)) Safe to shut down after cluster creation.
     - **Ingress**: 22 TCP from Bastion CIDR
     - **Egress**: All sources
-- **RDS Module**:  
-  Database for NextCloud data.
+- **RDS Module**: Database for NextCloud data.
   - **Ingress**: 3306 TCP from Kubernetes subnet
   - **Egress**: Kubernetes subnet
-- **Redis Module**:  
-  Cache for NextCloud.
+- **Redis Module**: Cache for NextCloud.
   - **Ingress**: 6379 TCP from Kubernetes subnet
   - **Egress**: Kubernetes subnet
 - **S3 Module**:
@@ -159,4 +159,10 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
 1. **Build Release**: [Create release](https://github.com/LT-Linas35/nextcloud_server/releases).
 2. **Build Infrastructure**: Trigger [Terraform Apply](https://github.com/LT-Linas35/final_project/actions/workflows/terraform-apply.yml).  
    _Deployment may take up to 30 minutes._
-3. **View LoadBalancers**: ArgoCD and NextCloud load balancers available in AWS Console.
+
+---
+
+## After deployment
+
+
+  
