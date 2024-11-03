@@ -33,7 +33,7 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
     - **RDS**: Managed relational database service used to store NextCloud’s database.
     - **Redis**: In-memory data store used for caching to improve NextCloud performance.
     - **EC2**: Compute instances for hosting applications and managing the Kubernetes cluster.
-    - **VPC**: Virtual Private Cloud providing a secure network for all infrastructure components.
+    - **VPC**: Virtual Private Cloud providing a secure network for all infrastructure.
     - **S3**: Object storage used for storing NextCloud files and kOps state files.
 - **Monitoring and Logging**:
   - **NewRelic**: Monitoring and observability platform.
@@ -149,8 +149,8 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
     - [main.yml](.github/workflows/main.yml)
 
 ### Terraform Cloud Setup
-- Configure variables in Terraform Cloud ([Terraform Cloud](https://app.terraform.io/session)).
-- Set NextCloud Helm Chart values in [values.yaml](https://github.com/LT-Linas35/final_project/blob/main/helm-charts/nextcloud-chart/values.yaml).
+- Configure variables in ([Terraform Cloud](https://app.terraform.io/session)).
+- Set NextCloud Helm [Chart values](https://github.com/LT-Linas35/final_project/blob/main/helm-charts/nextcloud-chart/values.yaml).
 
 ---
 
@@ -164,5 +164,5 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
 
 ## After deployment
 
-
+  - **View LoadBalancers**: ArgoCD and NextCloud load balancers available in AWS Console.
   
