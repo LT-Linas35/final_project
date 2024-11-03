@@ -177,7 +177,6 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
   - Minimum variables must be set
     - AWS_ACCESS_KEY_ID
     - AWS_SECRET_ACCESS_KEY
-  - Additional variables (json format)
     - newrelic
       {
         "newrelic_global_licenseKey": "YOUR LICENSE KEY"
