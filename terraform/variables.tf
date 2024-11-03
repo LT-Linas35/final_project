@@ -149,6 +149,7 @@ variable "rds" {
   description = "Configuration for the RDS database instance."
   type = object({
     allocated_storage           = number
+    storage_encrypted           = string
     db_name                     = string
     engine                      = string
     engine_version              = string
