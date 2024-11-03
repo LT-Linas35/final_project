@@ -72,7 +72,7 @@ spec:
           - "/bin/bash"
           - "-c"
           - |
-              sudo -u apache php occ maintenance:install \
+              php occ maintenance:install \
               --admin-user=$NEXTCLOUD_ADMIN_USER \
               --admin-pass=$NEXTCLOUD_ADMIN_PASSWORD \
               --admin-email=$NEXTCLOUD_ADMIN_EMAIL \
@@ -83,8 +83,8 @@ spec:
               --database-user=$NEXTCLOUD_DB_USER \
               --database-pass=$NEXTCLOUD_DB_PASSWORD; \
               sed -i "/);/i \  'installed' => true," config/config.php; \
-              sudo -u apache php occ db:add-missing-indices; \
-              sudo -u apache php occ maintenance:repair; \
+              php occ db:add-missing-indices; \
+              php occ maintenance:repair; \
               supervisord -c /etc/supervisord.conf
       volumes:
       - name: config-volume
