@@ -225,6 +225,7 @@ module "bastion" {
 # RDS instance module
 module "rds" {
   source               = "./modules/rds"
+  storage_encrypted    = var.rds.storage_encrypted
   db_subnet_group_name = module.vpc_rds.db_subnet_group_name //FIX IT !!!
   rds_sg               = module.rds_sg.rds_sg
   allocated_storage    = var.rds.allocated_storage
