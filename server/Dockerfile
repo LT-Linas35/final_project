@@ -93,4 +93,6 @@ chmod -R 755 /var/www/html/nextcloud # twice to make sure right permissions
 chown apache /run/php-fpm
 EOF
 
+USER apache
+
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
