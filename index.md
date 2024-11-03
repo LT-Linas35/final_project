@@ -11,12 +11,12 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
   _Stores the main application code for NextCloud._
 - **GitHub Actions**:
   - **On Push to `dev`**:
-    - [Super Linter](.github/workflows/super-linter.yml)  
+    - [Super Linter](https://github.com/LT-Linas35/nextcloud_server/.github/workflows/super-linter.yml)  
       _Automated code quality checks for the project._
-    - [Sonar Cloud Scanner](.github/workflows/Sonar-Cloud-Scanner.yml) (_requires `secrets.SONAR_TOKEN`_)  
+    - [Sonar Cloud Scanner](https://github.com/LT-Linas35/nextcloud_server/.github/workflows/Sonar-Cloud-Scanner.yml) (_requires `secrets.SONAR_TOKEN`_)  
       _Performs code analysis to identify issues and maintain code quality._
   - **On Release**:
-    - [Super Linter and Sonar Cloud Scanner Release Workflow](Super-Linter-and-Sonar-Cloud-Scanner-Release.yaml)  
+    - [Super Linter and Sonar Cloud Scanner Release Workflow](https://github.com/LT-Linas35/nextcloud_server/Super-Linter-and-Sonar-Cloud-Scanner-Release.yaml)  
       _Runs automated code checks and Sonar analysis on release._
     - **Trigger Build**: Sends API call to `final_project` to build NextCloud Docker image (_requires `secrets.workflow_token` and final_project token_)  
       _Automates Docker image build and deploy process on release._
@@ -34,7 +34,7 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
   - **Manual Dispatch**:
     - [Terraform Apply](.github/workflows/terraform-apply.yml) (_requires configuration for `TF_CLOUD_ORGANIZATION`, `TF_WORKSPACE`, and `secrets.TF_API_TOKEN`_)  
       _Runs Terraform to manage and apply infrastructure changes._
-  - **API Call from `nextcloud_server`**: CI pipeline with Trivy and Docker image publish ([main.yml](main.yml))  
+  - **API Call from `nextcloud_server`**: CI pipeline with Trivy and Docker image publish ([main.yml](.github/workflows/main.yml))  
     _Automates the CI/CD process for publishing Docker images._
 
 - **Helm Charts**: [NextCloud Helm Chart](helm-charts/nextcloud-chart)  
