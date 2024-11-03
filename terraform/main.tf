@@ -118,10 +118,10 @@ module "s3" {
   s3_bucket_public_access_oidc_store_block_block_public_policy     = var.s3.s3_bucket_public_access_oidc_store_block_block_public_policy
   s3_bucket_public_access_oidc_store_block_restrict_public_buckets = var.s3.s3_bucket_public_access_oidc_store_block_restrict_public_buckets
   s3_bucket_acl_oidc_store_acl                                     = var.s3.s3_bucket_acl_oidc_store_acl
-  s3_bucket_public_access_block_kops_state
-  s3_bucket_public_access_block_kops_state
-  aws_s3_bucket_public_access_block_kops_state
-  aws_s3_bucket_public_access_block_kops_state
+  s3_bucket_public_access_block_kops_state_block_public_acls       = var.s3.s3_bucket_public_access_block_kops_state_block_public_acls
+  s3_bucket_public_access_block_kops_state_block_public_policy     = var.s3.s3_bucket_public_access_block_kops_state_block_public_policy
+  s3_bucket_public_access_block_kops_state_ignore_public_acls      = var.s3.s3_bucket_public_access_block_kops_state_ignore_public_acls
+  s3_bucket_public_access_block_kops_state_restrict_public_buckets = var.s3.s3_bucket_public_access_block_kops_state_restrict_public_buckets
 }
 
 # Redis instance module (Elasticache)
