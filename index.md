@@ -65,14 +65,14 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
     - SonarCloud: [SonarCloud Scanner](https://github.com/LT-Linas35/nextcloud_server/blob/dev/.github/workflows/Sonar-Cloud-Scanner.yml)
   - **On Release**:
     - Super Linter and Sonar Cloud Scanner workflows.
-    - Calls API to `final_project` to build Docker image: [Release Workflow](https://github.com/LT-Linas35/nextcloud_server/blob/dev/Super-Linter-and-Sonar-Cloud-Scanner-Release.yaml).
+    - Calls API to `final_project` to build Docker image: [Release Workflow](https://github.com/LT-Linas35/nextcloud_server/blob/dev/.github/workflows/Super-Linter-and-Sonar-Cloud-Scanner-Release.yaml)).
 
 ### Infrastructure as Code (IaC) - LaC
 - **Repository**: [final_project](https://github.com/LT-Linas35/final_project)
   - **GitHub Actions**:
-    - On Push to `main`: SonarCloud ([workflow](.github/workflows/sonar-cloud.yml)) and Trivy ([workflow](.github/workflows/trivy.yml)).
-    - On Dispatch: Terraform Apply ([workflow](.github/workflows/terraform-apply.yml)).
-    - API call from `nextcloud_server` for CI pipeline ([main.yml](.github/workflows/main.yml)).
+    - On Push to `main`: ([SonarCloud](https://github.com/LT-Linas35/final_project/blob/main/.github/workflows/sonar-cloud.yml)) and  ([Trivy](https://github.com/LT-Linas35/final_project/blob/main/.github/workflows/trivy.yml)).
+    - On Dispatch: ([Terraform Apply](https://github.com/LT-Linas35/final_project/blob/main/.github/workflows/terraform-apply.yml)).
+    - API call from `nextcloud_server` for CI pipeline ([main.yml](https://github.com/LT-Linas35/final_project/blob/main/.github/workflows/main.yml)).
 
 - **Helm Chart**: [NextCloud Helm Chart](helm-charts/nextcloud-chart) for Kubernetes deployment.
 - **Server**: [NextCloud Dockerfile](server/Dockerfile).
