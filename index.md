@@ -62,8 +62,8 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
 - **Repository**: [nextcloud_server (branch: dev)](https://github.com/LT-Linas35/nextcloud_server)
   - **GitHub Actions**:
     - On Push to `dev`: 
-        [Super Linter](https://github.com/LT-Linas35/nextcloud_server/blob/dev/.github/workflows/super-linter.yml)  
-        [SonarCloud Scanner](https://github.com/LT-Linas35/nextcloud_server/blob/dev/.github/workflows/Sonar-Cloud-Scanner.yml)
+      - [Super Linter](https://github.com/LT-Linas35/nextcloud_server/blob/dev/.github/workflows/super-linter.yml)  
+      - [SonarCloud Scanner](https://github.com/LT-Linas35/nextcloud_server/blob/dev/.github/workflows/Sonar-Cloud-Scanner.yml)
   - **On Release**:
     - Super Linter and Sonar Cloud Scanner workflows. 
     - Calls API to `final_project` to build Docker image: [Release Workflow](https://github.com/LT-Linas35/nextcloud_server/blob/dev/.github/workflows/Super-Linter-and-Sonar-Cloud-Scanner-Release.yaml)).
