@@ -229,7 +229,7 @@ To deploy your infrastructure, navigate to [Terraform Cloud](https://app.terrafo
 
 
 
-### 3. Configure Helm Chart Values for NextCloud Deployment ([`values.yaml`](https://github.com/LT-Linas35/final_project/blob/main/helm-charts/nextcloud-chart/values.yaml)
+### 3. Configure Helm Chart Values for NextCloud Deployment ([`values.yaml`](https://github.com/LT-Linas35/final_project/blob/main/helm-charts/nextcloud-chart/values.yaml))
 
 The following `values.yaml` configuration is used to deploy NextCloud via Helm. Properly configuring these values ensures a smooth deployment:
 
