@@ -207,7 +207,7 @@ module "bastion" {
   instance_name                        = var.bastion.instance_name
   key_name                             = var.bastion.key_name
   subnet_id                            = module.vpc.bastion_subnet_id
-  create_bastion                       = var.bastion.create_bastion
+  create_bastion                       = var.create_bastion
   controller_instance_private_hostname = module.controller.controller_instance_private_hostname
   volume_type                          = var.bastion.volume_type
   volume_size                          = var.bastion.volume_size
