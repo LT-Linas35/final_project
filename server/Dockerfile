@@ -94,6 +94,7 @@ chown -R apache /var/log/httpd
 chown -R apache /var/www/html/nextcloud
 chmod -R 755 /var/www/html/nextcloud # twice to make sure right permissions
 sed -i '/^root.*ALL$/a apache ALL=(ALL) NOPASSWD: /usr/sbin/httpd, /usr/sbin/php-fpm, /usr/bin/supervisord, /bin/php' /etc/sudoers
+setsebool -P httpd_can_network_connect 1
 EOF
 
 USER apache
