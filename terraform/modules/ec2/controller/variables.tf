@@ -251,3 +251,7 @@ variable "canarySteps_2_setWeight" {
   type        = number
 }
 
+variable "ARGOCD_PASSWORD" {
+  description = "New Pasword for ArgoCD"
+  type = string
+}
