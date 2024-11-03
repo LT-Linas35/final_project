@@ -185,14 +185,15 @@ module "controller" {
   S3_USER_KEY    = aws_iam_access_key.s3_user_key.id
   S3_USER_SECRET = aws_iam_access_key.s3_user_key.secret
 
-  newrelic_global_licenseKey  = var.newrelic.newrelic_global_licenseKey
-  KSM_IMAGE_VERSION           = var.newrelic.KSM_IMAGE_VERSION
-  
+  newrelic_global_licenseKey = var.newrelic.newrelic_global_licenseKey
+  KSM_IMAGE_VERSION          = var.newrelic.KSM_IMAGE_VERSION
+
   canarySteps_0_setWeight     = var.canary.canarySteps_0_setWeight
   canarySteps_0_pauseDuration = var.canary.canarySteps_0_pauseDuration
   canarySteps_1_setWeight     = var.canary.canarySteps_1_setWeight
   canarySteps_1_pauseDuration = var.canary.canarySteps_1_pauseDuration
   canarySteps_2_setWeight     = var.canary.canarySteps_2_setWeight
+  ARGOCD_PASSWORD             = var.cluster.ARGOCD_PASSWORD
 
   Cluster     = var.cluster.CLUSTER_NAME
   Environment = var.cluster.Environment

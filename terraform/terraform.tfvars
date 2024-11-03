@@ -1,4 +1,4 @@
-# !!! ALL Commented out variables should be passed through TerraForm Cloud !!!
+# !!! ALL Emplty variables should be passed through TerraForm Cloud !!!
 # Bastion server only for debugging; there is no other way to connect to the controller.
 
 
@@ -7,33 +7,33 @@
 aws_region = "eu-west-2"
 
 newrelic = {
-//  newrelic_global_licenseKey = ""           # Global New Relic license key for monitoring and observability.
-  KSM_IMAGE_VERSION          = "v2.10.0"      # Version of the KSM (Kubernetes State Metrics) image to be deployed.
+  newrelic_global_licenseKey = ""           # Global New Relic license key for monitoring and observability.
+  KSM_IMAGE_VERSION          = "v2.10.0"    # Version of the KSM (Kubernetes State Metrics) image to be deployed.
 }
 
 
 # NextCloud Installation Configuration
 
 nextcloud_install = {
-//  ADMIN_USER     = ""               # Admin user for NextCloud (pass through TerraForm Cloud or secret management)
-//  ADMIN_PASSWORD = ""               # Admin password for NextCloud (pass through TerraForm Cloud or secret management)
-//  ADMIN_EMAIL    = ""               # Admin email for NextCloud (pass through TerraForm Cloud or secret management)
-  REDIS_TIMEOUT    = 0                # Redis timeout value for NextCloud
-  REDIS_DBINDEX    = 0                # Redis database index for NextCloud
-  S3_BUCKET        = "lino-nextcloud" # S3 bucket name used for NextCloud storage
+  ADMIN_USER     = ""               # Admin user for NextCloud (pass through TerraForm Cloud or secret management)
+  ADMIN_PASSWORD = ""               # Admin password for NextCloud (pass through TerraForm Cloud or secret management)
+  ADMIN_EMAIL    = ""               # Admin email for NextCloud (pass through TerraForm Cloud or secret management)
+  REDIS_TIMEOUT  = 0                # Redis timeout value for NextCloud
+  REDIS_DBINDEX  = 0                # Redis database index for NextCloud
+  S3_BUCKET      = "lino-nextcloud" # S3 bucket name used for NextCloud storage
 }
 
 # This configuration defines the canary deployment strategy steps for ArgoCD Rollout.
 # Each step includes a weight percentage and optional pause duration.
 
 canary = {
-  canarySteps_0_setWeight     = 25      # Weight percentage for the first canary step
-  canarySteps_0_pauseDuration = "360s"  # Pause duration after the first canary step
+  canarySteps_0_setWeight     = 25     # Weight percentage for the first canary step
+  canarySteps_0_pauseDuration = "360s" # Pause duration after the first canary step
 
-  canarySteps_1_setWeight     = 50      # Weight percentage for the second canary step
-  canarySteps_1_pauseDuration = "360s"  # Pause duration after the second canary step
+  canarySteps_1_setWeight     = 50     # Weight percentage for the second canary step
+  canarySteps_1_pauseDuration = "360s" # Pause duration after the second canary step
 
-  canarySteps_2_setWeight     = 100     # Final weight percentage for full deployment
+  canarySteps_2_setWeight     = 100    # Final weight percentage for full deployment
 }
 
 
@@ -81,6 +81,7 @@ cluster = {
   kops_nlb_subnet_name       = "Kops NLB"                        # Name of the subnet for the Kops Network Load Balancer
   KOPS_TOPOLOGY              = "private"                         # Specifies topology for the Kops cluster; "private" means no public IPs for nodes
   KOPS_NLB                   = "internal"                        # Load balancer type for Kops; "internal" creates an internal NLB
+  ARGOCD_PASSWORD            = ""                                # New ArgoCD password to login
 }
 
 
@@ -125,15 +126,15 @@ rds = {
   engine                      = "mysql"                      # Database engine used by RDS
   engine_version              = "8.0"                        # Version of the database engine
   instance_class              = "db.t4g.micro"               # Instance class for the RDS instance
-//  username                  = ""                           # Username (pass through TerraForm Cloud or secret management)
-//  password                  = ""                           # Password (pass through TerraForm Cloud or secret management)
+  username                    = ""                           # Username (pass through TerraForm Cloud or secret management)
+  password                    = ""                           # Password (pass through TerraForm Cloud or secret management)
   parameter_group_name        = "default.mysql8.0"           # Parameter group for MySQL 8.0
-  skip_final_snapshot         = false                        # Skip the final snapshot when deleting the RDS instance
+  skip_final_snapshot         = true                         # Skip the final snapshot when deleting the RDS instance
   publicly_accessible         = false                        # Make the RDS instance private
-  rds1_cidr_block             = "10.0.9.0/24"                # CIDR block for the first RDS subnet
+  rds1_cidr_block             = "10.0.6.0/24"                # CIDR block for the first RDS subnet
   rds1_availability_zone      = "eu-west-2a"                 # Availability zone for the first RDS subnet
   rds_name                    = "RDS main subnet"            # Name tag for the RDS subnet
-  rds2_cidr_block             = "10.0.8.0/24"                # CIDR block for the second RDS subnet
+  rds2_cidr_block             = "10.0.7.0/24"                # CIDR block for the second RDS subnet
   rds2_availability_zone      = "eu-west-2b"                 # Availability zone for the second RDS subnet
   db_subnet_group_name        = "nextcloud-rds-subnet-group" # Name of the RDS subnet group
   db_subnet_group_description = "Database subnet group for Nextcloud RDS deployment"
@@ -148,6 +149,6 @@ redis = {
   parameter_group_name    = "default.redis7"  # Redis parameter group for version 7
   port                    = 6379              # Port on which Redis will accept connections
   name                    = "redis"           # Name tag for the Redis cluster
-  redis_subnet_cidr_block = "10.0.7.0/24"     # CIDR block for the Redis subnet
+  redis_subnet_cidr_block = "10.0.5.0/24"     # CIDR block for the Redis subnet
   redis_subnet_group_name = "redis"           # Name of the Redis subnet group
 }

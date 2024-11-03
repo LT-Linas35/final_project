@@ -22,16 +22,17 @@ variable "cluster" {
     kops_nlb_subnet_name       = string
     KOPS_TOPOLOGY              = string
     KOPS_NLB                   = string
+    ARGOCD_PASSWORD            = string
   })
 }
 
 variable "canary" {
   type = object({
-  canarySteps_0_setWeight     = number
-  canarySteps_0_pauseDuration = string
-  canarySteps_1_setWeight     = number
-  canarySteps_1_pauseDuration = string
-  canarySteps_2_setWeight     = number 
+    canarySteps_0_setWeight     = number
+    canarySteps_0_pauseDuration = string
+    canarySteps_1_setWeight     = number
+    canarySteps_1_pauseDuration = string
+    canarySteps_2_setWeight     = number
   })
 }
 
