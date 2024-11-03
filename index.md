@@ -178,52 +178,35 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
 
 This guide provides a complete setup process for configuring **Terraform Cloud**, managing infrastructure variables, and deploying **NextCloud** using **Helm**.
 
-### 1. Configure Variables in Terraform Cloud
+# Terraform Cloud and Helm Setup for NextCloud
+
+## 1. Configure Variables in Terraform Cloud
 
 To deploy your infrastructure, navigate to [Terraform Cloud](https://app.terraform.io/session) and set up the following variables:
 
-- **AWS Credentials**:
-  - **`AWS_ACCESS_KEY_ID`**: Your AWS access key, required to interact with AWS resources.
-  - **`AWS_SECRET_ACCESS_KEY`**: AWS secret key, ensuring secure authentication.
+### AWS Credentials
 
-- **NewRelic Configuration**:
-  - **`newrelic`** (as a JSON object):
-    ```json
-    {
-      "newrelic_global_licenseKey": "YOUR_LICENSE_KEY"
-    }
-    ```
-  - **`newrelic_global_licenseKey`**: License key for monitoring with NewRelic.
+- **`AWS_ACCESS_KEY_ID`**: Your AWS access key, required to interact with AWS resources.
+- **`AWS_SECRET_ACCESS_KEY`**: AWS secret key, ensuring secure authentication.
 
-- **NextCloud Installation Configuration**:
-  - **`nextcloud_install`** (as a JSON object):
-    ```json
-    {
-      "ADMIN_USER": "YOUR_USERNAME",
-      "ADMIN_PASSWORD": "YOUR_PASSWORD",
-      "ADMIN_EMAIL": "YOUR_EMAIL"
-    }
-    ```
-  - **`ADMIN_USER`**, **`ADMIN_PASSWORD`**, **`ADMIN_EMAIL`**: Administrative credentials for NextCloud.
+### NewRelic Configuration
 
-- **RDS Database Credentials**:
-  - **`rds`** (as a JSON object):
-    ```json
-    {
-      "username": "NEXTCLOUD_DB_USERNAME",
-      "password": "NEXTCLOUD_DB_PASSWORD"
-    }
-    ```
-  - **`username`** and **`password`**: RDS instance credentials for NextCloud.
+- **`newrelic_global_licenseKey`**: License key for monitoring with NewRelic.
 
-- **Cluster Configuration**:
-  - **`cluster`** (as a JSON object):
-    ```json
-    {
-      "ARGOCD_PASSWORD": "YOUR_PASSWORD"
-    }
-    ```
-  - **`ARGOCD_PASSWORD`**: Password required to access ArgoCD.
+### NextCloud Installation Configuration
+
+- **`ADMIN_USER`**: Administrative username for NextCloud.
+- **`ADMIN_PASSWORD`**: Administrative password for NextCloud.
+- **`ADMIN_EMAIL`**: Administrative email for NextCloud.
+
+### RDS Database Credentials
+
+- **`RDS_USERNAME`**: RDS instance username for NextCloud.
+- **`RDS_PASSWORD`**: RDS instance password for NextCloud.
+
+### ArgoCD Password
+
+- **`ARGOCD_PASSWORD`**: Password required to access ArgoCD.
 
 ### 2. Terraform Variables Configuration [`terraform.tfvars`](https://github.com/LT-Linas35/final_project/blob/main/terraform/terraform.tfvars)
 
