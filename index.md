@@ -173,31 +173,56 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
     - [main.yml](.github/workflows/main.yml)
 
 ### Terraform Cloud Setup
-- Configure variables in ([Terraform Cloud](https://app.terraform.io/session)).
-  - Minimum variables must be set
-    - AWS_ACCESS_KEY_ID
-    - AWS_SECRET_ACCESS_KEY
-    - newrelic
-      {
-        "newrelic_global_licenseKey": "YOUR LICENSE KEY"
-      }
-    - nextcloud_install
-      {
-        "ADMIN_USER": "YOUR USERNAME",
-        "ADMIN_PASSWORD": "YOUR PASSWORD",
-        "ADMIN_EMAIL": "YOUR EMAIL"
-      }
-    - rds
-      {
-        "username": "NEXTCLOUD DB USERNAME",
-        "password": "NEXTCLOUD DB PASSWORD"
-      }
-    - cluster
-      {
-        "ARGOCD_PASSWORD": "YOUR PASSWORD"
-      }
 
-- Set NextCloud Helm [Chart values](https://github.com/LT-Linas35/final_project/blob/main/helm-charts/nextcloud-chart/values.yaml).
+1. **Configure Variables**:
+   - Go to [Terraform Cloud](https://app.terraform.io/session) and configure the necessary variables for your deployment.
+   - Ensure the following variables are set:
+
+     - **AWS Credentials**:
+       - `AWS_ACCESS_KEY_ID`
+       - `AWS_SECRET_ACCESS_KEY`
+
+     - **NewRelic**:
+       - `newrelic` (set as a JSON object):
+
+         ```json
+         {
+           "newrelic_global_licenseKey": "YOUR LICENSE KEY"
+         }
+         ```
+
+     - **NextCloud Installation**:
+       - `nextcloud_install` (set as a JSON object):
+
+         ```json
+         {
+           "ADMIN_USER": "YOUR USERNAME",
+           "ADMIN_PASSWORD": "YOUR PASSWORD",
+           "ADMIN_EMAIL": "YOUR EMAIL"
+         }
+         ```
+
+     - **RDS Database Credentials**:
+       - `rds` (set as a JSON object):
+
+         ```json
+         {
+           "username": "NEXTCLOUD DB USERNAME",
+           "password": "NEXTCLOUD DB PASSWORD"
+         }
+         ```
+
+     - **Cluster Configuration**:
+       - `cluster` (set as a JSON object):
+
+         ```json
+         {
+           "ARGOCD_PASSWORD": "YOUR PASSWORD"
+         }
+         ```
+
+2. **Set NextCloud Helm Chart Values**:
+   - Configure specific NextCloud Helm [Chart values](https://github.com/LT-Linas35/final_project/blob/main/helm-charts/nextcloud-chart/values.yaml) as needed for your deployment.
 
 ---
 
@@ -209,9 +234,47 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
 
 ---
 
-## After deployment
+## After Deployment
 
-  - **View LoadBalancers**: ArgoCD and NextCloud load balancers available in AWS Console.
-  - **Log in to controller**:
-      
-  
+### 1. View Load Balancers
+- You can find the ArgoCD and NextCloud load balancers in the **AWS Console** under the Load Balancers section.
+
+### 2. Log in to Controller
+To securely connect to the Controller instance via the Bastion server, follow these steps:
+
+1. **Set Up Bastion Server**:
+   - Open the [`terraform.tfvars`](https://github.com/LT-Linas35/final_project/blob/main/terraform/terraform.tfvars) file.
+   - Set `bastion = 1` to enable the Bastion server. This will create a Bastion EC2 instance.
+   - Run `terraform apply` to apply the changes.
+
+2. **Configure SSH Access**:
+   - On your local machine, create or update the SSH configuration file at `~/.ssh/config` with the following:
+
+     ```plaintext
+     Host bastion-server
+         HostName <BASTION_IP>
+         User ec2-user
+         IdentityFile <KEY_BASTION.pem>
+
+     Host 10.0.3.*
+         User ec2-user
+         IdentityFile <KEY_CONTROLLER.pem>
+         ProxyJump bastion-server
+     ```
+
+   - Replace `<BASTION_IP>`, `<KEY_BASTION.pem>`, and `<KEY_CONTROLLER.pem>` with the actual Bastion IP and the paths to your PEM key files.
+
+3. **Connect to the Controller**:
+   - Use the following SSH command to connect to the Controller instance through the Bastion server:
+
+     ```bash
+     ssh <controller_ip>
+     ```
+
+   - Replace `<controller_ip>` with the actual IP of the Controller instance.
+
+4. **Disable Bastion After Debugging**:
+   - Once debugging is complete, return to [`terraform.tfvars`](https://github.com/LT-Linas35/final_project/blob/main/terraform/terraform.tfvars).
+   - Set `bastion = 0` to disable the Bastion server. This will destroy the Bastion EC2 instance.
+   - Run `terraform apply` again to apply the changes.
+
