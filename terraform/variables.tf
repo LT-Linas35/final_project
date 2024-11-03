@@ -81,6 +81,10 @@ variable "s3" {
     s3_bucket_public_access_oidc_store_block_block_public_policy     = bool
     s3_bucket_public_access_oidc_store_block_restrict_public_buckets = bool
     s3_bucket_acl_oidc_store_acl                                     = string
+    s3_bucket_public_access_block_kops_state_block_public_acls       = bool
+    s3_bucket_public_access_block_kops_state_block_public_policy     = bool
+    s3_bucket_public_access_block_kops_state_ignore_public_acls      = bool
+    s3_bucket_public_access_block_kops_state_restrict_public_buckets = bool
   })
 }
 
