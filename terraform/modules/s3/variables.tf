@@ -37,3 +37,24 @@ variable "s3_bucket_acl_oidc_store_acl" {
   description = "ACL setting for the S3 bucket used for OIDC store."
   type        = string
 }
+
+variable "s3_bucket_public_access_block_kops_state_block_public_acls" {
+  description = "Determines whether to block public ACLs for the S3 bucket."
+  type        = bool
+}
+
+variable "s3_bucket_public_access_block_kops_state_block_public_policy" {
+  description = "Determines whether to block public bucket policies for the S3 bucket."
+  type        = bool
+}
+
+variable "s3_bucket_public_access_block_kops_state_ignore_public_acls" {
+  description = "Determines whether to ignore public ACLs for the S3 bucket."
+  type        = bool
+}
+
+variable "s3_bucket_public_access_block_kops_state_restrict_public_buckets" {
+  description = "Determines whether to restrict public bucket policies for the S3 bucket."
+  type        = bool
+}
+
