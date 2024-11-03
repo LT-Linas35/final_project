@@ -13,7 +13,7 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
   - **On Push to `dev`**:
     - [Super Linter](https://github.com/LT-Linas35/nextcloud_server/blob/dev/.github/workflows/super-linter.yml)  
       _Automated code quality checks for the project._
-    - [Sonar Cloud Scanner][https://github.com/LT-Linas35/nextcloud_server/blob/dev/.github/workflows/Sonar-Cloud-Scanner.yml) (_requires `secrets.SONAR_TOKEN`_)  
+    - [Sonar Cloud Scanner](https://github.com/LT-Linas35/nextcloud_server/blob/dev/.github/workflows/Sonar-Cloud-Scanner.yml) (_requires `secrets.SONAR_TOKEN`_)  
       _Performs code analysis to identify issues and maintain code quality._
   - **On Release**:
     - [Super Linter and Sonar Cloud Scanner Release Workflow](https://github.com/LT-Linas35/nextcloud_server/blob/dev/Super-Linter-and-Sonar-Cloud-Scanner-Release.yaml)  
