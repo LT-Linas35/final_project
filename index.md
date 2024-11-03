@@ -193,7 +193,7 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
         "username": "NEXTCLOUD DB USERNAME",
         "password": "NEXTCLOUD DB PASSWORD"
       }
-    - cluter
+    - cluster
       {
         "ARGOCD_PASSWORD": "YOUR PASSWORD"
       }
