@@ -2,6 +2,15 @@ resource "aws_s3_bucket" "kops_state" {
   bucket = var.kops_state_bucket_name
 }
 
+resource "aws_s3_bucket_public_access_block" "kops_state" {
+  bucket                  = aws_s3_bucket.kops_state.bucket
+
+  block_public_acls       = var.aws_s3_bucket_public_access_block_kops_state
+  block_public_policy     = var.aws_s3_bucket_public_access_block_kops_state
+  ignore_public_acls      = var.aws_s3_bucket_public_access_block_kops_state
+  restrict_public_buckets = var.aws_s3_bucket_public_access_block_kops_state
+}
+
 
 resource "aws_s3_bucket" "oidc_store" {
   bucket = var.kops_oidc_bucket_name
