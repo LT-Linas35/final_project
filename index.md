@@ -48,8 +48,8 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
 
 ### Terraform Modules and Configuration
 
-- **Variables**: [`terraform.tfvars`](terraform/terraform.tfvars)  
-  _Configures all modules excluding security groups; for security groups see [modules/securitygroups/](terrafrom/modules/securitygroups/)._
+- **Variables**: [`terraform/terraform.tfvars`](terraform/terraform.tfvars)  
+  _Configures all modules excluding security groups; for security groups see [modules/securitygroups/](modules/securitygroups/)._
 - **Modules**:
   - **VPC**:
     - CIDR: `10.0.0.0/16`  
@@ -68,8 +68,8 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
       - **Ingress**: 22 TCP `[0.0.0.0/0]`
       - **Egress**: `[controller CIDR]`
     - **Controller**:
-      - kOps cluster management with saved sensitive data  
-        _Hosts kOps management and handles sensitive data._
+      - kOps cluster management with saved sensitive data ([controller.sh](terraform/scripts/controller.sh))  
+        _Hosts kOps management and handles sensitive data. Contains scripts for setting up the cluster._
       - **Ingress**: 22 TCP `[bastion CIDR]`
       - **Egress**: `[0.0.0.0/0]`
   - **RDS**:
@@ -85,3 +85,4 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
   - **S3 Buckets**:
     - **kOps State**: Stores state files for kOps management
     - **kOps OIDC**: Stores OIDC files for authentication configuration
+
