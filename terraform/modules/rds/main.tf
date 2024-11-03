@@ -1,4 +1,5 @@
 resource "aws_db_instance" "nextcloud" {
+  storage_encrypted      = var.storage_encrypted
   allocated_storage      = var.allocated_storage
   db_name                = var.db_name
   engine                 = var.engine
