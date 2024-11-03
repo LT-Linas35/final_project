@@ -152,12 +152,12 @@ module "controller" {
   DATABASE_NAME     = var.rds.db_name
   DATABASE_HOST     = module.rds.rds_endpoint
   DATABASE_PORT     = module.rds.rds_port
-  DATABASE_USER     = var.rds.username
-  DATABASE_PASSWORD = var.rds.password
+  DATABASE_USER     = var.RDS_USERNAME
+  DATABASE_PASSWORD = var.RDS_PASSWORD
 
-  ADMIN_USER     = var.nextcloud_install.ADMIN_USER
-  ADMIN_PASSWORD = var.nextcloud_install.ADMIN_PASSWORD
-  ADMIN_EMAIL    = var.nextcloud_install.ADMIN_EMAIL
+  ADMIN_USER     = var.ADMIN_USER
+  ADMIN_PASSWORD = var.ADMIN_PASSWORD
+  ADMIN_EMAIL    = var.ADMIN_EMAIL
 
   REDIS_HOST    = module.redis.redis_endpoint
   REDIS_PORT    = module.redis.redis_port
@@ -185,7 +185,7 @@ module "controller" {
   S3_USER_KEY    = aws_iam_access_key.s3_user_key.id
   S3_USER_SECRET = aws_iam_access_key.s3_user_key.secret
 
-  newrelic_global_licenseKey = var.newrelic.newrelic_global_licenseKey
+  newrelic_global_licenseKey = var.newrelic_global_licenseKey
   KSM_IMAGE_VERSION          = var.newrelic.KSM_IMAGE_VERSION
 
   canarySteps_0_setWeight     = var.canary.canarySteps_0_setWeight
@@ -193,7 +193,7 @@ module "controller" {
   canarySteps_1_setWeight     = var.canary.canarySteps_1_setWeight
   canarySteps_1_pauseDuration = var.canary.canarySteps_1_pauseDuration
   canarySteps_2_setWeight     = var.canary.canarySteps_2_setWeight
-  ARGOCD_PASSWORD             = var.cluster.ARGOCD_PASSWORD
+  ARGOCD_PASSWORD             = var.ARGOCD_PASSWORD
 
   Cluster     = var.cluster.CLUSTER_NAME
   Environment = var.cluster.Environment
@@ -228,8 +228,8 @@ module "rds" {
   engine               = var.rds.engine
   engine_version       = var.rds.engine_version
   instance_class       = var.rds.instance_class
-  username             = var.rds.username
-  password             = var.rds.password
+  username             = var.RDS_USERNAME
+  password             = var.RDS_PASSWORD
   parameter_group_name = var.rds.parameter_group_name
   skip_final_snapshot  = var.rds.skip_final_snapshot
   publicly_accessible  = var.rds.publicly_accessible
