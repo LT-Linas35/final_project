@@ -1,7 +1,7 @@
 # Helm chart values configuration
 
 namespace: nextcloud                    # Namespace for deployment and services
-applicationNamespace: default           # Namespace for the ArgoCD Application resource
+applicationNamespace: argocd            # Namespace for the ArgoCD Application resource
 
 replicaCount: 3                         # Number of replicas for the Rollout deployment
 
@@ -11,7 +11,7 @@ image:
   updateStrategy: latest                # Image update strategy (e.g., latest)
 
 service:
-  type: ClusterIP                    # Service type, e.g., LoadBalancer, ClusterIP, etc.
+  type: ClusterIP                       # Service type, e.g., LoadBalancer, ClusterIP, etc.
   port: 80                              # Service port for external access
 
 canarySteps:
