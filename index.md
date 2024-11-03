@@ -160,7 +160,7 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
 ### NextCloud Setup
 - [nextcloud_server](https://github.com/LT-Linas35/nextcloud_server) branch `dev`.
   - Set up SonarCloud: Requires `SONAR_TOKEN` from SonarCloud (configured in GitHub Secrets).
-  - Set up token for API calls in [release workflow](https://github.com/LT-Linas35/nextcloud_server/blob/dev/Super-Linter-and-Sonar-Cloud-Scanner-Release.yaml).
+  - Set up token for API calls in [Super-Linter-and-Sonar-Cloud-Scanner-Release](https://github.com/LT-Linas35/nextcloud_server/blob/dev/.github/workflows/Super-Linter-and-Sonar-Cloud-Scanner-Release.yaml).
 
 ### Final Project Setup
 - [final_project](https://github.com/LT-Linas35/final_project)
@@ -170,7 +170,7 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
     - **Docker Registry**: Requires `DOCKER_USERNAME` and `DOCKER_PASSWORD`.
   - **NewRelic**: Add credentials in security for PHP monitoring :
     - `NEW_RELIC_API_KEY_PHP`, `NEW_RELIC_ACCOUNT_ID_PHP`, `NR_INSTALL_KEY_PHP`.
-    - [main.yml](.github/workflows/main.yml)
+    - [main.yml](https://github.com/LT-Linas35/final_project/blob/main/.github/workflows/main.yml)
 
 # Terraform Cloud and Helm Setup for NextCloud
 
