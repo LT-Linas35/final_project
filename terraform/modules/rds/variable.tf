@@ -77,3 +77,8 @@ variable "Name" {
   description = "The name of the RDS instance"
   type        = string
 }
+
+variable "storage_encrypted" {
+  description = "Determines whether to enable storage encryption for the RDS instance."
+  type        = bool
+}
