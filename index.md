@@ -11,12 +11,12 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
   _Stores the main application code for NextCloud._
 - **GitHub Actions**:
   - **On Push to `dev`**:
-    - [Super Linter](https://github.com/LT-Linas35/nextcloud_server/.github/workflows/super-linter.yml)  
+    - [Super Linter]([https://github.com/LT-Linas35/nextcloud_server](https://github.com/LT-Linas35/nextcloud_server/blob/dev/.github/workflows/super-linter.yml)  
       _Automated code quality checks for the project._
-    - [Sonar Cloud Scanner](https://github.com/LT-Linas35/nextcloud_server/.github/workflows/Sonar-Cloud-Scanner.yml) (_requires `secrets.SONAR_TOKEN`_)  
+    - [Sonar Cloud Scanner]([https://github.com/LT-Linas35/nextcloud_server/](https://github.com/LT-Linas35/nextcloud_server/blob/dev/.github/workflows/Sonar-Cloud-Scanner.yml) (_requires `secrets.SONAR_TOKEN`_)  
       _Performs code analysis to identify issues and maintain code quality._
   - **On Release**:
-    - [Super Linter and Sonar Cloud Scanner Release Workflow](https://github.com/LT-Linas35/nextcloud_server/Super-Linter-and-Sonar-Cloud-Scanner-Release.yaml)  
+    - [Super Linter and Sonar Cloud Scanner Release Workflow]([https://github.com/LT-Linas35/nextcloud_server/](https://github.com/LT-Linas35/nextcloud_server/blob/dev/Super-Linter-and-Sonar-Cloud-Scanner-Release.yaml)  
       _Runs automated code checks and Sonar analysis on release._
     - **Trigger Build**: Sends API call to `final_project` to build NextCloud Docker image (_requires `secrets.workflow_token` and final_project token_)  
       _Automates Docker image build and deploy process on release._
