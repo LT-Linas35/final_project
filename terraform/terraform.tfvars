@@ -7,7 +7,7 @@
 aws_region = "eu-west-2"
 
 newrelic = {
-  newrelic_global_licenseKey = ""            # Global New Relic license key for monitoring and observability.
+//  newrelic_global_licenseKey = ""            # Global New Relic license key for monitoring and observability.
   KSM_IMAGE_VERSION          = "v2.10.0"     # Version of the KSM (Kubernetes State Metrics) image to be deployed.
 }
 
@@ -15,9 +15,9 @@ newrelic = {
 # NextCloud Installation Configuration
 
 nextcloud_install = {
-  ADMIN_USER     = ""               # Admin user for NextCloud (pass through TerraForm Cloud or secret management)
-  ADMIN_PASSWORD = ""               # Admin password for NextCloud (pass through TerraForm Cloud or secret management)
-  ADMIN_EMAIL    = ""               # Admin email for NextCloud (pass through TerraForm Cloud or secret management)
+//  ADMIN_USER     = ""               # Admin user for NextCloud (pass through TerraForm Cloud or secret management)
+//  ADMIN_PASSWORD = ""               # Admin password for NextCloud (pass through TerraForm Cloud or secret management)
+//  ADMIN_EMAIL    = ""               # Admin email for NextCloud (pass through TerraForm Cloud or secret management)
   REDIS_TIMEOUT  = 0                # Redis timeout value for NextCloud
   REDIS_DBINDEX  = 0                # Redis database index for NextCloud
   S3_BUCKET      = "lino-nextcloud" # S3 bucket name used for NextCloud storage
@@ -81,7 +81,7 @@ cluster = {
   kops_nlb_subnet_name       = "Kops NLB"                        # Name of the subnet for the Kops Network Load Balancer
   KOPS_TOPOLOGY              = "private"                         # Specifies topology for the Kops cluster; "private" means no public IPs for nodes
   KOPS_NLB                   = "internal"                        # Load balancer type for Kops; "internal" creates an internal NLB
-  ARGOCD_PASSWORD            = ""                                # New ArgoCD password to login
+//  ARGOCD_PASSWORD            = ""                                # New ArgoCD password to login
 }
 
 
@@ -126,8 +126,8 @@ rds = {
   engine                      = "mysql"                      # Database engine used by RDS
   engine_version              = "8.0"                        # Version of the database engine
   instance_class              = "db.t4g.micro"               # Instance class for the RDS instance
-  username                    = ""                           # Username (pass through TerraForm Cloud or secret management)
-  password                    = ""                           # Password (pass through TerraForm Cloud or secret management)
+//  username                    = ""                           # Username (pass through TerraForm Cloud or secret management)
+//  password                    = ""                           # Password (pass through TerraForm Cloud or secret management)
   parameter_group_name        = "default.mysql8.0"           # Parameter group for MySQL 8.0
   skip_final_snapshot         = true                         # Skip the final snapshot when deleting the RDS instance
   publicly_accessible         = false                        # Make the RDS instance private
