@@ -1,4 +1,4 @@
-# !!! ALL Emplty variables should be passed through TerraForm Cloud !!!
+# !!! ALL Commented out variables should be passed through TerraForm Cloud !!!
 # Bastion server only for debugging; there is no other way to connect to the controller.
 
 
@@ -7,8 +7,8 @@
 aws_region = "eu-west-2"
 
 newrelic = {
-  newrelic_global_licenseKey = ""           # Global New Relic license key for monitoring and observability.
-  KSM_IMAGE_VERSION          = "v2.10.0"    # Version of the KSM (Kubernetes State Metrics) image to be deployed.
+  newrelic_global_licenseKey = ""            # Global New Relic license key for monitoring and observability.
+  KSM_IMAGE_VERSION          = "v2.10.0"     # Version of the KSM (Kubernetes State Metrics) image to be deployed.
 }
 
 
@@ -33,7 +33,7 @@ canary = {
   canarySteps_1_setWeight     = 50     # Weight percentage for the second canary step
   canarySteps_1_pauseDuration = "360s" # Pause duration after the second canary step
 
-  canarySteps_2_setWeight     = 100    # Final weight percentage for full deployment
+  canarySteps_2_setWeight = 100 # Final weight percentage for full deployment
 }
 
 
