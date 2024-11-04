@@ -50,13 +50,13 @@ This NextCloud deployment serves as a comprehensive file storage and collaborati
     - SuperLinter and SonarCloud scanners execute, then trigger Docker image build in `final_project`.
 
 - **Repository**: [final_project](https://github.com/LT-Linas35/final_project)
-  - **Docker Image Build**: Builds and pushes NextCloud Docker image to registry `linas37/nextcloud`.
+  - **Docker Image Build**: Builds and pushes NextCloud Docker image to registry [`linas37/nextcloud`](https://hub.docker.com/repository/docker/linas37/nextcloud/general).
   - **Security Scanning**: Scans images with Trivy; results accessible in the Security tab.
   - **SonarCloud Analysis**: Automated scan on each registry push.
 
 ### Continuous Delivery (CD)
 - **ArgoCD**:
-  - Watches Docker registry `linas37/nextcloud` for `latest` tag.
+  - Watches Docker registry [`linas37/nextcloud`](https://hub.docker.com/repository/docker/linas37/nextcloud/general) for `latest` tag.
   - Checks for updates every few minutes and deploys with rolling deployment upon detecting a new image.
 
 ---
