@@ -200,7 +200,7 @@ To deploy your infrastructure, navigate to [Terraform Cloud](https://app.terrafo
 
 ### ArgoCD Password
 
-- **`ARGOCD_PASSWORD`**: Password required to access ArgoCD.
+- **`ARGOCD_PASSWORD`**: This password will be required to access ArgoCD.
 
 ### 2. Terraform Variables Configuration [`terraform.tfvars`](https://github.com/LT-Linas35/final_project/blob/main/terraform/terraform.tfvars)
 
